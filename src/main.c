@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv)
 {
-    StorageSys storage_sys = { 
+   /* StorageSys storage_sys = { 
         .storage_size = CHUNK_SIZE * CHUNKS_AMOUNT,
         .chunk_size = CHUNK_SIZE
     };
@@ -14,5 +14,5 @@ int main(int argc, char *argv)
     storage_sys.storage = storage;
 
     print_storage(storage_sys);
-    return 0;
+    return 0; */
 }
