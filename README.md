@@ -1,2 +1,3 @@
-# virtual-file-system-c
-Layered in-memory virtual file system in C featuring block allocation, extent-based file to virtual disk mapping, and clean CLI client.
+# Virtual File System in C
+
+Layered in-memory virtual file system in C with custom block allocation, extent-based file mapping, and a clean CLI interface.
