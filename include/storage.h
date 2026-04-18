@@ -1,11 +1,11 @@
 #include <stdbool.h>
-#define STORAGE_SIZE 5
 
 typedef struct 
 {
-    bool *allocation_map; //Todo: implement bit packing
     char *storage;
+    const int storage_size;
     const int chunk_size;
+    bool *allocation_map; //Todo: implement bit packing
 } StorageSys;
 
 void print_storage(StorageSys storage_sys);

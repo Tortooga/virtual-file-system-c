@@ -3,7 +3,7 @@
 
 void print_storage(StorageSys storage_sys)
 {
-    for (char *p = storage_sys.storage; p < storage_sys.storage + STORAGE_SIZE; p++)
+    for (char *p = storage_sys.storage; p < storage_sys.storage + storage_sys.storage_size; p++)
     {
         printf(" %c |", *p);
     }
