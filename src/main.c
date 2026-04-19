@@ -1,5 +1,6 @@
 #include "../include/storage.h"
 #include "../include/settings.h"
+#include <stdio.h>
 
 int main(int argc, char *argv)
 {
@@ -21,6 +22,9 @@ int main(int argc, char *argv)
         CHUNKS_AMOUNT
     );
 
-    print_storage(&storage_man);
+    storage_man.allocation_map[0] = 1;
+    storage_man.allocation_map[4] = 1;
+    print_allocation_map(&storage_man);
+    challoc(&storage_man, 4);
     print_allocation_map(&storage_man);
 }

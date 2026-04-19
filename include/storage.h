@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stddef.h>
+#include "settings.h"
 
 typedef struct 
 {
@@ -8,6 +9,7 @@ typedef struct
     bool *allocation_map; //Todo: implement bit packing
 } StorageMan;
 
+typedef char CHUNK[CHUNK_SIZE];
 
 int storage_man_init(
     StorageMan *storage_man,
@@ -16,5 +18,6 @@ int storage_man_init(
     bool *allocation_map,
     size_t allocation_map_size);
 
+char *challoc(StorageMan *storage_man, size_t amount);
 void print_storage(StorageMan *storage_man);
 void print_allocation_map(StorageMan *storage_man);
