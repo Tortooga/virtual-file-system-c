@@ -3,16 +3,23 @@
 
 int main(int argc, char *argv)
 {
-   /* StorageSys storage_sys = { 
-        .storage_size = CHUNK_SIZE * CHUNKS_AMOUNT,
-        .chunk_size = CHUNK_SIZE
-    };
-    char storage[CHUNK_SIZE * CHUNKS_AMOUNT] = {0};
+    StorageMan storage_man;
+    char storage[CHUNKS_AMOUNT * CHUNK_SIZE];
     bool allocation_map[CHUNKS_AMOUNT];
 
-    storage_sys.allocation_map = allocation_map;
-    storage_sys.storage = storage;
+    for (int i = 0; i < CHUNK_SIZE * CHUNKS_AMOUNT; i++)
+    {
+        storage[i] = 90;
+    }
 
-    print_storage(storage_sys);
-    return 0; */
+    storage_man_init
+    (
+        &storage_man,
+        storage,
+        CHUNKS_AMOUNT * CHUNK_SIZE,
+        allocation_map,
+        CHUNKS_AMOUNT
+    );
+
+    print_storage(storage_man);
 }

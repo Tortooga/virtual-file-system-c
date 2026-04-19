@@ -2,20 +2,38 @@
 #include <stdio.h>
 #include "../include/settings.h"
 
-//struct definition hidden in source file for encapsulation
-typedef struct 
-{
-    char *storage;
-    const int storage_size;
-    const int chunk_size;
-    bool *allocation_map; //Todo: implement bit packing
-} StorageSys;
+int storage_man_init(  //FIX DESIGN
+    StorageMan *storage_man,
+    char *storage, 
+    size_t storage_size,
+    bool *allocation_map,
+    size_t allocation_map_size)
+    {
+        if (!storage_man || !storage || !allocation_map)
+        {
+            return -1;
+        }
+        if (storage_size < CHUNK_SIZE * CHUNKS_AMOUNT)
+        {
+            return -1; //Todo add error logging
+        }
 
+        if (allocation_map_size < CHUNKS_AMOUNT)
+        {
+            return -1;
+        }
+
+        storage_man->allocation_map = allocation_map;
+        storage_man->storage = storage;
+        storage_man->storage_size = storage_size;
+        
+        return 0;
+    }
 
 //prints storage continuously onto terminal
-void print_storage(StorageSys storage_sys)
+void print_storage(StorageMan storage_man)
 {
-    for (char *p = storage_sys.storage; p < storage_sys.storage + storage_sys.storage_size; p++)
+    for (char *p = storage_man.storage; p < storage_man.storage + storage_man.storage_size; p++)
     {
         printf(" %c |", *p);
     }
@@ -24,9 +42,9 @@ void print_storage(StorageSys storage_sys)
 }
 
 //prints allocation map continuously onto terminal
-void print_allocation_map(StorageSys storage_sys)
+void print_allocation_map(StorageMan storage_man)
 {
-    for (char *p = storage_sys.allocation_map; p < storage_sys.allocation_map + CHUNK_SIZE; p++)
+    for (bool *p = storage_man.allocation_map; p < storage_man.allocation_map + CHUNK_SIZE; p++)
     {
         printf(" %d |", *p);    
     }
