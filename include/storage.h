@@ -16,4 +16,5 @@ int storage_man_init(
     bool *allocation_map,
     size_t allocation_map_size);
 
-void print_storage(StorageMan storage_man);
+void print_storage(StorageMan *storage_man);
+void print_allocation_map(StorageMan *storage_man);

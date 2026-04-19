@@ -21,5 +21,6 @@ int main(int argc, char *argv)
         CHUNKS_AMOUNT
     );
 
-    print_storage(storage_man);
+    print_storage(&storage_man);
+    print_allocation_map(&storage_man);
 }

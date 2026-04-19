@@ -31,9 +31,10 @@ int storage_man_init(  //FIX DESIGN
     }
 
 //prints storage continuously onto terminal
-void print_storage(StorageMan storage_man)
+void print_storage(StorageMan *storage_man)
 {
-    for (char *p = storage_man.storage; p < storage_man.storage + storage_man.storage_size; p++)
+    const char *upper_lim = storage_man->storage + storage_man->storage_size;
+    for (char *p = storage_man->storage; p < upper_lim; p++)
     {
         printf(" %c |", *p);
     }
@@ -42,9 +43,10 @@ void print_storage(StorageMan storage_man)
 }
 
 //prints allocation map continuously onto terminal
-void print_allocation_map(StorageMan storage_man)
+void print_allocation_map(StorageMan *storage_man)
 {
-    for (bool *p = storage_man.allocation_map; p < storage_man.allocation_map + CHUNK_SIZE; p++)
+    const bool *upper_lim = storage_man->allocation_map + CHUNK_SIZE;
+    for (bool *p = storage_man->allocation_map; p < upper_lim; p++)
     {
         printf(" %d |", *p);    
     }
