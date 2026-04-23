@@ -10,7 +10,7 @@ int main(int argc, char *argv)
 
     for (int i = 0; i < CHUNK_SIZE * CHUNKS_AMOUNT; i++)
     {
-        storage[i] = 90;
+        storage[i] = 0;
     }
 
     storage_man_init
@@ -23,11 +23,9 @@ int main(int argc, char *argv)
     );
 
     storage_man.allocation_map[0] = 1;
-    storage_man.allocation_map[4] = 1;
-    print_allocation_map(&storage_man);
-    challoc(&storage_man, 4);
-    print_allocation_map(&storage_man);
-    chfree(&storage_man, 4);
+    storage_man.allocation_map[CHUNKS_AMOUNT - 1] = 1;
     print_allocation_map(&storage_man);
 
+    chwrite(&storage_man, CHUNKS_AMOUNT - 1, "Hello", 6);
+    print_storage(&storage_man);
 }

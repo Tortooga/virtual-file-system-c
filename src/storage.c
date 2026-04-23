@@ -4,6 +4,7 @@
 
 void mark_as_allocated(bool *offset, size_t amount);
 void allocation_map_init(StorageMan *storage_man);
+char *get_chunk_addr(StorageMan *storage_man, size_t chunk_pos);
 
 int storage_man_init(
     StorageMan *storage_man,
@@ -85,6 +86,43 @@ int chfree(StorageMan *storage_man, size_t chunk_pos)
 
     storage_man->allocation_map[chunk_pos] = false;
     return 0;    
+}
+
+int chwrite(StorageMan *storage_man, size_t chunk_pos, char *data, int length)
+{
+    if (!storage_man)
+    {
+        return -1;
+    }
+    if (length > CHUNK_SIZE || chunk_pos >= CHUNKS_AMOUNT)
+    {
+        return -2;
+    }
+    
+    //chunk should not be accessed if it isnt owned by something
+    if (!storage_man->allocation_map[chunk_pos])
+    {
+        return -3;
+    }
+
+    char *chunk_addr = get_chunk_addr(storage_man, chunk_pos);
+
+    //Validation guarantees length <= CHUNK_SIZE
+    for (int i = 0; i < length; i++)
+    {
+        chunk_addr[i] = data[i];
+    }
+
+    return 0;
+}
+
+inline char *get_chunk_addr(StorageMan *storage_man, size_t chunk_pos)
+{
+    if (chunk_pos >= CHUNKS_AMOUNT || !storage_man)
+    {
+        return NULL;
+    }
+    return storage_man->storage + (chunk_pos * CHUNK_SIZE);
 }
 
 // Marks continuous amount of chunks as allocated
