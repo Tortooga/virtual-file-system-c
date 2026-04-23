@@ -139,10 +139,13 @@ void mark_as_allocated(bool *offset, size_t amount)
 // prints storage continuously onto terminal
 void print_storage(StorageMan *storage_man)
 {
-    const char *upper_lim = storage_man->storage + storage_man->storage_size;
-    for (char *p = storage_man->storage; p < upper_lim; p++)
+    for (int i = 0; i < storage_man->storage_size; i++)
     {
-        printf(" %c |", *p);
+        if (i % CHUNK_SIZE == 0)
+        {
+            printf("\nC%d\n", i / CHUNK_SIZE);
+        }
+        printf(" %c |", storage_man->storage[i]);
     }
 
     printf("\n");
