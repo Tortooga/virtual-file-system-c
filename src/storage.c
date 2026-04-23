@@ -48,7 +48,7 @@ void allocation_map_init(StorageMan *storage_man)
 // Takes chunks amount and allocates space in virtual storage returning a pointer to the first chunk
 char *challoc(StorageMan *storage_man, const size_t amount)
 {
-    if (!storage_man || amount == 0)
+    if (!storage_man || amount == 0 || amount > CHUNKS_AMOUNT)
     {
         return NULL;
     }
@@ -57,8 +57,6 @@ char *challoc(StorageMan *storage_man, const size_t amount)
     int available_continuous_chunks_count = 0;
     for (int i = 0; i < CHUNKS_AMOUNT; i++)
     {
-        
-        printf("%d: %d\n", i, available_continuous_chunks_count);
         if (storage_man->allocation_map[i] == true)
         {
             cur_pos = i + 1; //Setting the cur position to the next object since this one is guarnteed to be 1
@@ -77,6 +75,18 @@ char *challoc(StorageMan *storage_man, const size_t amount)
 
     return NULL;
 }
+
+int chfree(StorageMan *storage_man, size_t chunk_pos)
+{
+    if (!storage_man || chunk_pos >= CHUNKS_AMOUNT)
+    {
+        return 1;
+    }
+
+    storage_man->allocation_map[chunk_pos] = false;
+    return 0;    
+}
+
 // Marks continuous amount of chunks as allocated
 void mark_as_allocated(bool *offset, size_t amount)
 {

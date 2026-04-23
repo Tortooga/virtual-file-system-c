@@ -22,6 +22,7 @@ int storage_man_init(
     size_t allocation_map_size);
 
 char *challoc(StorageMan *storage_man, size_t amount);
+int chfree(StorageMan *storage_man, size_t chunk_pos);
 void print_storage(StorageMan *storage_man);
 void print_allocation_map(StorageMan *storage_man);
 

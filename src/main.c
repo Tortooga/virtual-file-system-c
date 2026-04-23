@@ -27,4 +27,7 @@ int main(int argc, char *argv)
     print_allocation_map(&storage_man);
     challoc(&storage_man, 4);
     print_allocation_map(&storage_man);
+    chfree(&storage_man, 4);
+    print_allocation_map(&storage_man);
+
 }
