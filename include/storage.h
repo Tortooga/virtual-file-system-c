@@ -1,3 +1,6 @@
+#ifndef STORAGE_H
+#define STORAGE_H
+
 #include <stdbool.h>
 #include <stddef.h>
 #include "settings.h"
@@ -21,3 +24,5 @@ int storage_man_init(
 char *challoc(StorageMan *storage_man, size_t amount);
 void print_storage(StorageMan *storage_man);
 void print_allocation_map(StorageMan *storage_man);
+
+#endif
