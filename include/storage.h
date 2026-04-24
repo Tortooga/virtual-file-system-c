@@ -12,6 +12,12 @@ typedef struct
     bool *allocation_map; //Todo: implement bit packing
 } StorageMan;
 
+
+/*=============================*
+ * Storage Operations          *
+ *=============================*/
+
+
 int storage_man_init(
     StorageMan *storage_man,
     char *storage, 
@@ -23,8 +29,24 @@ int challoc(
     size_t amount,
     size_t *out_first_chunk_index);
 
-int chfree(StorageMan *storage_man, size_t chunk_pos);
-int chwrite(StorageMan *storage_man, size_t chunk_pos, char *data, int length);
+int chfree(
+    StorageMan *storage_man, 
+    size_t chunk_pos);
+int chwrite(
+    StorageMan *storage_man, 
+    size_t chunk_pos, 
+    char *data, 
+    int length);
+int chread(
+    StorageMan *storage_man, 
+    size_t chunk_index,
+    char *out_data_array, 
+    size_t array_length);
+
+/*========================*
+ * Debugging helpers      *
+ *========================*/
+
 void print_storage(StorageMan *storage_man);
 void print_allocation_map(StorageMan *storage_man);
 

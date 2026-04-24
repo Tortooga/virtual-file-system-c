@@ -81,7 +81,9 @@ int challoc(
     return -2;
 }
 
-int chfree(StorageMan *storage_man, size_t chunk_pos)
+int chfree(
+    StorageMan *storage_man, 
+    size_t chunk_pos)
 {
     if (!storage_man || chunk_pos >= CHUNKS_AMOUNT)
     {
@@ -92,7 +94,11 @@ int chfree(StorageMan *storage_man, size_t chunk_pos)
     return 0;    
 }
 
-int chwrite(StorageMan *storage_man, size_t chunk_pos, char *data, int length)
+int chwrite(
+    StorageMan *storage_man, 
+    size_t chunk_pos, 
+    char *data, 
+    int length)
 {
     if (!storage_man)
     {
@@ -115,6 +121,41 @@ int chwrite(StorageMan *storage_man, size_t chunk_pos, char *data, int length)
     for (int i = 0; i < length; i++)
     {
         chunk_addr[i] = data[i];
+    }
+
+    return 0;
+}
+
+int chread(
+    StorageMan *storage_man, 
+    size_t chunk_index,
+    char *out_data_array, 
+    size_t array_length)
+{
+    //Edge cases
+    if (!storage_man || !out_data_array)
+    {
+        return -1;
+    }
+    if (array_length < CHUNK_SIZE)
+    {
+        return -2;
+    }
+    if (chunk_index >= CHUNKS_AMOUNT)
+    {
+        return -3;
+    }
+    if (!storage_man->allocation_map[chunk_index])
+    {
+        return -4;
+    }
+
+    char *cur_addr = get_chunk_addr(storage_man, chunk_index);
+    char *end_addr = cur_addr + CHUNK_SIZE;
+    for (; cur_addr < end_addr; cur_addr++)
+    {
+        *out_data_array = *cur_addr;
+        out_data_array++; 
     }
 
     return 0;
