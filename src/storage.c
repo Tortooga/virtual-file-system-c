@@ -19,12 +19,12 @@ int storage_man_init(
         }
         if (storage_size < CHUNK_SIZE * CHUNKS_AMOUNT)
         {
-            return -1; //Todo add error logging
+            return -2;
         }
 
         if (allocation_map_size < CHUNKS_AMOUNT)
         {
-            return -1;
+            return -3;
         }
 
         storage_man->allocation_map = allocation_map;
@@ -52,9 +52,14 @@ int challoc(
     const size_t amount,
     size_t *out_first_chunk_index)
 {
-    if (!storage_man || amount == 0 || amount > CHUNKS_AMOUNT || !out_first_chunk_index)
+    if (!storage_man || !out_first_chunk_index)
     {
         return -1;
+    }
+
+    if (amount == 0 || amount > CHUNKS_AMOUNT)
+    {
+        return -2;
     }
     
     int cur_pos = 0;
@@ -78,7 +83,7 @@ int challoc(
         }
     }
 
-    return -2;
+    return -3;
 }
 
 int chfree(
@@ -87,7 +92,7 @@ int chfree(
 {
     if (!storage_man || chunk_pos >= CHUNKS_AMOUNT)
     {
-        return 1;
+        return -1;
     }
 
     storage_man->allocation_map[chunk_pos] = false;
@@ -98,27 +103,30 @@ int chwrite(
     StorageMan *storage_man, 
     size_t chunk_pos, 
     char *data, 
-    int length)
+    size_t length)
 {
     if (!storage_man)
     {
         return -1;
     }
-    if (length > CHUNK_SIZE || chunk_pos >= CHUNKS_AMOUNT)
+    if (length > CHUNK_SIZE)
     {
         return -2;
     }
-    
+    if (chunk_pos >= CHUNKS_AMOUNT)
+    {
+        return -3;
+    }
     //chunk should not be accessed if it isnt owned by something
     if (!storage_man->allocation_map[chunk_pos])
     {
-        return -3;
+        return -4;
     }
 
     char *chunk_addr = get_chunk_addr(storage_man, chunk_pos);
 
     //Validation guarantees length <= CHUNK_SIZE
-    for (int i = 0; i < length; i++)
+    for (size_t i = 0; i < length; i++)
     {
         chunk_addr[i] = data[i];
     }
@@ -130,14 +138,14 @@ int chread(
     StorageMan *storage_man, 
     size_t chunk_index,
     char *out_data_array, 
-    size_t array_length)
+    size_t data_array_length)
 {
     //Edge cases
     if (!storage_man || !out_data_array)
     {
         return -1;
     }
-    if (array_length < CHUNK_SIZE)
+    if (data_array_length < CHUNK_SIZE)
     {
         return -2;
     }
