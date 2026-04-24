@@ -22,8 +22,11 @@ int main(int argc, char *argv)
         CHUNKS_AMOUNT
     );
 
+    size_t pos;
     storage_man.allocation_map[0] = 1;
     storage_man.allocation_map[CHUNKS_AMOUNT - 1] = 1;
+    challoc(&storage_man, 2, &pos);
+    printf("challoc pos: %ld\n", pos);
     print_allocation_map(&storage_man);
 
     chwrite(&storage_man, CHUNKS_AMOUNT - 1, "Hello", 6);

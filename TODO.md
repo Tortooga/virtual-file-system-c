@@ -11,7 +11,8 @@
 - [X] Add virtual storage deallocator
 - [ ] Modify StorageMan.allocation_map to be implemented with bit packing
 - [ ] Refactor Storage API
-- [ ] Add chunk writing function
+- [X] Add chunk writing function
+- [X] Modify return type of challoc to int for status code, and output through pointer out_first_chunk_pos
 ## File Management
 
 ## CLI
