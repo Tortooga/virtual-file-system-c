@@ -64,7 +64,7 @@ int challoc(
     size_t amount,
     size_t *out_first_chunk_index);
 
-/* Marks chunk as free in storage_man.allocation_map.
+/* Marks chunk as allocated in storage_man.allocation_map.
  * Does not remove remove or overwrite data in storage_man.storage.
  * 
  * Parameters:

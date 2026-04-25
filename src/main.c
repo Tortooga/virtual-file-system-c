@@ -25,15 +25,16 @@ int main(int argc, char *argv)
     size_t first_chunk_index;
     
     challoc(&storage_man, 2, &first_chunk_index);
-    
+   
+    print_allocation_map(&storage_man);
+
     chwrite(&storage_man, first_chunk_index, "hello", 6);
+    print_storage(&storage_man);
 
     char msg[CHUNK_SIZE];
 
     int result = chread(&storage_man, first_chunk_index, msg, CHUNK_SIZE);
 
-    printf("%d\n", result);
     printf("%s\n", msg);
 
-    print_storage(&storage_man);
 }

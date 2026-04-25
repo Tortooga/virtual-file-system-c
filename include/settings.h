@@ -4,4 +4,8 @@
 #define CHUNK_SIZE 8 //bytes
 #define CHUNKS_AMOUNT 10
 
+#define MAX_FILE_CHUNK_EXTENTS_AMOUNT 4
+
+#define MAX_FILE_NAME_LENGTH 16
+#define MAX_FILE_EXTENSION_LENGTH 6
 #endif
