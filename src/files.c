@@ -7,11 +7,9 @@ int init_empty_extensions(File *file);
 int file_init(
     File *out_file,
     char *file_name,
-    size_t file_name_length,
-    char *file_extension,
-    size_t file_extension_length)
+    size_t file_name_length)
     {
-        if (!out_file || !file_name || !file_extension)
+        if (!out_file || !file_name)
         {
             return -1;
         }
@@ -19,14 +17,8 @@ int file_init(
         {
             return -2;
         }
-        if (file_extension_length > MAX_FILE_EXTENSION_LENGTH)
-        {
-            return -3;
-        }
-
-        //Caller guarantees file_name and file_extension are initialised
+        //Caller guarantees file_name is initialised
         memcpy(out_file->name, file_name, file_name_length);
-        memcpy(out_file->extension, file_extension, file_extension_length);
 
         init_empty_extensions(out_file);
         return 0;

@@ -8,12 +8,11 @@ typedef struct
     size_t chunk_amount;
 } ChunkExtent;
 
-
+//At this layer extension is a part of the name
 typedef struct
 {
     ChunkExtent data_chunk_extents[MAX_FILE_CHUNK_EXTENTS_AMOUNT];
     char name[MAX_FILE_NAME_LENGTH];
-    char extension[MAX_FILE_EXTENSION_LENGTH];
 } File;
 
 
@@ -21,7 +20,5 @@ typedef struct
 int file_init(
     File *out_file,
     char *file_name,
-    size_t file_name_length,
-    char *file_extension,
-    size_t file_extension_length 
+    size_t file_name_length
 );
