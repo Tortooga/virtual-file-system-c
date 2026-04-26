@@ -1,6 +1,7 @@
 #include "../include/storage.h"
 #include "../include/settings.h"
 #include "../include/files.h"
+#include "../include/file_storage.h"
 #include <stdio.h>
 
 int main(int argc, char *argv)
@@ -23,22 +24,11 @@ int main(int argc, char *argv)
         CHUNKS_AMOUNT
     );
     File file;
-    ChunkExtent ext1;
-    ChunkExtent ext2;
-
     file_init(&file, "hello.txt", 10);
-    
-    ext1.start = 0;
-    ext1.chunk_amount = 2;
-    ext1.is_empty = false;
 
-    ext2.start = 5;
-    ext2.chunk_amount = 2;
-    ext2.is_empty = false;
-    
-    file.data_chunk_extents[0] = ext1;
-    file.data_chunk_extents[1] = ext2;
+    size_t first_chunk_index;
+    int status = file_allocate_chunks(&file, &storage_man, 10, &first_chunk_index);
 
+    printf("Status Code: %d\n", status);
     print_file(&file, true);
-
 }

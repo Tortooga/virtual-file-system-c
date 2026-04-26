@@ -6,7 +6,7 @@ void mark_as_allocated(bool *offset, size_t amount);
 void allocation_map_init(StorageMan *storage_man);
 char *get_chunk_addr(StorageMan *storage_man, size_t chunk_pos);
 
-int storage_man_init(
+StatusCode storage_man_init(
     StorageMan *storage_man,
     char *storage, 
     size_t storage_size,
@@ -15,16 +15,16 @@ int storage_man_init(
     {
         if (!storage_man || !storage || !allocation_map)
         {
-            return -1;
+            return NULL_POINTER_PASSED;
         }
         if (storage_size < CHUNK_SIZE * CHUNKS_AMOUNT)
         {
-            return -2;
+            return INSUFFICIENT_ARRAY_PASSED;
         }
 
         if (allocation_map_size < CHUNKS_AMOUNT)
         {
-            return -3;
+            return INSUFFICIENT_ARRAY_PASSED;
         }
 
         storage_man->allocation_map = allocation_map;
@@ -32,7 +32,7 @@ int storage_man_init(
         storage_man->storage_size = storage_size;
         
         allocation_map_init(storage_man);
-        return 0;
+        return SUCCESS;
     }
 
 // Initialises every element of allocation_map to zero(false)
@@ -47,19 +47,19 @@ void allocation_map_init(StorageMan *storage_man)
 }
 
 // Takes chunks amount and allocates space in virtual storage returning a pointer to the first chunk
-int challoc(
+StatusCode challoc(
     StorageMan *storage_man, 
     const size_t amount,
     size_t *out_first_chunk_index)
 {
     if (!storage_man || !out_first_chunk_index)
     {
-        return -1;
+        return NULL_POINTER_PASSED;
     }
 
     if (amount == 0 || amount > CHUNKS_AMOUNT)
     {
-        return -2;
+        return INVALID_ARGUMENT;
     }
     
     int cur_pos = 0;
@@ -79,27 +79,32 @@ int challoc(
         {
             mark_as_allocated(storage_man->allocation_map + cur_pos, amount);
             *out_first_chunk_index = cur_pos;
-            return 0;
+            return SUCCESS;
         }
     }
 
-    return -3;
+    return NO_SPACE;
 }
 
-int chfree(
+StatusCode chfree(
     StorageMan *storage_man, 
     size_t chunk_pos)
 {
-    if (!storage_man || chunk_pos >= CHUNKS_AMOUNT)
+    if (!storage_man)
     {
-        return -1;
+        return NULL_POINTER_PASSED;
+    }
+
+    if (chunk_pos >= CHUNKS_AMOUNT)
+    {
+        return INDEX_OUT_OF_BOUNDS;
     }
 
     storage_man->allocation_map[chunk_pos] = false;
-    return 0;    
+    return SUCCESS;    
 }
 
-int chwrite(
+StatusCode chwrite(
     StorageMan *storage_man, 
     size_t chunk_pos, 
     char *data, 
@@ -107,20 +112,20 @@ int chwrite(
 {
     if (!storage_man)
     {
-        return -1;
+        return NULL_POINTER_PASSED;
     }
     if (length > CHUNK_SIZE)
     {
-        return -2;
+        return INSUFFICIENT_ARRAY_PASSED;
     }
     if (chunk_pos >= CHUNKS_AMOUNT)
     {
-        return -3;
+        return INDEX_OUT_OF_BOUNDS;
     }
     //chunk should not be accessed if it isnt owned by something
     if (!storage_man->allocation_map[chunk_pos])
     {
-        return -4;
+        return FREE_CHUNK_ACCESS_ATTEMPT;
     }
 
     char *chunk_addr = get_chunk_addr(storage_man, chunk_pos);
@@ -131,10 +136,10 @@ int chwrite(
         chunk_addr[i] = data[i];
     }
 
-    return 0;
+    return SUCCESS;
 }
 
-int chread(
+StatusCode chread(
     StorageMan *storage_man, 
     size_t chunk_index,
     char *out_data_array, 
@@ -143,19 +148,19 @@ int chread(
     //Edge cases
     if (!storage_man || !out_data_array)
     {
-        return -1;
+        return NULL_POINTER_PASSED;
     }
     if (data_array_length < CHUNK_SIZE)
     {
-        return -2;
+        return INSUFFICIENT_ARRAY_PASSED;
     }
     if (chunk_index >= CHUNKS_AMOUNT)
     {
-        return -3;
+        return INDEX_OUT_OF_BOUNDS;
     }
     if (!storage_man->allocation_map[chunk_index])
     {
-        return -4;
+        return FREE_CHUNK_ACCESS_ATTEMPT;
     }
 
     char *cur_addr = get_chunk_addr(storage_man, chunk_index);
@@ -166,7 +171,7 @@ int chread(
         out_data_array++; 
     }
 
-    return 0;
+    return SUCCESS;
 }
 
 inline char *get_chunk_addr(StorageMan *storage_man, size_t chunk_pos)

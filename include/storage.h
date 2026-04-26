@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include "settings.h"
+#include "status.h"
 
 typedef struct 
 {
@@ -36,7 +37,7 @@ typedef struct
  *   -2 if storage_size is less than the required amount 
  *   -3 if allocation_map_size is less than the required amount
  */
-int storage_man_init(
+StatusCode storage_man_init(
     StorageMan *storage_man,
     char *storage, 
     size_t storage_size,
@@ -59,7 +60,7 @@ int storage_man_init(
  *   -2 if an invalid amount is passed(either 0 or greater than CHUNKS_AMOUNT)
  *   -3 if it failed to locate a series of contiguous chunks of size "amount" or more
 */
-int challoc(
+StatusCode challoc(
     StorageMan *storage_man, 
     size_t amount,
     size_t *out_first_chunk_index);
@@ -74,9 +75,10 @@ int challoc(
  * Returns:
  *   0 if successful
  *   -1 if a NULL pointer is passed to the function
- *   -2 if chunk_pos supplied is outside the bounds of CHUNKS_AMOUNT     
+ *   -2 if chunk_pos supplied is outside the bounds of CHUNKS_AMOUNT  
+ *   -3 if contiguous space was not found   
  */
-int chfree(
+StatusCode chfree(
     StorageMan *storage_man, 
     size_t chunk_pos);
 
@@ -97,7 +99,7 @@ int chfree(
  *   -3 if chunk_pos is outside of the bounds of CHUNKS_AMOUNT
  *   -4 if the chunk to be written into is marked as free(not owned by anything)
  */
-int chwrite(
+StatusCode chwrite(
     StorageMan *storage_man, 
     size_t chunk_pos, 
     char *data, 
@@ -119,7 +121,7 @@ int chwrite(
  *   -3 if chunk_index is outside the bounds of CHUNKS_AMOUNT
  *   -4 if the chuck to be read is marked as free in storage_man.allocation_map
  */ 
-int chread(
+StatusCode chread(
     StorageMan *storage_man, 
     size_t chunk_index,
     char *out_data_array, 
