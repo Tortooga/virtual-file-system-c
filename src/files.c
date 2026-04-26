@@ -19,7 +19,7 @@ int file_init(
         }
         //Caller guarantees file_name is initialised
         memcpy(out_file->name, file_name, file_name_length);
-
+        out_file->allocated_size = 0;
         init_empty_extensions(out_file);
         return 0;
     }
