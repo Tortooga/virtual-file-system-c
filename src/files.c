@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 int init_empty_extensions(File *file);
+void print_extents(File *file);
 
 int file_init(
     File *out_file,
@@ -38,4 +39,38 @@ int init_empty_extensions(File *file)
         cur_extent_addrs->is_empty = true;
     }
     return 0;
+}
+
+void print_file(File *file, bool include_extents)
+{
+    if (!file)
+    {
+        printf("*File is NULL");
+        return;
+    }
+
+    printf("File Name: %s\n", file->name);
+    printf("File Allocated Size: %zu\n", file->allocated_size);
+    if (include_extents)
+    {
+        print_extents(file);
+    }
+}
+
+void print_extents(File *file)
+{
+   //Private Helper function only called from print_file. No need for validation.
+    printf("Chunk Extents: \n");
+
+    for (int i = 0; i < MAX_FILE_CHUNK_EXTENTS_AMOUNT; i++){
+        if (file->data_chunk_extents[i].is_empty)
+        {
+            continue;
+        }
+
+        printf(
+            "    EXT %d: %zu - %zu\n", i,
+            file->data_chunk_extents[i].start,
+            file->data_chunk_extents[i].start + file->data_chunk_extents[i].chunk_amount);
+    }
 }

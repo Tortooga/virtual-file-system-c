@@ -1,5 +1,6 @@
 #include "../include/storage.h"
 #include "../include/settings.h"
+#include "../include/files.h"
 #include <stdio.h>
 
 int main(int argc, char *argv)
@@ -21,20 +22,23 @@ int main(int argc, char *argv)
         allocation_map,
         CHUNKS_AMOUNT
     );
+    File file;
+    ChunkExtent ext1;
+    ChunkExtent ext2;
 
-    size_t first_chunk_index;
+    file_init(&file, "hello.txt", 10);
     
-    challoc(&storage_man, 2, &first_chunk_index);
-   
-    print_allocation_map(&storage_man);
+    ext1.start = 0;
+    ext1.chunk_amount = 2;
+    ext1.is_empty = false;
 
-    chwrite(&storage_man, first_chunk_index, "hello", 6);
-    print_storage(&storage_man);
+    ext2.start = 5;
+    ext2.chunk_amount = 2;
+    ext2.is_empty = false;
+    
+    file.data_chunk_extents[0] = ext1;
+    file.data_chunk_extents[1] = ext2;
 
-    char msg[CHUNK_SIZE];
-
-    int result = chread(&storage_man, first_chunk_index, msg, CHUNK_SIZE);
-
-    printf("%s\n", msg);
+    print_file(&file, true);
 
 }

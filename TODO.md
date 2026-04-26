@@ -3,6 +3,7 @@
 ## Appearance
 - [X] Add documentation above all exposed Storage functions
 - [X] ***Document trade-off between file meta data waste and fragmentation waste.
+- [ ] ***Document safety/preformance trade-off between doing a first pass to calculate the datas length before saving 
 - [ ] Rewrite design.md
 - [ ] Rewrite README.md
 - [ ] Refine inline comments accross important functions

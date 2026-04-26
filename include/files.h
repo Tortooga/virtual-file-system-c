@@ -15,7 +15,7 @@ typedef struct
 typedef struct
 {
     ChunkExtent data_chunk_extents[MAX_FILE_CHUNK_EXTENTS_AMOUNT];
-    char name[MAX_FILE_NAME_LENGTH];
+    char name[MAX_FILE_NAME_LENGTH]; //null terminated
     size_t allocated_size; //tracked at allocation and deallocation
 } File;
 
@@ -25,5 +25,9 @@ int file_init(
     char *file_name,
     size_t file_name_length 
 );
+
+void print_file(
+    File *file, 
+    bool include_extents);
 
 #endif
