@@ -12,6 +12,10 @@ It handles all storage functionally including allocation, deallocation and writi
 
 A chunk is a position in the allocaiton map. Its only representation is its index in the allocation map. It functions as the smallest unit of storage addressable by the allocater and de allocator. It is also used for data retreival as its index can be transformed into real storage.
 
+## Chunk Size Trade-off
+If chunk size is too high, storage wastefully fragments and big portions are left unaccessible.
+If chunk size is too low, file meta data grows as each file will have to track alot of storage chunks.
+
 ## File System
 File system address's storage in logical chunks.
 

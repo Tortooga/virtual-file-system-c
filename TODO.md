@@ -2,19 +2,20 @@
 
 ## Appearance
 - [X] Add documentation above all exposed Storage functions
-- [ ] ***Document trade-off between file meta data waste and fragmentation waste.
+- [X] ***Document trade-off between file meta data waste and fragmentation waste.
 - [ ] Rewrite design.md
 - [ ] Rewrite README.md
 - [ ] Refine inline comments accross important functions
 - [ ] Add error logging system
 - [ ] Add warning to error logging system when chfree is called on a free chunk
+
 ## Storage and Storage Management
 - [X] Add virtual storage deallocator
-- [ ] Modify StorageMan.allocation_map to be implemented with bit packing
 - [X] Refactor Storage API
 - [X] Add chunk writing function
 - [X] Modify return type of challoc to int for status code, and output through pointer out_first_chunk_pos
-- [ ] Change magic error codes into enums
+- [ ] Modify StorageMan.allocation_map to be implemented with bit packing
+
 ## File Management
 
 ## CLI
