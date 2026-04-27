@@ -1,6 +1,7 @@
 #ifndef STATUS_H
 #define STATUS_H
 
+//Global status codes. This allows for the recursive passing of status codes through call chains 
 typedef enum
 {
     SUCCESS = 0,
