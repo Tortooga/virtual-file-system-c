@@ -5,24 +5,25 @@
 int init_empty_extensions(File *file);
 void print_extents(File *file);
 
-int file_init(
+StatusCode file_init(
     File *out_file,
     char *file_name,
     size_t file_name_length)
     {
         if (!out_file || !file_name)
         {
-            return -1;
+            return NULL_POINTER_PASSED;
         }
         if (file_name_length > MAX_FILE_NAME_LENGTH)
         {
-            return -2;
+            return INSUFFICIENT_ARRAY_PASSED;
         }
         //Caller guarantees file_name is initialised
         memcpy(out_file->name, file_name, file_name_length);
         out_file->allocated_size = 0;
         init_empty_extensions(out_file);
-        return 0;
+        
+        return SUCCESS;
     }
 
 int init_empty_extensions(File *file)

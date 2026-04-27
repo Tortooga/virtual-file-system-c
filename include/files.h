@@ -20,7 +20,7 @@ typedef struct
 } File;
 
 
-int file_init(
+StatusCode file_init(
     File *out_file,
     char *file_name,
     size_t file_name_length 
