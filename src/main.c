@@ -26,8 +26,8 @@ int main(int argc, char *argv)
     File file;
     file_init(&file, "hello.txt", 10);
 
-    size_t first_chunk_index;
-    int status = file_allocate_chunks(&file, &storage_man, 10, &first_chunk_index);
+    ChunkExtent *chunk_extent;
+    int status = file_allocate_chunks(&file, &storage_man, 10, &chunk_extent);
 
     printf("Status Code: %d\n", status);
     print_file(&file, true);

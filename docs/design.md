@@ -27,5 +27,12 @@ It stores meta data about files and folders.
 
 Files are mapped to storage locations using extent-based allocation
 
+## Compact Extents Sequencing
+The order of elements in file.data_chunks_extents indicates the order of how the data is to be read.
+compactness is enforced by shifting to the right when a chunk extent is freed. This facilitates append mode
+
+## Copy on Write
+when a file is edited on modification mode the data is copied into memory, modified in memory and then rewritten into virtual storage
+ 
 ## CLI Client
 CLI client translates CLI commands into file sys functionality

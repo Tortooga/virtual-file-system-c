@@ -42,8 +42,8 @@ StatusCode test_file_allocate_chunks()
         storage_man.allocation_map[i] = true;
     }
 
-    size_t first_chunk_index;
-    status = file_allocate_chunks(&file, &storage_man, 2, &first_chunk_index);
+    ChunkExtent *chunk_extent;
+    status = file_allocate_chunks(&file, &storage_man, 2, &chunk_extent);
 
     if (status != SUCCESS)
     {
