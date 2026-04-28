@@ -10,6 +10,7 @@ typedef struct
 {
     char *storage; //The storage manager doesnt own the storage
     size_t storage_size;
+    size_t free_chunk_count;
     bool *allocation_map; //Todo: implement bit packing
 } StorageMan;
 

@@ -33,6 +33,9 @@ compactness is enforced by shifting to the right when a chunk extent is freed. T
 
 ## Copy on Write
 when a file is edited on modification mode the data is copied into memory, modified in memory and then rewritten into virtual storage
- 
+
+## File Chunk Allocator And Deallocator
+file_allocate_chunks and file_free_chunks are abstractions over the storage alloc and dealloc functions challoc and chfree. they call these functions updating a files meta data accordingly 
+
 ## CLI Client
 CLI client translates CLI commands into file sys functionality

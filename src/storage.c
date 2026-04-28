@@ -30,7 +30,7 @@ StatusCode storage_man_init(
         storage_man->allocation_map = allocation_map;
         storage_man->storage = storage;
         storage_man->storage_size = storage_size;
-        
+        storage_man->free_chunk_count = storage_size;
         allocation_map_init(storage_man);
         return SUCCESS;
     }
@@ -61,6 +61,11 @@ StatusCode challoc(
     {
         return INVALID_ARGUMENT;
     }
+
+    if (amount > storage_man->free_chunk_count)
+    {
+        NO_SPACE;
+    }
     
     int cur_pos = 0;
     int available_continuous_chunks_count = 0;
@@ -78,6 +83,7 @@ StatusCode challoc(
         if (available_continuous_chunks_count >= amount)
         {
             mark_as_allocated(storage_man->allocation_map + cur_pos, amount);
+            storage_man->free_chunk_count -= amount;
             *out_first_chunk_index = cur_pos;
             return SUCCESS;
         }
@@ -101,6 +107,7 @@ StatusCode chfree(
     }
 
     storage_man->allocation_map[chunk_pos] = false;
+    storage_man->free_chunk_count++;
     return SUCCESS;    
 }
 

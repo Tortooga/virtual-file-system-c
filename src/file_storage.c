@@ -3,40 +3,6 @@
 int get_available_chunk_extent_index(File *file);
 StatusCode free_chunk_extent(ChunkExtent *chunk_extent, StorageMan *storage_man);
 
-StatusCode file_free_chunk_extent(File *file, ChunkExtent *chunk_extent, StorageMan *storage_man)
-{
-    if (!file || !chunk_extent || !storage_man)
-    {
-        return NULL_POINTER_PASSED;
-    }
-
-    if (chunk_extent->is_empty)
-    {
-        return INVALID_ARGUMENT;
-    }
-
-    StatusCode status = free_chunk_extent(chunk_extent, storage_man);
-    chunk_extent->is_empty = true;
-    file->allocated_size -= chunk_extent->chunk_amount;
-    return SUCCESS;
-}
-
-StatusCode free_chunk_extent(ChunkExtent *chunk_extent, StorageMan *storage_man)
-{
-    //protected helper function assumes validation from file_free_chunk_extent
-    
-    StatusCode status;
-    for (int cur_pos = chunk_extent->start; cur_pos < chunk_extent->start + chunk_extent->chunk_amount; cur_pos++)
-    {
-        status = chfree(storage_man, cur_pos);
-        if (status != SUCCESS)
-        {
-            return status;
-        }
-    }
-    return SUCCESS;
-}
-
 StatusCode file_allocate_chunks(
     File *file, 
     StorageMan *storage_man, 
@@ -86,6 +52,49 @@ StatusCode file_allocate_chunks(
 
     return SUCCESS;
 }
+
+StatusCode file_free_chunk_extent(File *file, ChunkExtent *chunk_extent, StorageMan *storage_man)
+{
+    if (!file || !chunk_extent || !storage_man)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (chunk_extent->is_empty)
+    {
+        return INVALID_ARGUMENT;
+    }
+
+    StatusCode status = free_chunk_extent(chunk_extent, storage_man);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    chunk_extent->is_empty = true;
+    file->allocated_size -= chunk_extent->chunk_amount;
+
+    return SUCCESS;
+}
+
+//Partial failure causes partial deallocation
+StatusCode free_chunk_extent(ChunkExtent *chunk_extent, StorageMan *storage_man)
+{
+    //protected helper function assumes validation from file_free_chunk_extent
+    
+    StatusCode status;
+    for (int cur_pos = chunk_extent->start; cur_pos < chunk_extent->start + chunk_extent->chunk_amount; cur_pos++)
+    {
+        status = chfree(storage_man, cur_pos);
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+    }
+    return SUCCESS;
+}
+
 
 //returns -1 if no available chunk_extent was found
 int get_available_chunk_extent_index(File *file)
