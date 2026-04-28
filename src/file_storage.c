@@ -3,7 +3,6 @@
 int get_available_chunk_extent_index(File *file);
 StatusCode free_chunk_extent(ChunkExtent *chunk_extent, StorageMan *storage_man);
 
-
 StatusCode file_free_chunk_extent(File *file, ChunkExtent *chunk_extent, StorageMan *storage_man)
 {
     if (!file || !chunk_extent || !storage_man)
@@ -18,6 +17,7 @@ StatusCode file_free_chunk_extent(File *file, ChunkExtent *chunk_extent, Storage
 
     StatusCode status = free_chunk_extent(chunk_extent, storage_man);
     chunk_extent->is_empty = true;
+    file->allocated_size -= chunk_extent->chunk_amount;
     return SUCCESS;
 }
 

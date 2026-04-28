@@ -14,7 +14,9 @@ typedef enum
     INSUFFICIENT_ARRAY_PASSED = -12, //Array passed does not meet the size requirement of the function
     FREE_CHUNK_ACCESS_ATTEMPT = -13,
 
-    FILE_CHUNK_EXTENT_LIMIT_EXCEEDED = -21
+    FILE_CHUNK_EXTENT_LIMIT_EXCEEDED = -21,
+
+    TEST_ASSERTION_FAILED = -31
 } StatusCode;
 
 #endif

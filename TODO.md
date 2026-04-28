@@ -17,6 +17,9 @@
 - [X] Modify return type of challoc to int for status code, and output through pointer out_first_chunk_pos
 - [ ] Modify StorageMan.allocation_map to be implemented with bit packing
 
+## TODO
+- [ ] Abstract the run_test() printf repeatition using pointers to funcions
+
 ## File Management
 
 ## CLI
