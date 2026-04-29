@@ -25,25 +25,11 @@ int main(int argc, char *argv)
     );
     File file;
     file_init(&file, "hello.txt", 10);
-    for (int i = 0; i < 8; i++)
-    {
-        file.data_chunk_extents[i].is_empty = false;
-        file.data_chunk_extents[i].start = i;
-        file.data_chunk_extents[i].chunk_amount = 1;
-    }
-
-    for (int i = 0; i < MAX_FILE_CHUNK_EXTENTS_AMOUNT; i++)
-    {
-        printf("%d,", !file.data_chunk_extents[i].is_empty);
-    }
-
-    printf("\n");
-    StatusCode status = file_free_chunk_extent(&file, &file.data_chunk_extents[5], &storage_man);
-    printf("%d\n", status);
-    for (int i = 0; i < MAX_FILE_CHUNK_EXTENTS_AMOUNT; i++)
-    {
-        printf("%d,", !file.data_chunk_extents[i].is_empty);
-    }
+    ChunkExtent *chunk_extent;
+    file_allocate_chunks(&file, &storage_man, 2, &chunk_extent);
+    file_write_chunk(&file, &storage_man, 0, "abcdefg", 8);
+    print_storage(&storage_man);
+    
 
     return 0;
 }

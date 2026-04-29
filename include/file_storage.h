@@ -18,5 +18,11 @@ StatusCode file_free_chunk_extent(
     ChunkExtent *chunk_extent,
     StorageMan *storage_man);
 
-StatusCode chunk_extent_left_shift(ChunkExtent *empty_position, File *file);
+StatusCode file_write_chunk(
+    File *file, 
+    StorageMan *storage_man, 
+    size_t chunk_pos,
+    char *data,
+    size_t data_length);
+
 #endif

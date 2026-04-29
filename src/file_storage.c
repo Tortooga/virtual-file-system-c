@@ -3,68 +3,9 @@
 int get_available_chunk_extent_index(File *file);
 StatusCode free_chunk_extent(ChunkExtent *chunk_extent, StorageMan *storage_man);
 void chunk_extent_copy_range(ChunkExtent *target_chunk_extent, ChunkExtent *copy_chunk_extent);
+StatusCode chunk_extent_left_shift(ChunkExtent *empty_position, File *file);
+bool file_owns_chunk(File *file, size_t chunk_pos);
 
-//Assumes file.data_chunk_extents is compact except at empty_position
-//shifts all non-empty chunk extents in file.data_chunk_extents to the left after a certain position.
-//position supplied will be overwritten and should be empty
-StatusCode chunk_extent_left_shift(ChunkExtent *empty_position, File *file)
-{
-    if (!empty_position || !file)
-    {
-        return NULL_POINTER_PASSED;
-    }
-
-    if (!empty_position->is_empty)
-    {
-        return INVALID_ARGUMENT;
-    }
-
-    //Upper limit of file.data_chunk_extents, extents before it are not guaranteed to be occupied
-    //They are guaranteed to be initialised however.
-    ChunkExtent *array_upper_lim = file->data_chunk_extents + MAX_FILE_CHUNK_EXTENTS_AMOUNT;
-    
-    //If supplied position is outside of the bounds of file->data_chunk_extents
-    if (empty_position >= array_upper_lim || empty_position < file->data_chunk_extents)
-    {
-        return INVALID_ARGUMENT;
-    }
-
-    //if we are at the end of the array there is no need for left shift
-    if (empty_position + 1 == array_upper_lim)
-    {
-        return SUCCESS;
-    }
-
-    //if we are at the end of the compact cluster no need for left shift
-    if ((empty_position + 1)->is_empty)
-    {
-        return SUCCESS;
-    }
-    
-    //since the last 2 early return conditions guarantee a condidate for this position
-    empty_position->is_empty = false; 
-
-    for (; empty_position < array_upper_lim; empty_position++)
-    {
-        //If we hit the end of the array or the end of the compact sequence we mark the last position as empty and halt
-        if (empty_position + 1 >= array_upper_lim || (empty_position + 1)->is_empty)
-        {
-            empty_position->is_empty = true;
-            break;
-        }
-        
-        chunk_extent_copy_range(empty_position, empty_position + 1);
-    }
-
-    return SUCCESS;
-}
-
-void chunk_extent_copy_range(ChunkExtent *target_chunk_extent, ChunkExtent *copy_chunk_extent)
-{
-    //Both target and copy are guaranteed to have is_empty = false
-    target_chunk_extent->chunk_amount = copy_chunk_extent->chunk_amount;
-    target_chunk_extent->start = copy_chunk_extent->start;
-}
 
 StatusCode file_allocate_chunks(
     File *file, 
@@ -147,6 +88,126 @@ StatusCode file_free_chunk_extent(File *file, ChunkExtent *chunk_extent, Storage
     }
     return SUCCESS;
 }
+
+StatusCode file_write_chunk(
+    File *file, 
+    StorageMan *storage_man, 
+    size_t chunk_pos,
+    char *data,
+    size_t data_length)
+{
+    if (!file || !storage_man || !data)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (chunk_pos >= CHUNKS_AMOUNT)
+    {
+        return INVALID_ARGUMENT;
+    }
+
+    //This validation is the main purpose of this function
+    if (!file_owns_chunk(file, chunk_pos))
+    {
+        return CHUNK_DOES_NOT_BELONG_TO_FILE;
+    }
+
+    //data_length validated by chwrite
+    //valid data is guaranteed by caller
+    StatusCode status = chwrite(
+        storage_man,
+        chunk_pos,
+        data,
+        data_length
+    );
+
+    return status;
+}
+
+bool file_owns_chunk(File *file, size_t chunk_pos)
+{
+    //private helper only called from file_write_chunk does not validate file or chunk_pos 
+    for (int i = 0; i < MAX_FILE_CHUNK_EXTENTS_AMOUNT; i++)
+    {
+        //data chunks array guaranteed to be compact. empty chunk implies we hit the end of occupied chunks.
+        if (file->data_chunk_extents[i].is_empty)
+        {
+            return false;
+        }
+        //if the chunk belongs to this extent return true
+        if (
+            file->data_chunk_extents[i].start <= chunk_pos
+            && file->data_chunk_extents[i].start + file->data_chunk_extents[i].chunk_amount > chunk_pos)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//Assumes file.data_chunk_extents is compact except at empty_position
+//shifts all non-empty chunk extents in file.data_chunk_extents to the left after a certain position.
+//position supplied will be overwritten and should be empty
+StatusCode chunk_extent_left_shift(ChunkExtent *empty_position, File *file)
+{
+    if (!empty_position || !file)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (!empty_position->is_empty)
+    {
+        return INVALID_ARGUMENT;
+    }
+
+    //Upper limit of file.data_chunk_extents, extents before it are not guaranteed to be occupied
+    //They are guaranteed to be initialised however.
+    ChunkExtent *array_upper_lim = file->data_chunk_extents + MAX_FILE_CHUNK_EXTENTS_AMOUNT;
+    
+    //If supplied position is outside of the bounds of file->data_chunk_extents
+    if (empty_position >= array_upper_lim || empty_position < file->data_chunk_extents)
+    {
+        return INVALID_ARGUMENT;
+    }
+
+    //if we are at the end of the array there is no need for left shift
+    if (empty_position + 1 == array_upper_lim)
+    {
+        return SUCCESS;
+    }
+
+    //if we are at the end of the compact cluster no need for left shift
+    if ((empty_position + 1)->is_empty)
+    {
+        return SUCCESS;
+    }
+    
+    //since the last 2 early return conditions guarantee a condidate for this position
+    empty_position->is_empty = false; 
+
+    for (; empty_position < array_upper_lim; empty_position++)
+    {
+        //If we hit the end of the array or the end of the compact sequence we mark the last position as empty and halt
+        if (empty_position + 1 >= array_upper_lim || (empty_position + 1)->is_empty)
+        {
+            empty_position->is_empty = true;
+            break;
+        }
+        
+        chunk_extent_copy_range(empty_position, empty_position + 1);
+    }
+
+    return SUCCESS;
+}
+
+void chunk_extent_copy_range(ChunkExtent *target_chunk_extent, ChunkExtent *copy_chunk_extent)
+{
+    //Both target and copy are guaranteed to have is_empty = false
+    target_chunk_extent->chunk_amount = copy_chunk_extent->chunk_amount;
+    target_chunk_extent->start = copy_chunk_extent->start;
+}
+
 
 //Partial failure causes partial deallocation
 StatusCode free_chunk_extent(ChunkExtent *chunk_extent, StorageMan *storage_man)
