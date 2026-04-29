@@ -16,6 +16,9 @@ A chunk is a position in the allocaiton map. Its only representation is its inde
 If chunk size is too high, storage wastefully fragments and big portions are left unaccessible.
 If chunk size is too low, file meta data grows as each file will have to track alot of storage chunks.
 
+## File Chunks
+A chunk owned by a file is assumed to be occupied with data when it comes to the allocation and writing layer. While reading, however, if the reader encounters a null terminator it skips to the next chunks.
+
 ## File System
 File system address's storage in logical chunks.
 

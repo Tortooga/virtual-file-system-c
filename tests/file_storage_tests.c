@@ -4,8 +4,6 @@
 
 StatusCode test_file_allocate_chunks()
 {
-    printf("Testing file chunk allocator...\n");
-
     StatusCode status;
 
     File file;
@@ -50,27 +48,11 @@ StatusCode test_file_allocate_chunks()
         return status;
     }
 
-    #if DEBUG_MODE == 1
-    
-        printf("Storage Manager Created. \n");
-        
-        printf("File Created.\n");
-        print_file(&file, true);
-        
-        printf("2 Chunks Allocated\n");
-        print_file(&file, true);
-
-        printf("Final Storage Allocation Map: \n");
-        print_allocation_map(&storage_man);
-
-    #endif
-
     return SUCCESS;
 }
 
 StatusCode test_file_free_chunk_extent()
 {
-    printf("Testing file chunk deallocator...\n");
     StatusCode status;
 
     File file;
