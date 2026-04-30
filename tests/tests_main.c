@@ -17,6 +17,7 @@ int run_tests()
 {
     run_test("File chunk extent allocator", test_file_allocate_chunks);
     run_test("File chunk extent deallocator", test_file_free_chunk_extent);
+    run_test("Write and read chunk", test_file_write_and_read_chunk);
     return 0;
 }
 

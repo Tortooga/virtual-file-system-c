@@ -6,5 +6,5 @@
 
 StatusCode test_file_allocate_chunks();
 StatusCode test_file_free_chunk_extent();
-
+StatusCode test_file_write_and_read_chunk();
 #endif
