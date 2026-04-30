@@ -10,11 +10,6 @@ int main(int argc, char *argv)
     char storage[CHUNKS_AMOUNT * CHUNK_SIZE];
     bool allocation_map[CHUNKS_AMOUNT];
 
-    for (int i = 0; i < CHUNK_SIZE * CHUNKS_AMOUNT; i++)
-    {
-        storage[i] = 0;
-    }
-
     storage_man_init
     (
         &storage_man,
@@ -28,8 +23,11 @@ int main(int argc, char *argv)
     ChunkExtent *chunk_extent;
     file_allocate_chunks(&file, &storage_man, 2, &chunk_extent);
     file_write_chunk(&file, &storage_man, 0, "abcdefg", 8);
-    print_storage(&storage_man);
-    
 
+    char data[10];
+
+    file_read_chunk(&file, &storage_man, 0, data, 10);
+
+    printf("%s", data);
     return 0;
-}
+} 

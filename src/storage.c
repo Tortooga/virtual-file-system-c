@@ -123,7 +123,7 @@ StatusCode chwrite(
     }
     if (length > CHUNK_SIZE)
     {
-        return INSUFFICIENT_ARRAY_PASSED;
+        return DATA_OVER_FLOW;
     }
     if (chunk_pos >= CHUNKS_AMOUNT)
     {

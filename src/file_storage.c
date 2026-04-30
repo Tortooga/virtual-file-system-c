@@ -1,5 +1,7 @@
 #include "../include/file_storage.h"
-
+/*
+This layer enforces file ownership on storage operations
+*/
 int get_available_chunk_extent_index(File *file);
 StatusCode free_chunk_extent(ChunkExtent *chunk_extent, StorageMan *storage_man);
 void chunk_extent_copy_range(ChunkExtent *target_chunk_extent, ChunkExtent *copy_chunk_extent);
@@ -118,6 +120,39 @@ StatusCode file_write_chunk(
         storage_man,
         chunk_pos,
         data,
+        data_length
+    );
+
+    return status;
+}
+
+StatusCode file_read_chunk(
+    File *file, 
+    StorageMan *storage_man,
+    size_t chunk_pos,
+    char *out_data,
+    size_t data_length)
+{
+    if (!file || !storage_man || !out_data)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (chunk_pos >= CHUNKS_AMOUNT)
+    {
+        return INVALID_ARGUMENT;
+    }
+
+    if (!file_owns_chunk(file, chunk_pos))
+    {
+        return CHUNK_DOES_NOT_BELONG_TO_FILE;
+    }
+
+    //data_length validated by chwrite
+    StatusCode status = chread(
+        storage_man,
+        chunk_pos,
+        out_data,
         data_length
     );
 

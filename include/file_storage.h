@@ -25,4 +25,11 @@ StatusCode file_write_chunk(
     char *data,
     size_t data_length);
 
+StatusCode file_read_chunk(
+    File *file, 
+    StorageMan *storage_man,
+    size_t chunk_pos,
+    char *out_data,
+    size_t data_length);
+
 #endif

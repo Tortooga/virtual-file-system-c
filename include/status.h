@@ -13,6 +13,7 @@ typedef enum
     NO_SPACE = -11,
     INSUFFICIENT_ARRAY_PASSED = -12, //Array passed does not meet the size requirement of the function
     FREE_CHUNK_ACCESS_ATTEMPT = -13,
+    DATA_OVER_FLOW = -14,
 
     FILE_CHUNK_EXTENT_LIMIT_EXCEEDED = -21,
     CHUNK_DOES_NOT_BELONG_TO_FILE = -22,
