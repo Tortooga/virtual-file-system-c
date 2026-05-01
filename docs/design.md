@@ -40,5 +40,15 @@ when a file is edited on modification mode the data is copied into memory, modif
 ## File Chunk Allocator And Deallocator
 file_allocate_chunks and file_free_chunks are abstractions over the storage alloc and dealloc functions challoc and chfree. they call these functions updating a files meta data accordingly 
 
+## File Storage layer
+this is the intermediate layer between raw storage IO and file IO. File cannot access storage other than through it. It validates and registers relevent file meta data each time a request is made. It verifies ownership before allowing a file to read or write from a specified chunk.
+
+## File Logic layer
+Abstracts the file storage layer by exposing functions that enable the caller to preform IO tasks on files without having to explicitly address and reason about file storage chunks
+
+## RollBack-Based Write Partial Failure Handeling
+Since our system relies on and enforces file ownership, such that a chunk can not be accessed by anything other than the file that owns it, failure must be handeled by rolling back, deallocating chunks and modifying file meta-data. This makes for a simpler system but more explicit failure handelling is required as opposed to commit-based partial failure handelling, where chunks are not added into file meta data untill the write processes succeeds.
+
+## File 
 ## CLI Client
 CLI client translates CLI commands into file sys functionality

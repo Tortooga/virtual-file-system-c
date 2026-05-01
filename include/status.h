@@ -18,7 +18,10 @@ typedef enum
     FILE_CHUNK_EXTENT_LIMIT_EXCEEDED = -21,
     CHUNK_DOES_NOT_BELONG_TO_FILE = -22,
     
-    TEST_ASSERTION_FAILED = -31
+    INVALID_OPERATION,
+
+    //Tests
+    TEST_ASSERTION_FAILED = -101
 } StatusCode;
 
 #endif
