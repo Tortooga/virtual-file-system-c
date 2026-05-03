@@ -11,4 +11,12 @@ StatusCode file_append(
     char* data,
     size_t data_length);
 
+StatusCode file_read_at(
+    File *file,
+    StorageMan *storage_man,
+    size_t offset,
+    size_t amount,
+    char *buffer,
+    size_t buffer_size
+);
 #endif

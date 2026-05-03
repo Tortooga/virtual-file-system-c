@@ -22,17 +22,34 @@ int main(int argc, char *argv)
     );
     File file;
     file_init(&file, "hello.txt", 10);
+    
+    char msg[] = "This is the first test lol ol lol.";
+    size_t msg_size = sizeof(msg) / sizeof(msg[0]);
 
+    char buffer[msg_size];
     StatusCode status = file_append(
         &file,
         &storage_man,
-        "first data test please stand buy.",
-        34
+        msg,
+        msg_size
     );
     
-    printf("%d", status);
-    print_storage(&storage_man);
+
+    status = file_read_at(
+        &file,
+        &storage_man,
+        0, msg_size, buffer,
+        msg_size 
+    );
+
+    for (int i = 0; i < msg_size; i++)
+    {
+        printf("%c",buffer[i]);
+    }
+    printf("\n");
     print_file(&file, true);
-    printf("%zu", storage_man.free_chunk_count);
+    
+
+    print_storage(&storage_man);
     return 0;
 } 

@@ -244,7 +244,7 @@ void chunk_extent_copy_range(ChunkExtent *target_chunk_extent, ChunkExtent *copy
 }
 
 
-//Partial failure causes partial deallocation
+//Partial failure causes partial deallocation. TODO: implement early system exit
 StatusCode free_chunk_extent(ChunkExtent *chunk_extent, StorageMan *storage_man)
 {
     //protected helper function assumes validation from file_free_chunk_extent
