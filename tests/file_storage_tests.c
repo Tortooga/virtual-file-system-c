@@ -49,6 +49,10 @@ StatusCode test_file_allocate_chunks()
         return status;
     }
 
+    if (file.allocated_size != 2)
+    {
+        return TEST_ASSERTION_FAILED;
+    }
     return SUCCESS;
 }
 

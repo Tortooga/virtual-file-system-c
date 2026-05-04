@@ -1,4 +1,5 @@
 #include "file_storage_tests.h"
+#include "file_logic_tests.h"
 #include <stdio.h>
 
 typedef StatusCode (*TestFunc)(void);
@@ -21,7 +22,7 @@ int run_tests()
     run_test("Write and read chunk", test_file_write_and_read_chunk);
 
     //file_logic tests
-    
+    run_test("File writer append", test_file_append);
     return 0;
 }
 
