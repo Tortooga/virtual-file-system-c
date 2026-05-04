@@ -10,7 +10,7 @@ StatusCode run_test(char *test_name, TestFunc test_func)
     {
         return NULL_POINTER_PASSED;
     }
-    printf("%s Test returned with %d status code. \n", test_name, test_func());
+    printf("%s test returned with status code %d. \n", test_name, test_func());
     return SUCCESS;
 }
 
