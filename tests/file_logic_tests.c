@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
+size_t ceilling_div(size_t x, size_t y);
+
 
 StatusCode test_file_append()
 {
@@ -35,16 +37,20 @@ StatusCode test_file_append()
     char data[] = "This is test data.";
     size_t data_length = sizeof(data) / sizeof(data[0]);
 
-    file_append(
+    status = file_append(
         &file,
         &storage_man,
         data,
         data_length
     );
 
+    if (status != SUCCESS)
+    {
+        return status;
+    }
     char buffer[data_length];
     
-    file_read_at(
+    status = file_read_at(
         &file,
         &storage_man,
         0,
@@ -53,9 +59,29 @@ StatusCode test_file_append()
         data_length
     );
 
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (file.allocated_size != ceilling_div(data_length, CHUNK_SIZE))
+    {
+        return TEST_ASSERTION_FAILED;
+    }
+
     if (strncmp(data, buffer, data_length) != 0)
     {
         return TEST_ASSERTION_FAILED;
     }
     return SUCCESS;
+}
+
+size_t ceilling_div(size_t x, size_t y)
+{
+    if (x % y > 0)
+    {
+        return x / y + 1;
+    }
+
+    return x / y;
 }

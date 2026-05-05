@@ -23,7 +23,7 @@ int main(int argc, char *argv)
     File file;
     file_init(&file, "hello.txt", 10);
     
-    char msg[] = "This is the first test lol ol lol.";
+    char msg[] = "This cull";
     size_t msg_size = sizeof(msg) / sizeof(msg[0]);
 
     char buffer[msg_size];
