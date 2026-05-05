@@ -14,7 +14,7 @@ StatusCode file_init(
         {
             return NULL_POINTER_PASSED;
         }
-        if (file_name_length > MAX_FILE_NAME_LENGTH)
+        if (file_name_length > MAX_NAME_LENGTH)
         {
             return INSUFFICIENT_ARRAY_PASSED;
         }

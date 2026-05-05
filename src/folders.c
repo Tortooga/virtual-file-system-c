@@ -1,0 +1,227 @@
+#include "../include/folders.h"
+#include "../include/status.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+StatusCode get_available_sub_folder_position(Folder *parent_folder, size_t *out_index);
+StatusCode folder_free_sub_entries(Folder *folder);
+StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
+StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result);
+
+//Creates sub_folder
+//Initialises sub_entries to NULL
+//name is not assumed to be a C-string but will work as a C-string
+//root initialisation is handled seperately
+StatusCode sub_folder_init(
+    Folder *folder,
+    const char *name,
+    size_t name_length,
+    Folder *parent_folder
+)
+{
+    if (!name || !folder || !parent_folder)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (name_length > MAX_NAME_LENGTH)
+    {
+        return DATA_OVER_FLOW;
+    }
+
+    if (name_length == 0)
+    {
+        return INSUFFICIENT_ARRAY_PASSED;
+    }
+    
+    size_t sub_folder_index;
+    StatusCode status = get_available_sub_folder_position(parent_folder, &sub_folder_index);
+    
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+    
+    bool name_is_unique;
+    status = sub_entry_name_is_unique(parent_folder, name, name_length, &name_is_unique);
+    
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+    
+    if (!name_is_unique)
+    {
+        return IDENTIFIER_NOT_AVAILABLE;
+    }
+
+    size_t i;
+    //End name either when name_length is reached 
+    //or when a null terminator is encountered
+    for (i = 0; i < name_length; i++)
+    {
+        if (name[i] == '\0')
+        {
+            folder->name[i] = '\0';
+            break;
+        }
+        folder->name[i] = name[i];
+    }
+    
+    //folder.name is of size MAX_NAME_LENGTH + 1
+    //so we are always guaranteed space for a null terminator
+    folder->name[i] = '\0';
+    
+    //root initialisation is handled differently
+    folder->is_root = false;
+
+    status = folder_free_sub_entries(folder);
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    folder->parent_folder = parent_folder;
+    parent_folder->sub_folders[sub_folder_index] = folder;
+    return SUCCESS;
+}
+
+StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result)
+{
+    if (!parent_folder || !name || !out_result)
+    {
+        return NULL_POINTER_PASSED;
+    }
+    
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        if (parent_folder->sub_files[i] == NULL)
+        {
+            continue;
+        }
+
+        //Not NULL sub files guaranteed to be initialised
+        bool names_are_equal;
+        StatusCode status = name_eq(parent_folder->sub_files[i]->name, name, name_length, &names_are_equal);
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+
+        if (names_are_equal)
+        {
+            *out_result = false;
+            return SUCCESS;
+        }
+    }
+    for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
+    {
+        if (parent_folder->sub_folders[i] == NULL)
+        {
+            continue;
+        }
+
+        //Not NULL sub folders guaranteed to be initialised
+        bool names_are_equal;
+        StatusCode status = name_eq(parent_folder->sub_folders[i]->name, name, name_length, &names_are_equal);
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+
+        if (names_are_equal)
+        {
+            *out_result = false;
+            return SUCCESS;
+        }
+    }
+
+    *out_result = true;
+
+    return SUCCESS;
+}
+
+StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result)
+{
+    //initialised_name guaranteed to be null terminated
+    //null termination is enforced in the initialisation process
+
+    //uninitialised name not guaranteed to be null terminated
+    //uninitialised name terminates at either length or if an early null terminator is encountered
+
+    if (!initialised_name || !uninitialised_name || !out_result)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (uninitialised_name_length == 0)
+    {
+        return INSUFFICIENT_ARRAY_PASSED;
+    }
+    size_t i;
+    for (i = 0; i < uninitialised_name_length; i++)
+    {
+        //if we encounter the end of initialised_name
+        if (initialised_name[i] == '\0')
+        {
+            //if uninitialised_name ends here it means they are equal
+            *out_result = (uninitialised_name[i] == '\0');
+            
+            return SUCCESS;
+        }
+
+        if (initialised_name[i] != uninitialised_name[i])
+        {
+            *out_result = false;
+            return SUCCESS;
+        }
+    }
+
+    //reaching this point implies that the first uninitialised_name_length charecters of initialised name are the equal to uninitialised_name
+    //if initialised_name ends here
+    *out_result = (initialised_name[i] == '\0');
+    
+    return SUCCESS;
+}
+
+StatusCode folder_free_sub_entries(Folder *folder)
+{
+    if (!folder)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
+    {
+        folder->sub_folders[i] = NULL;
+    }
+
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        folder->sub_files[i] = NULL;
+    }
+
+    return SUCCESS;
+}
+
+StatusCode get_available_sub_folder_position(Folder *parent_folder, size_t *out_index)
+{
+    //Vacancy in Folder.sub_folder and Folder.sub_file is denoted by NULL pointers
+    if (!parent_folder || !out_index)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
+    {
+        if (parent_folder->sub_folders[i] == NULL)
+        {
+            *out_index = i;
+            return SUCCESS;
+        }
+    }
+
+    *out_index = SIZE_MAX;
+    return NO_SPACE;
+}

@@ -3,8 +3,12 @@
 #include "../include/files.h"
 #include "../include/file_storage.h"
 #include "../include/file_logic.h"
+#include "../include/folders.h"
 
 #include <stdio.h>
+
+bool name_eq(char *initialised_name, char *uninitialised_name, size_t uninitialised_name_length);
+StatusCode sub_entry_name_is_unique(Folder *parent_folder, char *name, size_t name_length, bool *out_result);
 
 int main(int argc, char *argv)
 {
@@ -23,33 +27,38 @@ int main(int argc, char *argv)
     File file;
     file_init(&file, "hello.txt", 10);
     
-    char msg[] = "This cull";
-    size_t msg_size = sizeof(msg) / sizeof(msg[0]);
+    Folder folder1;
 
-    char buffer[msg_size];
-    StatusCode status = file_append(
-        &file,
-        &storage_man,
-        msg,
-        msg_size
-    );
-    
-
-    status = file_read_at(
-        &file,
-        &storage_man,
-        0, msg_size, buffer,
-        msg_size 
-    );
-
-    for (int i = 0; i < msg_size; i++)
+    for (int i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
     {
-        printf("%c",buffer[i]);
+        folder1.sub_folders[i] = NULL;
     }
-    printf("\n");
-    print_file(&file, true);
+    for (int i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        folder1.sub_files[i] = NULL;
+    }
+    Folder folder2;
     
+    StatusCode status = sub_folder_init(
+        &folder1,
+        "test_folder",
+        12,
+        &folder1
+    );
 
-    print_storage(&storage_man);
+    status = sub_folder_init(
+        &folder2,
+        "test_polder",
+        12,
+        &folder1
+    );
+
+    printf("%d\n", status);
+    //printf("%s\n", folder2.name);
+    //printf("%s\n", (folder2.parent_folder)->name);
+     
+    bool is_available;
+    sub_entry_name_is_unique(&folder1, "test_folder", 12, &is_available);
+    printf("are equal: %d", is_available);
     return 0;
 } 

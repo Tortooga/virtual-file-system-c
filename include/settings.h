@@ -6,5 +6,9 @@
 
 #define MAX_FILE_CHUNK_EXTENTS_AMOUNT 10
 
-#define MAX_FILE_NAME_LENGTH 16
+#define MAX_NAME_LENGTH 16 //(i.e file names and folder names)
+
+#define MAX_SUB_FILES_AMOUNT 10
+#define MAX_SUB_FOLDERS_AMOUNT 10
+
 #endif

@@ -19,7 +19,7 @@ If chunk size is too low, file meta data grows as each file will have to track a
 ## File Chunks
 A chunk owned by a file is assumed to be occupied with data when it comes to the allocation and writing layer. While reading, however, if the reader encounters a null terminator it skips to the next chunks.
 
-## File System
+## File Modification System TODO FIX THIS 
 File system address's storage in logical chunks.
 
 File system is unable to directly access storage addresses. It can only interract with storage through storage manager. It calles storage system functions and refrences desired positions using chunk indices which the storage manager later maps into storage addresses(maping is extremely inexpensive). 
@@ -53,6 +53,8 @@ Caller is stateless. Each API function here does not depend on the callers state
 ## RollBack-Based Write Partial Failure Handeling
 Since our system relies on and enforces file ownership, such that a chunk can not be accessed by anything other than the file that owns it, failure must be handeled by rolling back, deallocating chunks and modifying file meta-data. This makes for a simpler system but more explicit failure handelling is required as opposed to commit-based partial failure handelling, where chunks are not added into file meta data untill the write processes succeeds.
 
-## File 
+## Folder System
+
+
 ## CLI Client
 CLI client translates CLI commands into file sys functionality
