@@ -3,11 +3,50 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+
+static const char root_name[] = "root";
+
 
 StatusCode get_available_sub_folder_position(Folder *parent_folder, size_t *out_index);
 StatusCode folder_free_sub_entries(Folder *folder);
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
 StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result);
+
+
+//Initialises folder into root directory
+StatusCode root_folder_init(Folder *folder)
+{
+    if (!folder)
+    {
+        return NULL_POINTER_PASSED;
+    }
+    
+    //no need for +1 to account for null terminator as folder.name is of size MAX_NAME_LENGTH + 1 to account for it
+    if (strlen(root_name) > MAX_NAME_LENGTH)
+    {
+        return DATA_OVER_FLOW;
+    }
+    
+    StatusCode status = folder_free_sub_entries(folder);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    //static const root_name guaranteed to be null terminated
+    strcpy(folder->name, root_name);
+    
+    folder->is_root = true;
+    
+    //root has no parent
+    folder->parent_folder = NULL;
+
+    return SUCCESS;
+}
+
 
 //Creates sub_folder
 //Initialises sub_entries to NULL
@@ -43,6 +82,12 @@ StatusCode sub_folder_init(
         return status;
     }
     
+    //Making sure it is not using the root directoy name
+    if (strncmp(name, root_name, name_length) == 0)
+    {
+        return IDENTIFIER_NOT_AVAILABLE;
+    }
+
     bool name_is_unique;
     status = sub_entry_name_is_unique(parent_folder, name, name_length, &name_is_unique);
     
@@ -68,11 +113,11 @@ StatusCode sub_folder_init(
         }
         folder->name[i] = name[i];
     }
-    
+
     //folder.name is of size MAX_NAME_LENGTH + 1
     //so we are always guaranteed space for a null terminator
     folder->name[i] = '\0';
-    
+
     //root initialisation is handled differently
     folder->is_root = false;
 

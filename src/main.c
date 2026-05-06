@@ -27,38 +27,23 @@ int main(int argc, char *argv)
     File file;
     file_init(&file, "hello.txt", 10);
     
-    Folder folder1;
+    Folder root;
 
-    for (int i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
-    {
-        folder1.sub_folders[i] = NULL;
-    }
-    for (int i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
-    {
-        folder1.sub_files[i] = NULL;
-    }
-    Folder folder2;
-    
-    StatusCode status = sub_folder_init(
-        &folder1,
-        "test_folder",
-        12,
-        &folder1
-    );
+    StatusCode status = root_folder_init(&root);
+
+    printf("%d", status);
+    Folder folder;
 
     status = sub_folder_init(
-        &folder2,
-        "test_polder",
+        &folder,
+        "test",
         12,
-        &folder1
+        &root
     );
 
     printf("%d\n", status);
-    //printf("%s\n", folder2.name);
-    //printf("%s\n", (folder2.parent_folder)->name);
+    printf("%s\n", folder.name);
+    printf("%s\n", (folder.parent_folder)->name);
      
-    bool is_available;
-    sub_entry_name_is_unique(&folder1, "test_folder", 12, &is_available);
-    printf("are equal: %d", is_available);
     return 0;
 } 

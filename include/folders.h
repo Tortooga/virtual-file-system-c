@@ -20,3 +20,5 @@ StatusCode sub_folder_init(
     size_t name_length,
     Folder *parent_folder
 );
+
+StatusCode root_folder_init(Folder *folder);
