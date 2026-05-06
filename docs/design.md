@@ -53,8 +53,14 @@ Caller is stateless. Each API function here does not depend on the callers state
 ## RollBack-Based Write Partial Failure Handeling
 Since our system relies on and enforces file ownership, such that a chunk can not be accessed by anything other than the file that owns it, failure must be handeled by rolling back, deallocating chunks and modifying file meta-data. This makes for a simpler system but more explicit failure handelling is required as opposed to commit-based partial failure handelling, where chunks are not added into file meta data untill the write processes succeeds.
 
-## Folder System
+## duplicate root denotion trade off
 
+## File System Meta Data Store
+A struct in charge only in charge of owning the memory storing meta data about files and folders.
+It does not enforce or store structer.
+
+## File System
 
 ## CLI Client
 CLI client translates CLI commands into file sys functionality
+

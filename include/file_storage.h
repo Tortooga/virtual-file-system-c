@@ -12,12 +12,15 @@ StatusCode file_allocate_chunks(
     ChunkExtent **out_chunk_extent);
 
 
-//Frees a chunk extent
+//Marks chunks as free in storage_man.allocation_map
+//Removes extent from file
+//left shifts file.chunk_extents to enforce compactness
 StatusCode file_free_chunk_extent(
     File *file, 
     ChunkExtent *chunk_extent,
     StorageMan *storage_man);
 
+//Writes data into chunk enforcing file ownership
 StatusCode file_write_chunk(
     File *file, 
     StorageMan *storage_man, 
@@ -25,6 +28,7 @@ StatusCode file_write_chunk(
     char *data,
     size_t data_length);
 
+//copies data from chunk into buffer enforcing file ownership
 StatusCode file_read_chunk(
     File *file, 
     StorageMan *storage_man,

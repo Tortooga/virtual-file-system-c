@@ -132,6 +132,38 @@ StatusCode sub_folder_init(
     return SUCCESS;
 }
 
+
+StatusCode has_sub_entries(Folder *folder, bool *out_result)
+{
+    if (!folder || !out_result)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    //abstraction of these two similar loops is unneccessary complexity
+
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        if (folder->sub_files[i] != NULL)
+        {
+            *out_result = true;
+            return SUCCESS;
+        }
+    }
+    
+    for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
+    {
+        if (folder->sub_folders[i] != NULL)
+        {
+            *out_result = true;
+            return SUCCESS;
+        } 
+    }
+    
+    *out_result = false;
+    return SUCCESS;
+}
+
 StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result)
 {
     if (!parent_folder || !name || !out_result)

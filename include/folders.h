@@ -1,12 +1,14 @@
 #include "../include/files.h"
 
-//Vacacny in Folder.sub_folder and Folder.sub_file is denoted by NULL pointers
-
+//Invariants
+//a sub-entry is vacant if and only if it is NULL
+//is_root = true if and only if parent_folder = NULL (See duplicate root denotion trade off in design.md)
+//name is a C-string
 typedef struct Folder {
     struct Folder *parent_folder;
     bool is_root;
 
-    //One more position for enforced null terminator
+    //One more position to enforce null termination
     char name[MAX_NAME_LENGTH + 1]; 
 
     //Folder owns sub -files and -folders
@@ -14,6 +16,11 @@ typedef struct Folder {
     struct Folder *sub_folders[MAX_SUB_FOLDERS_AMOUNT];
 } Folder;
 
+
+
+//Initialises output param folder into a sub folder of parent_folder
+//Name not assumed (but is allowed) to be C-string, NULL termination is enforced within the function.
+//Sub-entries initialised to NULL
 StatusCode sub_folder_init(
     Folder *folder,
     const char *name,
@@ -21,4 +28,6 @@ StatusCode sub_folder_init(
     Folder *parent_folder
 );
 
+//The only way to initialise a root folder
+//Parent is set to NULL
 StatusCode root_folder_init(Folder *folder);

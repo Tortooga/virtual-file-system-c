@@ -5,12 +5,17 @@
 #include "files.h"
 #include "storage.h"
 
+
+//Appends data to the end of a file
+//Data is not treated as a C-String
 StatusCode file_append(
     File *file, 
     StorageMan *storage_man,
     char* data,
     size_t data_length);
 
+//Copies data starting at offset(bytes) into buffer
+//Enforces buffer capacity   
 StatusCode file_read_at(
     File *file,
     StorageMan *storage_man,

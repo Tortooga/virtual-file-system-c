@@ -19,13 +19,16 @@ typedef struct
     size_t allocated_size; //tracked at allocation and deallocation
 } File;
 
-
+//Initialises file
+//validates name
+//marks each file chunk extent to be empty (file.chunk_extents.is_empty = true)  
 StatusCode file_init(
     File *out_file,
     char *file_name,
     size_t file_name_length 
 );
 
+//prints metadata about file onto terminal
 void print_file(
     File *file, 
     bool include_extents);
