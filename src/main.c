@@ -39,11 +39,12 @@ int main(int argc, char *argv)
         &root
     );
 
-    Folder *result;
+    folder1.sub_files[0] = &file;
+    File *result;
 
-    search_sub_folder(&root, "test", 5, &result);
+    search_sub_file(&folder1, "hello.txt", 10, &result);
 
-    printf("%s", result->parent_folder->name);
+    printf("%s", result->name);
      
     return 0;
 } 
