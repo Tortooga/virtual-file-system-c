@@ -6,8 +6,8 @@ apptest: core.o tests_main.o testscore.o
 
 
 #Relocatable object files
-testscore.o: file_storage_tests.o file_logic_tests.o
-	gcc -r obj/file_storage_tests.o obj/file_logic_tests.o -o obj/testscore.o 
+testscore.o: file_storage_tests.o file_logic_tests.o queries_tests.o
+	gcc -r obj/file_storage_tests.o obj/file_logic_tests.o obj/queries_tests.o -o obj/testscore.o 
 
 core.o: storage.o files.o file_storage.o file_logic.o folders.o queries.o
 	gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/queries.o -o obj/core.o
@@ -23,6 +23,9 @@ main.o: src/main.c
 
 
 #Test object files
+queries_tests.o: tests/queries_tests.c 
+	gcc -c tests/queries_tests.c -o obj/queries_tests.o
+
 file_storage_tests.o: tests/file_storage_tests.c 
 	gcc -c tests/file_storage_tests.c -o obj/file_storage_tests.o 
 

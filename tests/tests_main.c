@@ -1,5 +1,6 @@
 #include "file_storage_tests.h"
 #include "file_logic_tests.h"
+#include "queries_tests.h"
 #include <stdio.h>
 
 typedef StatusCode (*TestFunc)(void);
@@ -20,6 +21,7 @@ int run_tests()
     run_test("File chunk extent allocator", test_file_allocate_chunks);
     run_test("File chunk extent deallocator", test_file_free_chunk_extent);
     run_test("Write and read chunk", test_file_write_and_read_chunk);
+    run_test("Local sub folder search", test_search_sub_folder);
 
     //file_logic tests
     run_test("File writer append", test_file_append);
