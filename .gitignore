@@ -56,3 +56,9 @@ dkms.conf
 
 # Compiled Product
 app
+
+# Object Folder 
+obj/
+
+# Binaries Folder 
+bin/
