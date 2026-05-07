@@ -9,8 +9,8 @@ apptest: core.o tests_main.o testscore.o
 testscore.o: file_storage_tests.o file_logic_tests.o
 	gcc -r obj/file_storage_tests.o obj/file_logic_tests.o -o obj/testscore.o 
 
-core.o: storage.o files.o file_storage.o file_logic.o folders.o
-	gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o -o obj/core.o
+core.o: storage.o files.o file_storage.o file_logic.o folders.o queries.o
+	gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/queries.o -o obj/core.o
 
 
 #Entry points
@@ -45,3 +45,6 @@ file_logic.o: src/file_logic.c
 
 folders.o: src/folders.c
 	gcc -c src/folders.c -o obj/folders.o 
+
+queries.o: src/queries.c
+	gcc -c src/queries.c -o obj/queries.o

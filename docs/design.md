@@ -56,8 +56,15 @@ Since our system relies on and enforces file ownership, such that a chunk can no
 ## duplicate root denotion trade off
 
 ## File System Meta Data Store
-A struct in charge only in charge of owning the memory storing meta data about files and folders.
+A structer only in charge of owning the memory storing meta data about files and folders.
 It does not enforce or store structer.
+
+## VFS Context
+A structer storing a pointer to the file system meta data sore, a pointer to the root directory of the file system and a pointer to the current working directory
+
+The file systems tree heirarchy is implicit from Folder.sub_folders and Folder.sub_files. The base of the heirarchy is the root directory
+
+VFS Context is statefull. It stores the current working directory.
 
 ## File System
 

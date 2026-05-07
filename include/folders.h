@@ -1,3 +1,6 @@
+#ifndef FOLDERS_H
+#define FOLDERS_H
+
 #include "../include/files.h"
 
 //Invariants
@@ -20,6 +23,7 @@ typedef struct Folder {
 
 //Initialises output param folder into a sub folder of parent_folder
 //Name not assumed (but is allowed) to be C-string, NULL termination is enforced within the function.
+//Enforces name uniqueness
 //Sub-entries initialised to NULL
 StatusCode sub_folder_init(
     Folder *folder,
@@ -31,3 +35,8 @@ StatusCode sub_folder_init(
 //The only way to initialise a root folder
 //Parent is set to NULL
 StatusCode root_folder_init(Folder *folder);
+
+//Compare the name of an initialised file/folder(where null terminator is enforced) to the name of a file/folder where it isnt
+StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
+
+#endif

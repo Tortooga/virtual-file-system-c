@@ -4,10 +4,9 @@
 #include "../include/file_storage.h"
 #include "../include/file_logic.h"
 #include "../include/folders.h"
-
+#include "../include/queries.h"
 #include <stdio.h>
 
-bool name_eq(char *initialised_name, char *uninitialised_name, size_t uninitialised_name_length);
 StatusCode sub_entry_name_is_unique(Folder *parent_folder, char *name, size_t name_length, bool *out_result);
 
 int main(int argc, char *argv)
@@ -31,19 +30,20 @@ int main(int argc, char *argv)
 
     StatusCode status = root_folder_init(&root);
 
-    printf("%d", status);
-    Folder folder;
+    Folder folder1;
 
     status = sub_folder_init(
-        &folder,
+        &folder1,
         "test",
-        12,
+        5,
         &root
     );
 
-    printf("%d\n", status);
-    printf("%s\n", folder.name);
-    printf("%s\n", (folder.parent_folder)->name);
+    Folder *result;
+
+    search_sub_folder(&root, "test", 5, &result);
+
+    printf("%s", result->parent_folder->name);
      
     return 0;
 } 
