@@ -24,6 +24,7 @@ typedef enum
     IDENTIFIER_NOT_AVAILABLE = -33,
 
     SEARCH_TARGET_NOT_FOUND = -41,
+    PATH_IS_TOO_LONG = -42,
 
     //Tests
     TEST_ASSERTION_FAILED = -101

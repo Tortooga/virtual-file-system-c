@@ -2,16 +2,17 @@
 #include "../include/status.h"
 #include "../include/folders.h"
 
-
-StatusCode resolve_folder_path(const char *path, const size_t path_length, Folder *folder)
+//Make it able to return either a folder or a file
+/*StatusCode resolve_folder_path(const char *path, const size_t path_length, Folder *out_folder)
 {
-    if (!path || !folder)
+    if (!path || !out_folder)
     {
         return NULL_POINTER_PASSED;
     }
 
     //create sub entry search by name
-}
+}*/
+
 /*
 Abstraction of files and folders into nodes in the hopes of achieving polymorphic bahaviour for search functionality will add unnecassary complexity.
 the following implementation of sub entry search, while redundant, is simple and readable.

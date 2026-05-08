@@ -68,6 +68,8 @@ VFS Context is statefull. It stores the current working directory.
 
 ## File System
 
+## Node abstraction and the polymorphic trade-off
+
 ## CLI Client
 CLI client translates CLI commands into file sys functionality
 
