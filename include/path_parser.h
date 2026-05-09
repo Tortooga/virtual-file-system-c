@@ -5,6 +5,8 @@
 #include <stddef.h>
 
 
+
+//Parses path into nodes
 //path null termination not enforced or assumed at this level
 //Individual node names are null terminated
 //nodes amount output param indicates length of node list

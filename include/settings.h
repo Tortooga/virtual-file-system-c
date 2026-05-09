@@ -12,4 +12,5 @@
 #define MAX_SUB_FOLDERS_AMOUNT 10
 
 #define PATH_DELIMITER '/'
+#define MAX_PATH_NODES_AMOUNT 10
 #endif

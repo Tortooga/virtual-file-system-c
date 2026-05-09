@@ -20,6 +20,26 @@ typedef struct Folder {
 } Folder;
 
 
+typedef enum
+{
+    FILE_NODE,
+    FOLDER_NODE,
+} NodeType;
+
+//Is not the framwork for the VFS heirarchy
+//Only used to mimic polymophism in search functions
+//After which it is resolved immediately
+typedef struct 
+{
+    NodeType type;
+    union 
+    {
+        File *file;
+        Folder *folder;
+    } node;
+} VFSNode;
+
+
 
 //Initialises output param folder into a sub folder of parent_folder
 //Name not assumed (but is allowed) to be C-string, NULL termination is enforced within the function.
@@ -38,5 +58,6 @@ StatusCode root_folder_init(Folder *folder);
 
 //Compare the name of an initialised file/folder(where null terminator is enforced) to the name of a file/folder where it isnt
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
+
 
 #endif

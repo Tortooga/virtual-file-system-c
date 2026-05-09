@@ -37,7 +37,7 @@ StatusCode parse_path(
 
     if (path_length == 0)
     {
-        return INVALID_OPERATION;
+        return PATH_IS_EMPTY;
     }
 
     *out_nodes_amount = 0;
@@ -62,7 +62,7 @@ StatusCode parse_path(
         //Our output buffer can not fit the rest of the data
         if (cur_node >= node_array_upper_lim)
         {
-            return DATA_OVER_FLOW;
+            return PATH_IS_TOO_LONG;
         }
 
         status = parse_node(
@@ -116,7 +116,7 @@ StatusCode parse_node(
         //Node name is longer than the buffer allocated 
         if (out_node_name_buffer >= node_name_buffer_upper_lim)
         {
-            return DATA_OVER_FLOW;
+            return IDENTIFIER_IS_TOO_LONG;
         }
         
         *out_node_name_buffer = **cur_path_char;
