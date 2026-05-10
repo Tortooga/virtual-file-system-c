@@ -24,4 +24,8 @@ StatusCode file_read_at(
     char *buffer,
     size_t buffer_size
 );
+
+//frees all the files chunk extents
+//updates file and storage manager meta data
+StatusCode file_delete_data(File *file, StorageMan *storage_man);
 #endif

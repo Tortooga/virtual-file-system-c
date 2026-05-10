@@ -413,3 +413,32 @@ size_t get_chunks_amount(size_t data_length)
 
     return (data_length / CHUNK_SIZE) + 1;
 }
+
+StatusCode file_delete_data(File *file, StorageMan *storage_man)
+{
+    if (!file || !storage_man)
+    {
+        return NULL_POINTER_PASSED;
+    }
+    StatusCode status;
+    for (size_t i = 0; i < MAX_FILE_CHUNK_EXTENTS_AMOUNT; i++)
+    {
+        if (file->data_chunk_extents[i].is_empty)
+        {
+            continue;
+        }
+
+        status = file_free_chunk_extent(
+            file,
+            &file->data_chunk_extents[i],
+            storage_man
+        );
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+    }
+
+    return SUCCESS;
+}
