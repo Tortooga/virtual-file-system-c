@@ -46,14 +46,19 @@ int main(int argc, char *argv)
 
     status = sub_folder_init(
         &folder2,
-        "test",
+        "test2",
         5,
         &root
     );
 
-    printf("%s", folder1.name);
-    folder1.sub_files[4] = &file;
+    status = sub_file_init(
+        &file,
+        &folder1
+    );
+    
+    printf("%d", status);
 
+    printf("%s", folder1.sub_files[0]->name);
     VFSContext vfs_context;
     VFSEntryStore entry_store;
 

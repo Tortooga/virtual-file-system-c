@@ -52,6 +52,15 @@ StatusCode sub_folder_init(
     Folder *parent_folder
 );
 
+//initialises a file into a sub_file
+//file guaranteed to have been initialised through file_init
+//for that purpose this function skips name and chunk_extent initialisation
+//this function, however, enforces name uniqueness across all sub-entries 
+StatusCode sub_file_init(
+    File *file,
+    Folder *parent_folder
+);
+
 //The only way to initialise a root folder
 //Parent is set to NULL
 StatusCode root_folder_init(Folder *folder);

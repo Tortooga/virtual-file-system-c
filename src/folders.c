@@ -10,14 +10,17 @@ static const char root_name[] = "root";
 size_t root_name_length = sizeof(root_name) - 1;
 
 StatusCode get_available_sub_folder_position(Folder *parent_folder, size_t *out_index);
+StatusCode get_available_sub_file_position(Folder *parent_folder, size_t *out_index);
 StatusCode folder_free_sub_entries(Folder *folder);
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
 StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result);
+
 StatusCode validate_sub_entry_name(
     Folder *parent_folder,
     const char *entry_name,
     const size_t entry_name_length
 );
+
 StatusCode set_entry_name(
     const char *name,
     const size_t name_length,
@@ -56,6 +59,44 @@ StatusCode root_folder_init(Folder *folder)
     return SUCCESS;
 }
 
+//initialises a file into a sub_file
+//file guaranteed to have been initialised through file_init
+//for that purpose this function skips name and chunk_extent initialisation
+//this function, however, enforces name uniqueness across all sub-entries 
+StatusCode sub_file_init(
+    File *file,
+    Folder *parent_folder
+)
+{
+    if (!file || !parent_folder)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    //checking if the files name is available
+    //file->name guaranteed to be null terminated
+    StatusCode status = validate_sub_entry_name(
+        parent_folder,
+        file->name,
+        strlen(file->name)
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    size_t sub_file_index;
+    status = get_available_sub_file_position(parent_folder, &sub_file_index);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    parent_folder->sub_files[sub_file_index] = file;
+    return SUCCESS;
+}
 
 //Creates sub_folder
 //Initialises sub_entries to NULL
@@ -64,7 +105,7 @@ StatusCode root_folder_init(Folder *folder)
 StatusCode sub_folder_init(
     Folder *folder,
     const char *name,
-    size_t name_length,
+    const size_t name_length,
     Folder *parent_folder
 )
 {
@@ -349,6 +390,7 @@ StatusCode folder_free_sub_entries(Folder *folder)
     return SUCCESS;
 }
 
+//failure initialises out_index to SIZE_MAX
 StatusCode get_available_sub_folder_position(Folder *parent_folder, size_t *out_index)
 {
     //Vacancy in Folder.sub_folder and Folder.sub_file is denoted by NULL pointers
@@ -360,6 +402,30 @@ StatusCode get_available_sub_folder_position(Folder *parent_folder, size_t *out_
     for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
     {
         if (parent_folder->sub_folders[i] == NULL)
+        {
+            *out_index = i;
+            return SUCCESS;
+        }
+    }
+
+    *out_index = SIZE_MAX;
+    return NO_SPACE;
+}
+
+//same pattern, different domain
+
+//failure initialises out_index to SIZE_MAX
+StatusCode get_available_sub_file_position(Folder *parent_folder, size_t *out_index)
+{
+    //Vacancy in Folder.sub_folder and Folder.sub_file is denoted by NULL pointers
+    if (!parent_folder || !out_index)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        if (parent_folder->sub_files[i] == NULL)
         {
             *out_index = i;
             return SUCCESS;
