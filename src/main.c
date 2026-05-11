@@ -35,6 +35,7 @@ int main(int argc, char *argv)
     StatusCode status = root_folder_init(&root);
 
     Folder folder1;
+    Folder folder2;
 
     status = sub_folder_init(
         &folder1,
@@ -43,6 +44,14 @@ int main(int argc, char *argv)
         &root
     );
 
+    status = sub_folder_init(
+        &folder2,
+        "test",
+        5,
+        &root
+    );
+
+    printf("%s", folder1.name);
     folder1.sub_files[4] = &file;
 
     VFSContext vfs_context;
@@ -51,19 +60,6 @@ int main(int argc, char *argv)
     vfs_entry_store_init(&entry_store);
 
     status = vfs_context_init(&entry_store, &vfs_context);
-    
-    printf("%d\n", status);
-    
-    if (status != SUCCESS)
-    {
-        return -1;
-    }
-    
-    size_t pos;
-    StatusCode get_available_folder_position(size_t *out_folder_store_position, VFSEntryStore *entry_store);
-    entry_store.folders_allocation_map[1] = true;
-    get_available_folder_position(&pos, &entry_store);
 
-    printf("%zu", pos);
     return 0;
 } 
