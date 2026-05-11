@@ -70,6 +70,8 @@ VFS Context is statefull. It stores the current working directory.
 
 ## Node abstraction and the polymorphic trade-off
 
+## why allocation map in VFSEntryStore was chosen in place of vacancy flag within sub entries
+
 ## CLI Client
 CLI client translates CLI commands into file sys functionality
 

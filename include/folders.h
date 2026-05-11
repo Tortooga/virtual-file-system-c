@@ -10,7 +10,7 @@
 typedef struct Folder {
     struct Folder *parent_folder;
     bool is_root;
-
+    
     //One more position to enforce null termination
     char name[MAX_NAME_LENGTH + 1]; 
 

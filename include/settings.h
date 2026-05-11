@@ -13,4 +13,8 @@
 
 #define PATH_DELIMITER '/'
 #define MAX_PATH_NODES_AMOUNT 10
+
+#define VFS_MAX_FILES_AMOUNT 10
+#define VFS_MAX_FOLDERS_AMOUNT 10
+
 #endif

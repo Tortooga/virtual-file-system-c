@@ -6,6 +6,8 @@
 #include "../include/folders.h"
 #include "../include/queries.h"
 #include "../include/path_parser.h"
+#include "../include/vfs_context.h"
+
 #include <stdio.h>
 #include <string.h>
 
@@ -43,26 +45,20 @@ int main(int argc, char *argv)
 
     folder1.sub_files[4] = &file;
 
-    char path[] = "test/hello.txt";
-    size_t path_length = strlen(path);
-    char nodes[10][MAX_NAME_LENGTH];
-    size_t nodes_amount;
-    VFSNode node;
-    
-    status = resolve_path(
-        path,
-        path_length,
-        &root,
-        &node
-    );
+    VFSContext vfs_context;
+    VFSEntryStore entry_store;
 
-    printf("Returned with status code %d\n", status);
+    vfs_entry_store_init(&entry_store);
+
+    status = vfs_context_init(&entry_store, &vfs_context);
+    
+    printf("%d", status);
+    
     if (status != SUCCESS)
     {
         return -1;
     }
-    printf("Type: %d\n", node.type);
-    printf("are equal: %d\n", node.node.file == &file);
-    printf("%s\n", node.node.file->name);
+    
+
     return 0;
 } 
