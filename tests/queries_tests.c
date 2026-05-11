@@ -17,7 +17,6 @@ StatusCode test_search_sub_folder()
         return status;
     }
 
-
     char name_buffer[8];
     const size_t name_buffer_length = sizeof(name_buffer) / sizeof(name_buffer[0]);
     for (size_t i = 0; i < folders_amount; i++)

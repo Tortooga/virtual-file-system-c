@@ -52,13 +52,18 @@ int main(int argc, char *argv)
 
     status = vfs_context_init(&entry_store, &vfs_context);
     
-    printf("%d", status);
+    printf("%d\n", status);
     
     if (status != SUCCESS)
     {
         return -1;
     }
     
+    size_t pos;
+    StatusCode get_available_folder_position(size_t *out_folder_store_position, VFSEntryStore *entry_store);
+    entry_store.folders_allocation_map[1] = true;
+    get_available_folder_position(&pos, &entry_store);
 
+    printf("%zu", pos);
     return 0;
 } 
