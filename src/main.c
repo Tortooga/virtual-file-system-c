@@ -56,6 +56,8 @@ int main(int argc, char *argv)
         &folder1
     );
     
+    status = unlink_sub_folder(&folder2, false);
+
     printf("%d", status);
 
     printf("%s", folder1.sub_files[0]->name);

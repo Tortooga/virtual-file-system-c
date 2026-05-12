@@ -67,9 +67,11 @@ The file systems tree heirarchy is implicit from Folder.sub_folders and Folder.s
 VFS Context is statefull. It stores the current working directory.
 
 ## File System
-
+## Sub File is different from a file
 ## Node abstraction and the polymorphic trade-off
 a node abstraction would have been usefull in shared behaviour that appears in queries and VFS entry store utils ...
+
+Heirarchy is implicit. There isnt an explicit domain in which a node abstraction could be implemented and polymorphisim could be achieved
 ## why allocation map in VFSEntryStore was chosen in place of vacancy flag within sub entries
 
 ## CLI Client

@@ -52,7 +52,7 @@ StatusCode sub_folder_init(
     Folder *parent_folder
 );
 
-//initialises a file into a sub_file
+//Admits a file into a folder(this proccess initialises a sub_file)
 //file guaranteed to have been initialised through file_init
 //for that purpose this function skips name and chunk_extent initialisation
 //this function, however, enforces name uniqueness across all sub-entries 
@@ -64,6 +64,10 @@ StatusCode sub_file_init(
 //The only way to initialise a root folder
 //Parent is set to NULL
 StatusCode root_folder_init(Folder *folder);
+
+//unlinks sub_folder from parent
+//will not unlink sub_folder if it has sub entries unless force is set to true
+StatusCode unlink_sub_folder(Folder *sub_folder, bool force);
 
 //Compare the name of an initialised file/folder(where null terminator is enforced) to the name of a file/folder where it isnt
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);

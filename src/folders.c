@@ -14,6 +14,8 @@ StatusCode get_available_sub_file_position(Folder *parent_folder, size_t *out_in
 StatusCode folder_free_sub_entries(Folder *folder);
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
 StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result);
+StatusCode has_sub_entries(Folder *folder, bool *out_result);
+StatusCode find_sub_folder_index(Folder *sub_folder, size_t *out_sub_folder_index);
 
 StatusCode validate_sub_entry_name(
     Folder *parent_folder,
@@ -158,6 +160,74 @@ StatusCode sub_folder_init(
     return SUCCESS;
 }
 
+
+//unlinks sub_folder from parent
+//will not unlink sub_folder if it has  sub entries unless force is set to true
+StatusCode unlink_sub_folder(Folder *sub_folder, bool force)
+{
+    if (!sub_folder)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (sub_folder->is_root)
+    {
+        return INVALID_ROOT_OPERATION;
+    }
+
+    bool sub_folder_has_sub_entries;
+
+    StatusCode status = has_sub_entries(sub_folder, &sub_folder_has_sub_entries);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (sub_folder_has_sub_entries && !force)
+    {
+        return ATTEMPTED_TO_DELETE_FOLDER_WITH_SUB_ENTRIES;
+    }
+
+    //the sub_folders index within parent.sub_folders
+    size_t sub_folder_index;  
+    status = find_sub_folder_index(sub_folder, &sub_folder_index);
+    
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    sub_folder->parent_folder->sub_folders[sub_folder_index] = NULL;
+    sub_folder->parent_folder = NULL;
+    
+    return SUCCESS;
+}
+
+//finds sub_folders index within sub_folder->parent_folder.sub_folders[]
+StatusCode find_sub_folder_index(Folder *sub_folder, size_t *out_sub_folder_index)
+{
+    if (!out_sub_folder_index || !sub_folder)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (sub_folder->is_root)
+    {
+        return INVALID_ROOT_OPERATION;
+    }
+
+    for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
+    {
+        if (sub_folder->parent_folder->sub_folders[i] == sub_folder)
+        {
+            *out_sub_folder_index = i;
+            return SUCCESS;
+        }
+    }
+
+    return SEARCH_TARGET_NOT_FOUND;
+}
 //Sets an entries name
 StatusCode set_entry_name(
     const char *name,
