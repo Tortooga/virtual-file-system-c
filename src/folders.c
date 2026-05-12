@@ -16,6 +16,8 @@ StatusCode name_eq(const char *initialised_name, const char *uninitialised_name,
 StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result);
 StatusCode has_sub_entries(Folder *folder, bool *out_result);
 StatusCode find_sub_folder_index(Folder *sub_folder, size_t *out_sub_folder_index);
+StatusCode find_sub_file_index(Folder *parent_folder, File *file, size_t *out_sub_file_index);
+
 
 StatusCode validate_sub_entry_name(
     Folder *parent_folder,
@@ -160,6 +162,27 @@ StatusCode sub_folder_init(
     return SUCCESS;
 }
 
+//TODO remove parent_folder once it is added as an attribute of files
+StatusCode unlink_sub_file(Folder *parent_folder, File *file)
+{
+    if (!parent_folder || !file)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    size_t sub_file_index;
+    StatusCode status = find_sub_file_index(parent_folder, file, &sub_file_index);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    parent_folder->sub_files[sub_file_index] = NULL;
+
+    return SUCCESS;
+}
+
 
 //unlinks sub_folder from parent
 //will not unlink sub_folder if it has  sub entries unless force is set to true
@@ -222,6 +245,25 @@ StatusCode find_sub_folder_index(Folder *sub_folder, size_t *out_sub_folder_inde
         if (sub_folder->parent_folder->sub_folders[i] == sub_folder)
         {
             *out_sub_folder_index = i;
+            return SUCCESS;
+        }
+    }
+
+    return SEARCH_TARGET_NOT_FOUND;
+}
+
+StatusCode find_sub_file_index(Folder *parent_folder, File *file, size_t *out_sub_file_index)
+{
+    if (!parent_folder || !file || !out_sub_file_index)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        if (parent_folder->sub_files[i] == file)
+        {
+            *out_sub_file_index = i;
             return SUCCESS;
         }
     }

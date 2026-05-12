@@ -28,7 +28,9 @@ int main(int argc, char *argv)
         CHUNKS_AMOUNT
     );
     File file;
-    file_init(&file, "hello.txt", 10);
+    File file2;
+    file_init(&file, "hello.txt", 11);
+    file_init(&file2, "hello2.txt", 12);
     
     Folder root;
 
@@ -43,30 +45,43 @@ int main(int argc, char *argv)
         5,
         &root
     );
-
     status = sub_folder_init(
         &folder2,
         "test2",
         5,
         &root
     );
-
+    status = sub_file_init(
+        &file2,
+        &folder1
+    );
     status = sub_file_init(
         &file,
         &folder1
     );
     
-    status = unlink_sub_folder(&folder2, false);
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        if (!folder1.sub_files[i])
+        {
+            continue;
+        }
+        printf("%s\n", folder1.sub_files[i]->name);
+    }
 
-    printf("%d", status);
+    printf("after unlinking");
 
-    printf("%s", folder1.sub_files[0]->name);
-    VFSContext vfs_context;
-    VFSEntryStore entry_store;
+    unlink_sub_file(&folder1, &file);
+    unlink_sub_file(&folder1, &file2);
 
-    vfs_entry_store_init(&entry_store);
-
-    status = vfs_context_init(&entry_store, &vfs_context);
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        if (!folder1.sub_files[i])
+        {
+            continue;
+        }
+        printf("%s\n", folder1.sub_files[i]->name);
+    }
 
     return 0;
 } 

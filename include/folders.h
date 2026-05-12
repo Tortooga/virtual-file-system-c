@@ -66,8 +66,15 @@ StatusCode sub_file_init(
 StatusCode root_folder_init(Folder *folder);
 
 //unlinks sub_folder from parent
+//this is done by removing the folders address from the parents list of sub folders
+//as well as setting the folders parent to NULL
 //will not unlink sub_folder if it has sub entries unless force is set to true
 StatusCode unlink_sub_folder(Folder *sub_folder, bool force);
+
+//unlinks sub_file from parent
+//this is done by removing the files address from the parents list of sub folders
+StatusCode unlink_sub_file(Folder *parent_folder, File *file);
+
 
 //Compare the name of an initialised file/folder(where null terminator is enforced) to the name of a file/folder where it isnt
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
