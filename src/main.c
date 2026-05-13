@@ -66,14 +66,15 @@ int main(int argc, char *argv)
         {
             continue;
         }
-        printf("%s\n", folder1.sub_files[i]->name);
+        printf("%s", folder1.sub_files[i]->name);
+        printf(": %s\n", folder1.sub_files[i]->parent_folder->name);
     }
 
-    printf("after unlinking");
+    printf("after unlinking \n");
 
     unlink_sub_file(&folder1, &file);
     unlink_sub_file(&folder1, &file2);
-
+    
     for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
     {
         if (!folder1.sub_files[i])

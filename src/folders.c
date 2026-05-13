@@ -99,6 +99,7 @@ StatusCode sub_file_init(
     }
 
     parent_folder->sub_files[sub_file_index] = file;
+    file->parent_folder = parent_folder;
     return SUCCESS;
 }
 
@@ -179,7 +180,7 @@ StatusCode unlink_sub_file(Folder *parent_folder, File *file)
     }
 
     parent_folder->sub_files[sub_file_index] = NULL;
-
+    file->parent_folder = NULL;
     return SUCCESS;
 }
 

@@ -11,17 +11,25 @@ typedef struct
     size_t chunk_amount;
 } ChunkExtent;
 
+//Forward decloration of Folder so that a files can store a pointer to its parent
+//Folders do not own or control life time of file. Both are owned by VFSEntryStore
+typedef struct Folder Folder;
+
+
 //At this layer extension is a part of the name
 typedef struct
 {
+    size_t allocated_size; //tracked at allocation and deallocation
+    Folder *parent_folder;
+
     ChunkExtent data_chunk_extents[MAX_FILE_CHUNK_EXTENTS_AMOUNT];
     char name[MAX_NAME_LENGTH]; //null terminated
-    size_t allocated_size; //tracked at allocation and deallocation
 } File;
 
 //Initialises file
 //validates name
-//marks each file chunk extent to be empty (file.chunk_extents.is_empty = true)  
+//marks each file chunk extent to be empty (file.chunk_extents.is_empty = true) 
+//sets parent file to NULL(this layer is not in charge of linking entries)
 StatusCode file_init(
     File *out_file,
     char *file_name,
