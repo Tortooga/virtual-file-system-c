@@ -73,7 +73,9 @@ A sub entrie is created when sub_entry_init is called on the entry and is destro
 a node abstraction would have been usefull in shared behaviour that appears in queries and VFS entry store utils ...
 
 Heirarchy is implicit. There isnt an explicit domain in which a node abstraction could be implemented and polymorphisim could be achieved
-## why allocation map in VFSEntryStore was chosen in place of vacancy flag within sub entries
+## why allocation map in VFSEntryStore was chosen in place of vacancy flag within sub entries(vacancy vs non existance)
+
+## Write at does not modify allocated storage. Instead it allocates new
 
 
 ## Even though they reference each other Files and Folders share a relational dependancy. They dont depend on, own or maintain each others life time 
@@ -82,3 +84,4 @@ Heirarchy is implicit. There isnt an explicit domain in which a node abstraction
 ## CLI Client
 CLI client translates CLI commands into file sys functionality
 
+## Append oriented systems simplify crashs and reduces fragmentation complexity 

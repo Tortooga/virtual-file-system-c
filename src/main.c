@@ -30,25 +30,11 @@ int main(int argc, char *argv)
     File file;
     file_init(&file, "hello.txt", 11);
     
-    char data[] = "hello this is test data";
-
-
-    file_append(&file, &storage_man, data, strlen(data));
-    file_append(&file, &storage_man, data, strlen(data));
-    file_append(&file, &storage_man, data, strlen(data));
-    
-    print_file(&file, true);    
-
-    StatusCode chunk_extent_right_shift(ChunkExtent *position, size_t shift_amount, File *file);
-
-
-    StatusCode status = chunk_extent_right_shift(
-        &file.data_chunk_extents[0], 5, &file 
-    );
-
+    StatusCode append_node_name_to_path(const char *node_name, char *path_end, const size_t available_bytes_amount);
+    const char name[] = "test";
+    char path[25] = "file1/file2";
+    StatusCode status = append_node_name_to_path(name, &path[11], 13);
     printf("%d\n", status);
-
-    
-    print_file(&file, true);
+    printf("%s", path);
     return 0;
 } 

@@ -2,6 +2,8 @@
 #include "../include/folders.h"
 #include "../include/status.h"
 
+#include <string.h>
+
 
 StatusCode parse_node(
     const char **cur_path_char,
@@ -83,6 +85,47 @@ StatusCode parse_path(
         (*out_nodes_amount)++;
         cur_node++;
     }
+}
+
+//node_name is null terminated(enforced in all entry initialisers)
+//path_end points to the end of the path(at the null terminator), where we are supposed to start the appended name
+//it is important that it points at the null terminator so that it could be overwritten
+//available_bytes_amount is the amount of available bytes after and not including null terminator
+StatusCode append_node_name_to_path(const char *node_name, char *path_end, const size_t available_bytes_amount)
+{
+    if (!node_name || !path_end)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (available_bytes_amount == 0)
+    {
+        return DATA_OVER_FLOW;
+    }
+
+    //node_name guaranteed to be valid and null terminated
+    const size_t node_name_length = strlen(node_name);
+
+    //+1 for delimiter
+    //No need to add another pos for null terminator since we will overwrite the original null terminator
+    if (available_bytes_amount < node_name_length + 1)
+    {
+        return DATA_OVER_FLOW;
+    }
+
+    //Adding the path delimiter
+    path_end[0] = PATH_DELIMITER;
+
+    size_t cur_pos;
+    for (cur_pos = 0; cur_pos < node_name_length; cur_pos++)
+    {
+        path_end[cur_pos + 1] = node_name[cur_pos];
+    }
+
+    //placing null terminator after the name appended
+    path_end[cur_pos + 1] = '\0';
+
+    return SUCCESS;
 }
 
 StatusCode parse_node(
