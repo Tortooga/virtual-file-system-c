@@ -30,11 +30,52 @@ int main(int argc, char *argv)
     File file;
     file_init(&file, "hello.txt", 11);
     
-    StatusCode append_node_name_to_path(const char *node_name, char *path_end, const size_t available_bytes_amount);
-    const char name[] = "test";
-    char path[25] = "file1/file2";
-    StatusCode status = append_node_name_to_path(name, &path[11], 13);
-    printf("%d\n", status);
-    printf("%s", path);
-    return 0;
+    Folder root;
+    Folder folder1;
+    Folder folder2;
+    Folder folder3;
+
+    root_folder_init(&root);
+    sub_folder_init(
+        &folder1,
+        "folder1",
+        8,
+        &root
+    );
+
+    sub_folder_init(
+        &folder2,
+        "folder2",
+        8,
+        &folder1
+    );
+
+    sub_folder_init(
+        &folder3,
+        "folder3",
+        8,
+        &folder2
+    );
+
+    sub_file_init(&file, &folder3);
+
+    StatusCode get_parent_folders(VFSNode *node, Folder **out_parent_folders, size_t *out_parent_folders_amount);
+    VFSNode node;
+    node.type = FOLDER_NODE;
+    node.node.folder = &folder2;
+
+    Folder *folders[MAX_PATH_NODES_AMOUNT];
+    size_t folder_amount;
+
+    get_parent_folders(
+        &node,
+        folders,
+        &folder_amount
+    );
+
+    for (int i = 0; i < folder_amount; i++)
+    {
+        printf("%s\n", folders[i]->name);
+    }
+    printf("%ld", folder_amount);
 } 

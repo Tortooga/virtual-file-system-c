@@ -87,6 +87,81 @@ StatusCode parse_path(
     }
 }
 
+//node name guaranteed to be null terminated 
+//out_path will be null terminated
+StatusCode get_node_path(VFSNode *node, char *out_path, size_t path_length)
+{
+    if (!node || !out_path)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (path_length < MAX_PATH_NODES_AMOUNT * MAX_NAME_LENGTH)
+    {
+        return INSUFFICIENT_ARRAY_PASSED;
+    }
+
+    //full path including node is guaranteed to be of size less than or equal to MAX_PATH_NODES_AMOUNT 
+    Folder *parent_folders[MAX_PATH_NODES_AMOUNT - 1];
+    const size_t parent_folders_amount;
+    //TODO integrate with get_parent_folders
+    //TODO reverse parent names and write into path 
+    //TODO preform root check of node before adding it to the end of the path
+
+    return IMPLEMENTATION_INCOMPLETE;    
+}
+
+
+//out_parent_folders guaranteed to atleast be of size MAX_PATH_NODES_AMOUNT - 1 
+//outputs parent folders excluding root
+StatusCode get_parent_folders(VFSNode *node, Folder **out_parent_folders, size_t *out_parent_folders_amount)
+{
+    if (!node || !out_parent_folders || !out_parent_folders_amount)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    *out_parent_folders_amount = 0;
+
+    //If the node is the root or a child of the root return without writing anything
+    //This is because this function excludes the node and the root so there is nothing to write
+    if (node->type == FILE_NODE)
+    {
+        if (node->node.file->parent_folder->is_root)
+        {
+            return SUCCESS;
+        }
+        out_parent_folders[0] = node->node.file->parent_folder;
+    }
+    else
+    {
+        if (node->node.folder->is_root || node->node.folder->parent_folder->is_root)
+        {
+            return SUCCESS;
+        }
+        out_parent_folders[0] = node->node.folder->parent_folder;
+    }
+
+    *out_parent_folders_amount = 1;
+
+    //guaranteed to encounter root folder before we hit path length limit
+    for (size_t i = 1; i < MAX_PATH_NODES_AMOUNT; i++)
+    {   
+        if (out_parent_folders[i - 1]->parent_folder->is_root)
+        {
+            return SUCCESS;
+        }
+
+        //folder.parent_folder not null as long as folder.is_root = false
+        out_parent_folders[i] = out_parent_folders[i - 1]->parent_folder;
+        (*out_parent_folders_amount)++;
+    }
+
+    return PATH_IS_TOO_LONG;
+}
+
+
+
 //node_name is null terminated(enforced in all entry initialisers)
 //path_end points to the end of the path(at the null terminator), where we are supposed to start the appended name
 //it is important that it points at the null terminator so that it could be overwritten

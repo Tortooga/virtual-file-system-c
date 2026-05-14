@@ -20,4 +20,13 @@ StatusCode parse_path(
     char out_node_names[node_names_array_length][node_name_buffer_length]
 );
 
+
+//node_name is null terminated(enforced in all entry initialisers)
+//path_end points to the end of the path(at the null terminator), where we are supposed to start the appended name
+//it is important that it points at the null terminator so that it could be overwritten
+//available_bytes_amount is the amount of available bytes after and not including null terminator
+StatusCode append_node_name_to_path(
+    const char *node_name, 
+    char *path_end, 
+    const size_t available_bytes_amount);
 #endif

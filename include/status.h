@@ -30,8 +30,11 @@ typedef enum
     
     IDENTIFIER_NOT_AVAILABLE = -51,
     IDENTIFIER_IS_TOO_LONG = -52,
+
     //Tests
-    TEST_ASSERTION_FAILED = -101
+    TEST_ASSERTION_FAILED = -101,
+    
+    IMPLEMENTATION_INCOMPLETE = -201
 } StatusCode;
 
 #endif
