@@ -1,5 +1,5 @@
-#ifndef PATH_PARSER_H
-#define PATH_PARSER_H
+#ifndef PATH_UTILS_H
+#define PATH_UTILS_H
 #include "status.h"
 
 #include <stddef.h>

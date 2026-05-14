@@ -1,5 +1,5 @@
 #include "../include/queries.h"
-#include "../include/path_parser.h"
+#include "../include/path_utils.h"
 #include "../include/status.h"
 #include "../include/folders.h"
 

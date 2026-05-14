@@ -5,7 +5,7 @@
 #include "../include/file_logic.h"
 #include "../include/folders.h"
 #include "../include/queries.h"
-#include "../include/path_parser.h"
+#include "../include/path_utils.h"
 #include "../include/vfs_context.h"
 
 #include <stdio.h>

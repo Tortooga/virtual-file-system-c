@@ -237,6 +237,8 @@ StatusCode chunk_extent_left_shift(ChunkExtent *empty_position, File *file)
 }
 
 
+//If you ever want to implement "write at"
+
 //Assumes file.data_chunk_extents is compact.
 //Shifts all chunks beyond and including the specified position to the right by shift_amount
 //Positions shifted from must immediately be filled otherwise compactness will be broken
