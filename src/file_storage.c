@@ -7,7 +7,7 @@ StatusCode free_chunk_extent(ChunkExtent *chunk_extent, StorageMan *storage_man)
 void chunk_extent_copy_range(ChunkExtent *target_chunk_extent, ChunkExtent *copy_chunk_extent);
 StatusCode chunk_extent_left_shift(ChunkExtent *empty_position, File *file);
 bool file_owns_chunk(File *file, size_t chunk_pos);
-
+StatusCode get_last_chunk_extent(File *file, ChunkExtent **out_chunk_extent);
 
 StatusCode file_allocate_chunks(
     File *file, 
@@ -235,6 +235,100 @@ StatusCode chunk_extent_left_shift(ChunkExtent *empty_position, File *file)
 
     return SUCCESS;
 }
+
+
+//Assumes file.data_chunk_extents is compact.
+//Shifts all chunks beyond and including the specified position to the right by shift_amount
+//Positions shifted from must immediately be filled otherwise compactness will be broken
+StatusCode chunk_extent_right_shift(ChunkExtent *position, size_t shift_amount, File *file)
+{
+    if (!position || !file)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (shift_amount == 0)
+    {
+        return INVALID_OPERATION;
+    }
+
+    if (position->is_empty)
+    {
+        return INVALID_ARGUMENT;
+    }
+
+    //Exclusive upper lim for chunk extent array
+    const ChunkExtent *chunk_extents_upper_lim = &file->data_chunk_extents[0] + MAX_FILE_CHUNK_EXTENTS_AMOUNT;
+    //Inclusive lower lim
+    const ChunkExtent *chunk_extent_lower_lim = &file->data_chunk_extents[0];
+    if (position < chunk_extent_lower_lim || position >= chunk_extents_upper_lim)
+    {
+        return INDEX_OUT_OF_BOUNDS;
+    }
+
+    ChunkExtent *last_addrs;
+    StatusCode status = get_last_chunk_extent(file, &last_addrs);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (last_addrs + shift_amount >= chunk_extents_upper_lim)
+    {
+        return DATA_OVER_FLOW;
+    }
+
+    //With the compactness invariant and since we made sure position is not an empty chunk during validation
+    //if cur_addrs starts last_addrs and keeps going down it is guaranteed to encounter position
+    for (ChunkExtent *cur_addrs = last_addrs; cur_addrs >= position; cur_addrs--)
+    {
+        //This should never trigger
+        if (cur_addrs < chunk_extent_lower_lim)
+        {
+            return INDEX_OUT_OF_BOUNDS; //FATAL
+        }
+
+        //guaranteed to be within bounds
+        chunk_extent_copy_range(cur_addrs + shift_amount, cur_addrs);
+        cur_addrs->is_empty = true;
+        cur_addrs[shift_amount].is_empty = false;
+    }
+
+    return SUCCESS;
+}
+
+//outputs the address of the last position in a files sequence of chunk extents
+//assumes chunk extents are compact 
+//returns error if the occupied last chunk extent is the last chunk extent in the array 
+StatusCode get_last_chunk_extent(File *file, ChunkExtent **out_chunk_extent)
+{
+    if (!file || !out_chunk_extent)
+    {
+        return NULL_POINTER_PASSED;
+    }
+    
+    *out_chunk_extent = NULL;
+
+    if (file->data_chunk_extents[0].is_empty)
+    {
+        return DATA_SET_IS_EMPTY;
+    }
+
+    for (size_t i = 1; i < MAX_FILE_CHUNK_EXTENTS_AMOUNT; i++)
+    {
+        if (file->data_chunk_extents[i].is_empty)
+        {
+            *out_chunk_extent = &file->data_chunk_extents[i - 1];
+            return SUCCESS;
+        }
+    }
+
+    //Since the caller will be attempting to shift data to the right
+    return DATA_OVER_FLOW;
+}
+
+
 
 void chunk_extent_copy_range(ChunkExtent *target_chunk_extent, ChunkExtent *copy_chunk_extent)
 {

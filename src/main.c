@@ -28,61 +28,27 @@ int main(int argc, char *argv)
         CHUNKS_AMOUNT
     );
     File file;
-    File file2;
     file_init(&file, "hello.txt", 11);
-    file_init(&file2, "hello2.txt", 12);
     
-    Folder root;
+    char data[] = "hello this is test data";
 
-    StatusCode status = root_folder_init(&root);
 
-    Folder folder1;
-    Folder folder2;
-
-    status = sub_folder_init(
-        &folder1,
-        "test",
-        5,
-        &root
-    );
-    status = sub_folder_init(
-        &folder2,
-        "test2",
-        5,
-        &root
-    );
-    status = sub_file_init(
-        &file2,
-        &folder1
-    );
-    status = sub_file_init(
-        &file,
-        &folder1
-    );
+    file_append(&file, &storage_man, data, strlen(data));
+    file_append(&file, &storage_man, data, strlen(data));
+    file_append(&file, &storage_man, data, strlen(data));
     
-    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
-    {
-        if (!folder1.sub_files[i])
-        {
-            continue;
-        }
-        printf("%s", folder1.sub_files[i]->name);
-        printf(": %s\n", folder1.sub_files[i]->parent_folder->name);
-    }
+    print_file(&file, true);    
 
-    printf("after unlinking \n");
+    StatusCode chunk_extent_right_shift(ChunkExtent *position, size_t shift_amount, File *file);
 
-    unlink_sub_file(&folder1, &file);
-    unlink_sub_file(&folder1, &file2);
+
+    StatusCode status = chunk_extent_right_shift(
+        &file.data_chunk_extents[0], 5, &file 
+    );
+
+    printf("%d\n", status);
+
     
-    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
-    {
-        if (!folder1.sub_files[i])
-        {
-            continue;
-        }
-        printf("%s\n", folder1.sub_files[i]->name);
-    }
-
+    print_file(&file, true);
     return 0;
 } 

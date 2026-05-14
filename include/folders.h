@@ -25,7 +25,7 @@ typedef enum
     FILE_NODE,
     FOLDER_NODE,
 } NodeType;
-
+    
 //Is not the framwork for the VFS heirarchy
 //Only used to mimic polymophism in search functions
 //After which it is resolved immediately
