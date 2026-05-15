@@ -80,6 +80,8 @@ Heirarchy is implicit. There isnt an explicit domain in which a node abstraction
 
 ## Even though they reference each other Files and Folders share a relational dependancy. They dont depend on, own or maintain each others life time 
 
+## Paths
+explain everything about paths, their design, their invariants and their operations such as resolution
 
 ## CLI Client
 CLI client translates CLI commands into file sys functionality

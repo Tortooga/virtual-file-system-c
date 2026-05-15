@@ -62,20 +62,22 @@ int main(int argc, char *argv)
     StatusCode get_parent_folders(VFSNode *node, Folder **out_parent_folders, size_t *out_parent_folders_amount);
     VFSNode node;
     node.type = FOLDER_NODE;
-    node.node.folder = &folder2;
+    node.node.folder = &root;
 
-    Folder *folders[MAX_PATH_NODES_AMOUNT];
+    Folder *folders[MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1];
     size_t folder_amount;
 
-    get_parent_folders(
+    char path[MAX_PATH_NODES_AMOUNT * MAX_NAME_LENGTH];
+
+    StatusCode get_node_path(VFSNode *node, char *out_path, size_t path_length);
+
+    StatusCode status = get_node_path(
         &node,
-        folders,
-        &folder_amount
+        path,
+        MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1
     );
 
-    for (int i = 0; i < folder_amount; i++)
-    {
-        printf("%s\n", folders[i]->name);
-    }
-    printf("%ld", folder_amount);
+    printf("%d\n", status);
+    printf("%s\n", path);
+    
 } 

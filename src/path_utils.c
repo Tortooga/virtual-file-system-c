@@ -13,6 +13,9 @@ StatusCode parse_node(
     char *out_node_name_buffer
 );
 
+StatusCode get_parent_folders(VFSNode *node, Folder **out_parent_folders, size_t *out_parent_folders_amount);
+StatusCode append_node_name_to_path(const char *node_name, char *path_end, const size_t available_bytes_amount);
+
 //path null termination not enforced or assumed at this level
 //Individual node names are null terminated
 //nodes amount output param indicates length of node list
@@ -96,24 +99,107 @@ StatusCode get_node_path(VFSNode *node, char *out_path, size_t path_length)
         return NULL_POINTER_PASSED;
     }
 
-    if (path_length < MAX_PATH_NODES_AMOUNT * MAX_NAME_LENGTH)
+    //We add another MAX_PATH_NODES_AMOUNT to include space for all the delimiters
+    //another +1 for the null terminator
+    if (path_length < MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1)
     {
         return INSUFFICIENT_ARRAY_PASSED;
     }
 
+    if (node->type == FOLDER_NODE)
+    {
+        //Root is indicated by the path delimiter without any name
+        
+        if (node->node.folder->is_root)
+        {
+            out_path[0] = PATH_DELIMITER;
+            out_path[1] = '\0';
+            return SUCCESS;
+        }
+    }
+
     //full path including node is guaranteed to be of size less than or equal to MAX_PATH_NODES_AMOUNT 
     Folder *parent_folders[MAX_PATH_NODES_AMOUNT - 1];
-    const size_t parent_folders_amount;
-    //TODO integrate with get_parent_folders
-    //TODO reverse parent names and write into path 
-    //TODO preform root check of node before adding it to the end of the path
+    size_t parent_folders_amount;
+    
+    StatusCode status = get_parent_folders(
+        node, 
+        parent_folders, 
+        &parent_folders_amount);
 
-    return IMPLEMENTATION_INCOMPLETE;    
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    size_t cur_position_in_path = 0;
+    size_t available_bytes_amount = path_length;
+    size_t cur_entry_length;
+
+    //cur_position_in_path will never be out of range because:
+    //cur_position_in_path <= (MAX_PATH_NODES_AMOUNT) * (MAX_NAME_LENGTH + 1) <= path_length
+    for (size_t i = 1; i <= parent_folders_amount; i++)
+    {
+        
+        //append_node_name_to_path handles overflow by taking available_bytes_amount
+        //though overflow should be implossible
+        //since buffer length is enforced to be greater than or equal to the maximum amount needed
+
+        status = append_node_name_to_path(
+            parent_folders[parent_folders_amount - i]->name,
+            out_path + cur_position_in_path,
+            available_bytes_amount
+        );
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+
+        //folder names guaranteed to be null terminated
+        //+1 to include the path delimiter
+        cur_entry_length = strlen(parent_folders[parent_folders_amount - i]->name) + 1;
+        
+        available_bytes_amount -= cur_entry_length;
+        cur_position_in_path += cur_entry_length;
+    }
+    
+    //Now that we have written the parent folders we must write the node
+
+    if (node->type == FILE_NODE)
+    {
+        status = append_node_name_to_path(
+            node->node.file->name,
+            out_path + cur_position_in_path,
+            available_bytes_amount
+        );
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+    }
+    else
+    {
+        status = append_node_name_to_path(
+            node->node.folder->name,
+            out_path + cur_position_in_path,
+            available_bytes_amount
+        );
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+    }
+    
+    return SUCCESS;    
 }
 
 
 //out_parent_folders guaranteed to atleast be of size MAX_PATH_NODES_AMOUNT - 1 
 //outputs parent folders excluding root
+//parents are ordered closest to furthest
 StatusCode get_parent_folders(VFSNode *node, Folder **out_parent_folders, size_t *out_parent_folders_amount)
 {
     if (!node || !out_parent_folders || !out_parent_folders_amount)
