@@ -19,7 +19,7 @@
 
 ## TODO
 - [X] Abstract the run_test() printf repeatition using pointers to funcions
-- [ ] Seperate VFS Context and VFS DataStore
+- [X] Seperate VFS Context and VFS DataStore
 - [ ] Add cur_path to VFSContext 
 - [ ] Write global search by name function "find"
 - [ ] add "write at" function that doenst actually modify meta data, 

@@ -69,15 +69,4 @@ int main(int argc, char *argv)
 
     char path[MAX_PATH_NODES_AMOUNT * MAX_NAME_LENGTH];
 
-    StatusCode get_node_path(VFSNode *node, char *out_path, size_t path_length);
-
-    StatusCode status = get_node_path(
-        &node,
-        path,
-        MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1
-    );
-
-    printf("%d\n", status);
-    printf("%s\n", path);
-    
 } 
