@@ -19,9 +19,12 @@
 
 ## TODO
 - [X] Abstract the run_test() printf repeatition using pointers to funcions
-- [ ] Write global search by name function "find"
-- [ ] add "write at" function that doenst actually modify meta data, instead it allocates new storage writes into it and the updates meta data to point to the new storage and free the old storage 
+- [ ] Seperate VFS Context and VFS DataStore
 - [ ] Add cur_path to VFSContext 
+- [ ] Write global search by name function "find"
+- [ ] add "write at" function that doenst actually modify meta data, 
+instead it allocates new storage writes into it and the updates meta data to point to the new storage and free the old storage 
+- [ ] add "delete at"
 
 ## File Management
 

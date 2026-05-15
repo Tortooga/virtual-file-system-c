@@ -1,7 +1,8 @@
 #include "../include/queries.h"
+#include "../include/folders.h"
+#include "../include/files.h"
 #include "../include/path_utils.h"
 #include "../include/status.h"
-#include "../include/folders.h"
 
 #include <string.h>
 

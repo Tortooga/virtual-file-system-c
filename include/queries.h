@@ -1,3 +1,6 @@
+#ifndef QUERIES_H
+#define QUERIES_H
+
 #include "folders.h"
 
 /*
@@ -41,3 +44,5 @@ StatusCode resolve_path(
     const size_t path_length,
     Folder *root_folder, 
     VFSNode *out_node);
+
+#endif
