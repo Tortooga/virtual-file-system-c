@@ -45,19 +45,19 @@ int main(int argc, char *argv)
         Folder *parent_folder
     );
 
-    StatusCode status = vfs_sub_file_init(
+    StatusCode status = vfs_sub_folder_init(
         &store,
-        "config.sys",
-        11,
+        "folder",
+        7,
         &store.folders[0]
     );
 
     printf("status: %d\n", status);
 
-    File *file;
+    Folder *folder;
 
-    search_sub_file(&store.folders[0], "config.sys", 11, &file);
-    printf("%s", file->name);
+    search_sub_folder(&store.folders[0], "folder", 11, &folder);
+    printf("%s", folder->name);
 } 
 
 void load_test_data(VFSEntryStore *store)
