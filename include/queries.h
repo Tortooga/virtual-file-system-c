@@ -45,4 +45,15 @@ StatusCode resolve_path(
     Folder *root_folder, 
     VFSNode *out_node);
 
+StatusCode global_search_nodes_by_name(
+    const char *name,
+    const size_t name_length,
+
+    VFSEntryStore *entry_store,
+
+    VFSNode *out_nodes,
+    size_t nodes_buffer_length,
+
+    size_t *out_nodes_amount
+);
 #endif

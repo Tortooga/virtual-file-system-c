@@ -3,10 +3,119 @@
 #include "../include/files.h"
 #include "../include/path_utils.h"
 #include "../include/status.h"
-
+#include "../include/vfs_entry_store.h"
 #include <string.h>
 
 StatusCode get_vfs_node(const char *name, Folder *cur_folder, VFSNode *out_vfs_node);
+
+StatusCode global_search_nodes_by_name(
+    const char *name,
+    const size_t name_length,
+
+    VFSEntryStore *entry_store,
+
+    VFSNode *out_nodes,
+    size_t nodes_buffer_length,
+
+    size_t *out_nodes_amount
+)
+{
+    if (!out_nodes || !name || !entry_store || !out_nodes_amount)
+    {
+        return NULL_POINTER_PASSED;
+    }
+    
+    *out_nodes_amount = 0;
+
+    if (nodes_buffer_length == 0)
+    {
+        return INSUFFICIENT_ARRAY_PASSED;
+    }
+
+    if (name_length == 0)
+    {
+        return INVALID_OPERATION;
+    }
+
+    bool cmp_result;
+    StatusCode status;
+    size_t cur_node_index = 0;
+    for (size_t i = 0; i < VFS_MAX_FILES_AMOUNT; i++)
+    {
+        //if the current position is free we continue
+        if (!entry_store->files_allocation_map[i])
+        {
+            continue;
+        }
+        //name_eq compares definitely null terminated char * to possibly null terminated char * 
+        status = name_eq(entry_store->files[i].name, name, name_length, &cmp_result);
+        
+        if (status != SUCCESS)
+        {
+            *out_nodes_amount = cur_node_index;
+            return status;
+        }
+        
+        if (!cmp_result)
+        {
+            continue;
+        }
+
+        if (cur_node_index >= nodes_buffer_length)
+        {
+            *out_nodes_amount = cur_node_index;
+            return DATA_OVER_FLOW;
+        }
+
+        out_nodes[cur_node_index].type = FILE_NODE;
+        out_nodes[cur_node_index].node.file = &entry_store->files[i];
+
+        cur_node_index++;
+    }
+
+    //Same operation. Different domain.
+
+    for (size_t i = 0; i < VFS_MAX_FOLDERS_AMOUNT; i++)
+    {
+        //if the current position is free we continue
+        if (!entry_store->folders_allocation_map[i])
+        {
+            continue;
+        }
+        
+        //name_eq compares definitely null terminated char * to possibly null terminated char * 
+        status = name_eq(entry_store->folders[i].name, name, name_length, &cmp_result);
+        
+        if (status != SUCCESS)
+        {
+            *out_nodes_amount = cur_node_index;
+            return status;
+        }
+        
+        if (!cmp_result)
+        {
+            continue;
+        }
+
+        if (cur_node_index >= nodes_buffer_length)
+        {
+            *out_nodes_amount = cur_node_index;
+            return DATA_OVER_FLOW;
+        }
+
+        out_nodes[cur_node_index].type = FOLDER_NODE;
+        out_nodes[cur_node_index].node.folder = &entry_store->folders[i];
+
+        cur_node_index++;
+    }
+
+    //No target found is not considered failure
+    *out_nodes_amount = cur_node_index;
+
+    return SUCCESS;
+}
+
+
 
 //path always starts at (but does not include) the root folder
 //returns a node containing either a file or a folder(see VFSNode definition)

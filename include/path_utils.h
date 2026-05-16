@@ -29,4 +29,8 @@ StatusCode append_node_name_to_path(
     const char *node_name, 
     char *path_end, 
     const size_t available_bytes_amount);
+
+//node name guaranteed to be null terminated 
+//out_path will be null terminated
+StatusCode get_node_path(VFSNode *node, char *out_path, size_t path_length);
 #endif
