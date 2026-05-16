@@ -28,4 +28,15 @@ typedef struct
 
 StatusCode vfs_entry_store_init(VFSEntryStore *out_vfs_entry_store);
 
+/*
+    Main VFS sub file initialiser
+    Validates the existance and validity of parent_folder in entry_store
+    Calls file and sub file creation primitives which validate file metadata and identifier availability
+*/
+StatusCode vfs_sub_file_init(
+    VFSEntryStore *entry_store,
+    char *file_name,
+    size_t file_name_length,
+    Folder *parent_folder
+);
 #endif

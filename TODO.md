@@ -22,7 +22,7 @@
 - [X] Seperate VFS Context and VFS DataStore
 - [X] Add cur_path to VFSContext 
 - [X] Write global search by name function "find"
-- [ ] **refactor name_eq it is used everywhere 
+- [X] **refactor name_eq it is used everywhere 
 - [ ] add "write at" function that doenst actually modify meta data, 
 instead it allocates new storage writes into it and the updates meta data to point to the new storage and free the old storage 
 - [ ] add "delete at"

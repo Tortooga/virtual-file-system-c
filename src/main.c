@@ -38,38 +38,26 @@ int main(int argc, char *argv)
 
     load_test_data(&store);
 
-    StatusCode global_search_nodes_by_name(
-    const char *name,
-    const size_t name_length,
-
-    VFSEntryStore *entry_store,
-
-    VFSNode *out_nodes,
-    size_t nodes_buffer_length,
-
-    size_t *out_nodes_amount
+    StatusCode vfs_sub_file_init(
+        VFSEntryStore *entry_store,
+        char *file_name,
+        size_t file_name_length,
+        Folder *parent_folder
     );
 
-    VFSNode nodes[10];
-    size_t nodes_amount;
-    StatusCode status = global_search_nodes_by_name(
-        "folder7",
-        9,
+    StatusCode status = vfs_sub_file_init(
         &store,
-        nodes,
-        10,
-        &nodes_amount
+        "config.sys",
+        11,
+        &store.folders[0]
     );
 
-    printf("%d\n", status);
+    printf("status: %d\n", status);
 
-    char path[MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1];
-    for (size_t i = 0; i < nodes_amount; i++)
-    {
-        get_node_path(&nodes[i], path, MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1);
-        printf("%s\n", path);
-    }
+    File *file;
 
+    search_sub_file(&store.folders[0], "config.sys", 11, &file);
+    printf("%s", file->name);
 } 
 
 void load_test_data(VFSEntryStore *store)
@@ -97,7 +85,6 @@ void load_test_data(VFSEntryStore *store)
     file_init(&store->files[15], "data.bin", 9);
     file_init(&store->files[16], "report.pdf", 11);
     file_init(&store->files[17], "notes.md", 9);
-    file_init(&store->files[18], "config.sys", 11);
     
     
     root_folder_init(&store->root);

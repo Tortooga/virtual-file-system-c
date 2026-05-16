@@ -2,7 +2,7 @@
 #define QUERIES_H
 
 #include "folders.h"
-
+#include "vfs_entry_store.h"
 /*
 searchs for sub folder in current_folder by name
 target_folder_name not assumed to be null terminated

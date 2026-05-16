@@ -440,14 +440,12 @@ StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, siz
     return SUCCESS;
 }
 
+//initialised_name guaranteed to be null terminated
+//null termination is enforced in the initialisation process
+//uninitialised name not guaranteed to be null terminated
+//uninitialised name terminates at either length or if an early null terminator is encountered
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result)
 {
-    //initialised_name guaranteed to be null terminated
-    //null termination is enforced in the initialisation process
-
-    //uninitialised name not guaranteed to be null terminated
-    //uninitialised name terminates at either length or if an early null terminator is encountered
-
     if (!initialised_name || !uninitialised_name || !out_result)
     {
         return NULL_POINTER_PASSED;

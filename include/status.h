@@ -30,6 +30,9 @@ typedef enum
     
     IDENTIFIER_NOT_AVAILABLE = -51,
     IDENTIFIER_IS_TOO_LONG = -52,
+    
+    UNKNOWN_ENTRY = -61,
+    UNINITIALISED_ENTRY = -62,
 
     //Tests
     TEST_ASSERTION_FAILED = -101,
