@@ -29,11 +29,16 @@ typedef struct
 StatusCode vfs_entry_store_init(VFSEntryStore *out_vfs_entry_store);
 
 /*
-    Main VFS sub file initialiser
+    Main VFS sub file initialiser. Places the files address onto out_file
+    out_file is initialised to NULL if the operation failed
+    Initialises File first using File initialiser 
+    Then initialises "sub" file by calling sub file initialiser that links file to parent folder
+    Validate file metadata and identifier availability
     Validates the existance and validity of parent_folder in entry_store
-    Calls file and sub file creation primitives which validate file metadata and identifier availability
+    Partial failure causes out_file to be NULL
 */
 StatusCode vfs_sub_file_init(
+    File **out_file,
     VFSEntryStore *entry_store,
     char *file_name,
     size_t file_name_length,
@@ -41,14 +46,22 @@ StatusCode vfs_sub_file_init(
 );
 
 /*
-    Main VFS sub file initialiser
+    Main VFS sub file initialiser. Places Files addres onto out_file
+    out_file is initialised to NULL if the operation failed
     Validates the existance and validity of parent_folder in entry_store
-    Calls file and sub file creation primitives which validate file metadata and identifier availability
+    Validates metadata and identifier availability
 */
 StatusCode vfs_sub_folder_init(
+    Folder **out_folder,
     VFSEntryStore *entry_store,
     char *folder_name,
     size_t folder_name_length,
     Folder *parent_folder
 );
+
+/*
+    Debug function prints all the sub entry meta data
+*/
+StatusCode print_entry_store(VFSEntryStore *entry_store);
+
 #endif

@@ -3,6 +3,7 @@
 #include "../include/vfs_entry_store.h"
 
 #include <stdbool.h>
+#include <stdio.h>
 
 StatusCode get_available_allocation_map_position(
     size_t *out_position, 
@@ -38,16 +39,19 @@ StatusCode vfs_entry_store_init(VFSEntryStore *out_vfs_entry_store)
 
 //parent_folder must be in entry_store->folders
 StatusCode vfs_sub_file_init(
+    File **out_file,
     VFSEntryStore *entry_store,
     char *file_name,
     size_t file_name_length,
     Folder *parent_folder
 )
 {
-    if (!entry_store || !file_name || !parent_folder)
+    if (!entry_store || !file_name || !parent_folder || !out_file)
     {
         return NULL_POINTER_PASSED;
     }
+    //In case of partial failure 
+    *out_file = NULL;
 
     //verifies that the folder belongs to and is committed to VFS 
     StatusCode status = validate_vfs_folder(parent_folder, entry_store);
@@ -88,6 +92,8 @@ StatusCode vfs_sub_file_init(
         return status;
     }
 
+    //file address placed onto output parameter
+    *out_file = &entry_store->files[file_pos];
     //marked as occupied(visible) only after complete success
     entry_store->files_allocation_map[file_pos] = true;
     return SUCCESS;
@@ -96,16 +102,19 @@ StatusCode vfs_sub_file_init(
 
 
 StatusCode vfs_sub_folder_init(
+    Folder **out_folder,
     VFSEntryStore *entry_store,
     char *folder_name,
     size_t folder_name_length,
     Folder *parent_folder
 )
 {
-    if (!entry_store || !folder_name || !parent_folder)
+    if (!entry_store || !folder_name || !parent_folder || !out_folder)
     {
         return NULL_POINTER_PASSED;
     }
+    //In case of partial failure 
+    *out_folder = NULL;
 
     //verifies that the folder belongs to and is committed to VFS 
     StatusCode status = validate_vfs_folder(parent_folder, entry_store);
@@ -138,6 +147,7 @@ StatusCode vfs_sub_folder_init(
         return status;
     }
 
+    *out_folder = &entry_store->folders[folder_pos];
     entry_store->folders_allocation_map[folder_pos] = true;
     return SUCCESS;
 }
@@ -146,6 +156,13 @@ StatusCode vfs_sub_folder_init(
 StatusCode validate_vfs_folder(Folder *folder, VFSEntryStore *entry_store)
 {
     //Caller guarantees not NULL pointers
+
+    //If the folder address is the address of the root folder succeed
+    //root folder validity is guaranteed by VFS initialiser
+    if (folder == &entry_store->root)
+    {
+        return SUCCESS;
+    }
 
     if (folder < entry_store->folders || folder >= entry_store->folders + VFS_MAX_FOLDERS_AMOUNT)
     {
@@ -216,3 +233,22 @@ StatusCode get_available_allocation_map_position(
 
     return NO_SPACE;
 }
+
+/*StatusCode print_entry_store(VFSEntryStore *entry_store)
+{
+    if (!entry_store)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    printf("Files:\n");
+    for (size_t i = 0; i < VFS_MAX_FILES_AMOUNT; i++)
+    {
+        if (!entry_store->files_allocation_map[i])
+        {
+            continue;
+        }
+        print_file(&entry_store->files[i], false);
+        printf("\n");
+    }
+}*/

@@ -26,7 +26,7 @@
 - [ ] add "write at" function that doenst actually modify meta data, 
 instead it allocates new storage writes into it and the updates meta data to point to the new storage and free the old storage 
 - [ ] add "delete at"
-
+- [ ] **add print_tree command
 ## File Management
 
 ## CLI
