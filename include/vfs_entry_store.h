@@ -60,7 +60,7 @@ StatusCode vfs_sub_folder_init(
 );
 
 /*
-    Debug function prints all the sub entry meta data
+    Debug function prints sub entry meta data
 */
 StatusCode print_entry_store(VFSEntryStore *entry_store);
 

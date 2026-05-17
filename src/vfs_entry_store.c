@@ -234,21 +234,38 @@ StatusCode get_available_allocation_map_position(
     return NO_SPACE;
 }
 
-/*StatusCode print_entry_store(VFSEntryStore *entry_store)
+
+/* DEBUG FUNCTIONS */
+
+
+StatusCode print_entry_store(VFSEntryStore *entry_store)
 {
     if (!entry_store)
     {
         return NULL_POINTER_PASSED;
     }
 
-    printf("Files:\n");
+    printf("Files:\n\n");
     for (size_t i = 0; i < VFS_MAX_FILES_AMOUNT; i++)
     {
         if (!entry_store->files_allocation_map[i])
         {
             continue;
         }
-        print_file(&entry_store->files[i], false);
+        print_file(&entry_store->files[i], true);
         printf("\n");
     }
-}*/
+
+    printf("Folders: \n");
+    for (size_t i = 0; i < VFS_MAX_FOLDERS_AMOUNT; i++)
+    {
+        if (!entry_store->folders_allocation_map[i])
+        {
+            continue;
+        }
+
+        printf("    %s\n", entry_store->folders[i].name);
+    }
+
+    return SUCCESS;
+}

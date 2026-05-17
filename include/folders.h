@@ -79,5 +79,7 @@ StatusCode unlink_sub_file(Folder *parent_folder, File *file);
 //Compare the name of an initialised file/folder(where null terminator is enforced) to the name of a file/folder where it isnt
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
 
+//Debug function prints folders sub entry names
+StatusCode print_folder(Folder *folder);
 
 #endif

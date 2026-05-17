@@ -67,7 +67,9 @@ int main(int argc, char *argv)
 
     printf("File creation status: %d\n", status);
 
-    //print_entry_store(&store);
+    print_entry_store(&store);
+
+    print_folder(&store.root);
 } 
 
 void load_test_data(VFSEntryStore *store)

@@ -546,3 +546,41 @@ StatusCode get_available_sub_file_position(Folder *parent_folder, size_t *out_in
     *out_index = SIZE_MAX;
     return NO_SPACE;
 }
+
+StatusCode print_folder(Folder *folder)
+{
+    if (!folder)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    printf("%s\n", folder->name);
+
+    printf("Sub Files: \n");
+    
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        if (folder->sub_files[i] == NULL)
+        {
+            continue;
+        }
+
+        //if an a sub entry is not null it is guaranteed to have a valid name
+        printf("    %s", folder->sub_files[i]->name);
+    }
+
+    printf("\nSub Folders\n");
+
+    for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
+    {
+        if (folder->sub_folders[i] == NULL)
+        {
+            continue;
+        }
+
+        //if an a sub entry is not null it is guaranteed to have a valid name
+        printf("    %s\n", folder->sub_folders[i]->name);
+    }
+
+    return SUCCESS;
+}
