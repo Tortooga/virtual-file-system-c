@@ -65,11 +65,9 @@ int main(int argc, char *argv)
         folder
     );
 
-    printf("File creation status: %d\n", status);
+    StatusCode print_folder_recursion(Folder *cur_folder, size_t indentation_count);
 
-    print_entry_store(&store);
-
-    print_folder(&store.root);
+    print_folder_recursion(&store.root, 0);
 } 
 
 void load_test_data(VFSEntryStore *store)
@@ -79,7 +77,90 @@ void load_test_data(VFSEntryStore *store)
 
     clock_t start = clock();
 
+    Folder *folder;
+    File *file;
 
+    /* =========================
+    ROOT LEVEL
+    ========================= */
+
+    vfs_sub_folder_init(&folder, store, "home", 4, &store->root);
+    Folder *f_home = folder;
+
+    vfs_sub_folder_init(&folder, store, "etc", 3, &store->root);
+    Folder *f_etc = folder;
+
+    vfs_sub_folder_init(&folder, store, "var", 3, &store->root);
+    Folder *f_var = folder;
+
+    /* =========================
+    HOME subtree
+    ========================= */
+
+    vfs_sub_folder_init(&folder, store, "user", 4, f_home);
+    Folder *f_user = folder;
+
+    vfs_sub_folder_init(&folder, store, "shared", 6, f_home);
+    Folder *f_shared = folder;
+
+    /* user subfolders */
+    vfs_sub_folder_init(&folder, store, "documents", 9, f_user);
+    Folder *f_documents = folder;
+
+    vfs_sub_folder_init(&folder, store, "downloads", 9, f_user);
+    Folder *f_downloads = folder;
+
+    /* =========================
+    ETC subtree
+    ========================= */
+
+    vfs_sub_folder_init(&folder, store, "nginx", 5, f_etc);
+    Folder *f_nginx = folder;
+
+    vfs_sub_folder_init(&folder, store, "conf", 4, f_nginx);
+    Folder *f_conf = folder;
+
+    /* =========================
+    VAR subtree
+    ========================= */
+
+    vfs_sub_folder_init(&folder, store, "log", 3, f_var);
+    Folder *f_log = folder;
+
+    /* =========================
+    FILES (19 total)
+    ========================= */
+
+    /* ---- home (2 files) ---- */
+    vfs_sub_file_init(&file, store, "README", 6, f_home);
+    vfs_sub_file_init(&file, store, "welcome.txt", 11, f_home);
+
+    /* ---- user/documents (3 files) ---- */
+    vfs_sub_file_init(&file, store, "resume.pdf", 10, f_documents);
+    vfs_sub_file_init(&file, store, "notes.txt", 9, f_documents);
+    vfs_sub_file_init(&file, store, "thesis.draft", 12, f_documents);
+
+    /* ---- user/downloads (2 files) ---- */
+    vfs_sub_file_init(&file, store, "setup.exe", 9, f_downloads);
+    vfs_sub_file_init(&file, store, "movie.mkv", 9, f_downloads);
+
+    /* ---- shared (2 files) ---- */
+    vfs_sub_file_init(&file, store, "shared_info.txt", 15, f_shared);
+    vfs_sub_file_init(&file, store, "rules.md", 8, f_shared);
+
+    /* ---- etc (1 file) ---- */
+    vfs_sub_file_init(&file, store, "hosts", 5, f_etc);
+
+    /* ---- nginx/conf (4 files) ---- */
+    vfs_sub_file_init(&file, store, "nginx.conf", 10, f_conf);
+    vfs_sub_file_init(&file, store, "site1.conf", 10, f_conf);
+    vfs_sub_file_init(&file, store, "default.conf", 12, f_conf);
+    vfs_sub_file_init(&file, store, "mime.types", 10, f_conf);
+
+    /* ---- var/log (3 files) ---- */
+    vfs_sub_file_init(&file, store, "syslog", 6, f_log);
+    vfs_sub_file_init(&file, store, "app.log", 7, f_log);
+    vfs_sub_file_init(&file, store, "error.log", 9, f_log);
 
     clock_t end = clock();
     

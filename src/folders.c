@@ -186,7 +186,7 @@ StatusCode unlink_sub_file(File *file)
 
 //unlinks sub_folder from parent
 //will not unlink sub_folder if it has  sub entries unless force is set to true
-StatusCode unlink_sub_folder(Folder *sub_folder, bool force)
+StatusCode unlink_sub_folder(Folder *sub_folder)
 {
     if (!sub_folder)
     {
@@ -207,7 +207,7 @@ StatusCode unlink_sub_folder(Folder *sub_folder, bool force)
         return status;
     }
 
-    if (sub_folder_has_sub_entries && !force)
+    if (sub_folder_has_sub_entries)
     {
         return ATTEMPTED_TO_DELETE_FOLDER_WITH_SUB_ENTRIES;
     }
@@ -546,39 +546,60 @@ StatusCode get_available_sub_file_position(Folder *parent_folder, size_t *out_in
     return NO_SPACE;
 }
 
+
+/* DEBUG*/
+
+
 StatusCode print_folder(Folder *folder)
 {
-    if (!folder)
+    return print_folder_recursion(folder, 0);
+}
+
+StatusCode print_folder_recursion(Folder *cur_folder, size_t step_count)
+{
+    if (!cur_folder)
     {
         return NULL_POINTER_PASSED;
     }
 
-    printf("%s\n", folder->name);
+    if (step_count > MAX_FOLDER_DEPTH)
+    {
+        return RECURSIVE_OPERATION_LIMIT_EXCEEDED;
+    }
 
-    printf("Sub Files: \n");
-    
+    printf("%s/\n", cur_folder->name);
+
+    step_count++;
     for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
     {
-        if (folder->sub_files[i] == NULL)
+        if (cur_folder->sub_files[i] == NULL)
         {
             continue;
         }
 
-        //if an a sub entry is not null it is guaranteed to have a valid name
-        printf("    %s", folder->sub_files[i]->name);
-    }
+        //indentation
+        for (size_t c = 0; c < step_count; c++)
+        {
+            printf("  ");
+        }
 
-    printf("\nSub Folders\n");
+        printf("%s\n", cur_folder->sub_files[i]->name);
+    }
 
     for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
     {
-        if (folder->sub_folders[i] == NULL)
+        if (cur_folder->sub_folders[i] == NULL)
         {
             continue;
         }
 
-        //if an a sub entry is not null it is guaranteed to have a valid name
-        printf("    %s\n", folder->sub_folders[i]->name);
+        //indentation
+        for (size_t c = 0; c < step_count; c++)
+        {
+            printf("  ");
+        }
+
+        print_folder_recursion(cur_folder->sub_folders[i], step_count);
     }
 
     return SUCCESS;
