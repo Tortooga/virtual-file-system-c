@@ -12,6 +12,8 @@ Owns all addressable VFS entries.
 Does not enforce any structure or hierarchy. (Hierarchy is implicitly encoded within the nodes themselves)
 It, however, acts as an index for all the entries.
 
+An established VFS entry store folder is guaranteed to only have established children.
+
 Vacancy in any file/folder position is indicated by the allocation maps */
 typedef struct 
 {
@@ -58,6 +60,14 @@ StatusCode vfs_sub_folder_init(
     size_t folder_name_length,
     Folder *parent_folder
 );
+
+/*
+    frees all the storage chunks allocated to the file
+    Unlinks file from parent folder 
+    marks its position as free in entry_store.file_allocation_map
+*/
+StatusCode delete_vfs_file(VFSEntryStore *entry_store, File *file, StorageMan *storage_man);
+
 
 /*
     Debug function prints sub entry meta data

@@ -34,6 +34,8 @@ typedef enum
     UNKNOWN_ENTRY = -61,
     UNINITIALISED_ENTRY = -62,
 
+    RECURSIVE_OPERATION_LIMIT_EXCEEDED = -71,
+
     //Tests
     TEST_ASSERTION_FAILED = -101,
     

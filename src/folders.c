@@ -17,7 +17,7 @@ StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, siz
 StatusCode has_sub_entries(Folder *folder, bool *out_result);
 StatusCode find_sub_folder_index(Folder *sub_folder, size_t *out_sub_folder_index);
 StatusCode find_sub_file_index(Folder *parent_folder, File *file, size_t *out_sub_file_index);
-
+StatusCode print_folder_recursion(Folder *cur_folder, size_t step_count);
 
 StatusCode validate_sub_entry_name(
     Folder *parent_folder,

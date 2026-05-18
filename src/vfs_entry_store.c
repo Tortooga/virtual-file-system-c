@@ -2,6 +2,8 @@
 #include "../include/folders.h"
 #include "../include/vfs_entry_store.h"
 
+#include "../include/file_logic.h" //only used for deleting a files content
+
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -100,7 +102,6 @@ StatusCode vfs_sub_file_init(
 }
 
 
-
 StatusCode vfs_sub_folder_init(
     Folder **out_folder,
     VFSEntryStore *entry_store,
@@ -151,6 +152,166 @@ StatusCode vfs_sub_folder_init(
     entry_store->folders_allocation_map[folder_pos] = true;
     return SUCCESS;
 }
+
+//Unlinks folder from parent and labels its position as available in the allocation map
+StatusCode delete_vfs_folder(VFSEntryStore *entry_store, Folder *folder, bool force)
+{
+    if (!folder || !entry_store)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    StatusCode status;
+
+    //Checking if the folder is an established entry store entry.
+    status = validate_vfs_folder(folder, entry_store);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    bool folder_has_sub_entries;
+
+    status = has_sub_entries(folder ,&folder_has_sub_entries);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (!folder_has_sub_entries)
+    {
+        status = unlink_sub_folder(folder);
+        
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+
+        entry_store->folders_allocation_map[folder - &entry_store->folders[0]] = false;
+    }
+
+    if (!force)
+    {
+        return ATTEMPTED_TO_DELETE_FOLDER_WITH_SUB_ENTRIES;
+    }
+
+    //TODO complete implementation and Integrate with recursive rm
+    return IMPLEMENTATION_INCOMPLETE;
+}
+
+StatusCode delete_children_recursive(Folder *cur_folder, VFSEntryStore *entry_store, StorageMan *storage_man, size_t cur_step)
+{
+    if (!cur_folder || !entry_store || !storage_man)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cur_step > MAX_FOLDER_DEPTH)
+    {
+        return RECURSIVE_OPERATION_LIMIT_EXCEEDED;
+    }
+
+    cur_step++;
+
+    StatusCode status;
+
+    status = validate_vfs_folder(cur_folder, entry_store);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    /* 
+        Any failure is fatal.
+    */
+    
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        if (cur_folder->sub_files[i] == NULL)
+        {
+            continue;
+        }
+        
+        status = delete_vfs_file(entry_store, cur_folder->sub_files[i], storage_man);
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+    }
+
+    for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
+    {
+        if (cur_folder->sub_folders[i] == NULL)
+        {
+            continue;
+        }
+
+        status = delete_children_recursive(cur_folder->sub_folders[i], entry_store, storage_man, cur_step);
+        
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+    }
+    
+    status = unlink_sub_folder(cur_folder);
+    
+    if (status != SUCCESS)
+    {   
+        return status;
+    }
+
+    //validation guarantees folder is within these bounds
+    entry_store->folders_allocation_map[cur_folder - &entry_store->folders[0]] = false;
+
+    return SUCCESS;
+}
+
+StatusCode delete_vfs_file(VFSEntryStore *entry_store, File *file, StorageMan *storage_man)
+{
+    if (!entry_store || !file)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    StatusCode status;
+
+    //Checking if parent is an established entry store entry
+    status = validate_vfs_folder(file->parent_folder, entry_store);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (&entry_store->files[0] > file || file >= &entry_store->files[0] + VFS_MAX_FILES_AMOUNT)
+    {
+        return UNKNOWN_ENTRY;
+    }
+    
+    status = unlink_sub_file(file);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    status = file_delete_data(file, storage_man);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    entry_store->files_allocation_map[file - &entry_store->files[0]] = false;
+
+    return SUCCESS;
+}
+
 
 //verifies that the folder belongs to and is committed to VFS 
 StatusCode validate_vfs_folder(Folder *folder, VFSEntryStore *entry_store)
@@ -245,27 +406,23 @@ StatusCode print_entry_store(VFSEntryStore *entry_store)
         return NULL_POINTER_PASSED;
     }
 
-    printf("Files:\n\n");
+    printf("Printing VFS Entry Store...\n");
+    
+    printf("File Allocation Map: ");
     for (size_t i = 0; i < VFS_MAX_FILES_AMOUNT; i++)
     {
-        if (!entry_store->files_allocation_map[i])
-        {
-            continue;
-        }
-        print_file(&entry_store->files[i], true);
-        printf("\n");
+        printf(" %d", entry_store->files_allocation_map[i]);
     }
+    printf("\n");
 
-    printf("Folders: \n");
+    printf("Folder Allocation Map: ");
     for (size_t i = 0; i < VFS_MAX_FOLDERS_AMOUNT; i++)
     {
-        if (!entry_store->folders_allocation_map[i])
-        {
-            continue;
-        }
-
-        printf("    %s\n", entry_store->folders[i].name);
+        printf(" %d", entry_store->folders_allocation_map[i]);
     }
+    printf("\n");
 
-    return SUCCESS;
+    printf("Tree:\n");
+    StatusCode status = print_folder(&entry_store->root);
+    return status;
 }
