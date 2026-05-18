@@ -163,23 +163,22 @@ StatusCode sub_folder_init(
     return SUCCESS;
 }
 
-//TODO remove parent_folder once it is added as an attribute of files
-StatusCode unlink_sub_file(Folder *parent_folder, File *file)
+StatusCode unlink_sub_file(File *file)
 {
-    if (!parent_folder || !file)
+    if (!file)
     {
         return NULL_POINTER_PASSED;
     }
 
     size_t sub_file_index;
-    StatusCode status = find_sub_file_index(parent_folder, file, &sub_file_index);
+    StatusCode status = find_sub_file_index(file->parent_folder, file, &sub_file_index);
 
     if (status != SUCCESS)
     {
         return status;
     }
 
-    parent_folder->sub_files[sub_file_index] = NULL;
+    file->parent_folder->sub_files[sub_file_index] = NULL;
     file->parent_folder = NULL;
     return SUCCESS;
 }

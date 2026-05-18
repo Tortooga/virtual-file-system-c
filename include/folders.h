@@ -73,8 +73,7 @@ StatusCode unlink_sub_folder(Folder *sub_folder, bool force);
 
 //unlinks sub_file from parent
 //this is done by removing the files address from the parents list of sub folders
-StatusCode unlink_sub_file(Folder *parent_folder, File *file);
-
+StatusCode unlink_sub_file(File *file);
 
 //Compare the name of an initialised file/folder(where null terminator is enforced) to the name of a file/folder where it isnt
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
@@ -82,4 +81,6 @@ StatusCode name_eq(const char *initialised_name, const char *uninitialised_name,
 //Debug function prints folders sub entry names
 StatusCode print_folder(Folder *folder);
 
+//Checks whether a folder has sub entries and outputs result onto out_result
+StatusCode has_sub_entries(Folder *folder, bool *out_result);
 #endif
