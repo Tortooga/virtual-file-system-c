@@ -1,3 +1,11 @@
+run: core.o main.o 
+	@gcc obj/main.o obj/core.o -o bin/app
+	@echo "=============================================="
+	@echo "||               Running App                ||"
+	@echo "=============================================="
+	@./bin/app
+
+#Executables 
 app: core.o main.o 
 	gcc obj/main.o obj/core.o -o bin/app
 
@@ -6,11 +14,12 @@ apptest: core.o tests_main.o testscore.o
 
 
 #Relocatable object files
+#We hide linking 
 testscore.o: file_storage_tests.o file_logic_tests.o queries_tests.o
-	gcc -r obj/file_storage_tests.o obj/file_logic_tests.o obj/queries_tests.o -o obj/testscore.o 
+	@gcc -r obj/file_storage_tests.o obj/file_logic_tests.o obj/queries_tests.o -o obj/testscore.o 
 
 core.o: storage.o files.o file_storage.o file_logic.o folders.o vfs_entry_store.o path_utils.o queries.o vfs_context.o
-	gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/vfs_entry_store.o obj/path_utils.o obj/queries.o obj/vfs_context.o -o obj/core.o
+	@gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/vfs_entry_store.o obj/path_utils.o obj/queries.o obj/vfs_context.o -o obj/core.o
 
 
 #Entry points

@@ -14,7 +14,8 @@ StatusCode get_available_allocation_map_position(
 StatusCode get_available_file_position(size_t *out_file_store_position, const VFSEntryStore *entry_store);
 StatusCode get_available_folder_position(size_t *out_folder_store_position, const VFSEntryStore *entry_store);
 StatusCode validate_vfs_folder(Folder *folder, VFSEntryStore *entry_store);
-
+StatusCode delete_flat_folder(Folder *folder, VFSEntryStore *entry_store);
+StatusCode delete_children_recursive(Folder *cur_folder, VFSEntryStore *entry_store, StorageMan *storage_man, size_t cur_step);
 
 StatusCode vfs_entry_store_init(VFSEntryStore *out_vfs_entry_store)
 {
@@ -154,9 +155,9 @@ StatusCode vfs_sub_folder_init(
 }
 
 //Unlinks folder from parent and labels its position as available in the allocation map
-StatusCode delete_vfs_folder(VFSEntryStore *entry_store, Folder *folder, bool force)
+StatusCode delete_vfs_folder(Folder *folder, VFSEntryStore *entry_store, StorageMan *storage_man, bool force)
 {
-    if (!folder || !entry_store)
+    if (!folder || !entry_store || !storage_man)
     {
         return NULL_POINTER_PASSED;
     }
@@ -182,14 +183,10 @@ StatusCode delete_vfs_folder(VFSEntryStore *entry_store, Folder *folder, bool fo
 
     if (!folder_has_sub_entries)
     {
-        status = unlink_sub_folder(folder);
-        
-        if (status != SUCCESS)
-        {
-            return status;
-        }
-
-        entry_store->folders_allocation_map[folder - &entry_store->folders[0]] = false;
+        return delete_flat_folder(
+            folder,
+            entry_store
+        );
     }
 
     if (!force)
@@ -197,8 +194,42 @@ StatusCode delete_vfs_folder(VFSEntryStore *entry_store, Folder *folder, bool fo
         return ATTEMPTED_TO_DELETE_FOLDER_WITH_SUB_ENTRIES;
     }
 
-    //TODO complete implementation and Integrate with recursive rm
-    return IMPLEMENTATION_INCOMPLETE;
+    status = delete_children_recursive(
+        folder,
+        entry_store,
+        storage_man, 0
+    );
+    
+    //Fetal
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    return SUCCESS;
+}
+
+
+//Private helper
+//folder must not have sub entries
+//folder must be a memeber of entry_store->folders_allocation_map 
+StatusCode delete_flat_folder(Folder *folder, VFSEntryStore *entry_store)
+{
+    if (!folder)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    StatusCode status = unlink_sub_folder(folder);
+        
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    entry_store->folders_allocation_map[folder - &entry_store->folders[0]] = false;
+
+    return SUCCESS;
 }
 
 StatusCode delete_children_recursive(Folder *cur_folder, VFSEntryStore *entry_store, StorageMan *storage_man, size_t cur_step)
@@ -258,17 +289,14 @@ StatusCode delete_children_recursive(Folder *cur_folder, VFSEntryStore *entry_st
         }
     }
     
-    status = unlink_sub_folder(cur_folder);
-    
-    if (status != SUCCESS)
-    {   
-        return status;
-    }
+    //Children have already been deleted. Folder has become flat
+    //validation guarantees folder is within &entry_store->folders
+    status = delete_flat_folder(
+        cur_folder,
+        entry_store
+    );
 
-    //validation guarantees folder is within these bounds
-    entry_store->folders_allocation_map[cur_folder - &entry_store->folders[0]] = false;
-
-    return SUCCESS;
+    return status;
 }
 
 StatusCode delete_vfs_file(VFSEntryStore *entry_store, File *file, StorageMan *storage_man)

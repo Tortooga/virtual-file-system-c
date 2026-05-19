@@ -68,19 +68,28 @@ int main(int argc, char *argv)
     StatusCode print_folder_recursion(Folder *cur_folder, size_t indentation_count);
 
     StatusCode delete_children_recursive(Folder *cur_folder, VFSEntryStore *entry_store, StorageMan *storage_man, size_t cur_step);
-
-    //print_entry_store(&store);
     
-    File *home;
-    search_sub_file(store.root.sub_folders[0], "welcome.txt", 12, &home);
+    Folder *test_folder;
     
-    file_append(home, &storage_man, "hello this is a test", 21);
+    vfs_sub_folder_init(
+        &test_folder,
+        &store,
+        "test_folder",
+        12,
+        &store.root
+    );
+    
+    print_entry_store(&store);
 
-    print_allocation_map(&storage_man);
+    delete_vfs_folder(
+        test_folder,
+        &store,
+        &storage_man,
+        false
+    );
+    
 
-    status = delete_children_recursive(store.root.sub_folders[0], &store, &storage_man, 0);
-
-    print_allocation_map(&storage_man);
+    print_entry_store(&store);
 } 
 
 

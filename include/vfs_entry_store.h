@@ -68,6 +68,14 @@ StatusCode vfs_sub_folder_init(
 */
 StatusCode delete_vfs_file(VFSEntryStore *entry_store, File *file, StorageMan *storage_man);
 
+/*
+    Unlinks folder from parent 
+    labels its position as available in the allocation map
+    If folder has children and force is set to true it wil recursively delete its children too
+    If force is set to false it will fail
+*/
+StatusCode delete_vfs_folder(Folder *folder, VFSEntryStore *entry_store, StorageMan *storage_man, bool force);
+
 
 /*
     Debug function prints sub entry meta data
