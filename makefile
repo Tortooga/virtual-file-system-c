@@ -18,8 +18,8 @@ apptest: core.o tests_main.o testscore.o
 testscore.o: file_storage_tests.o file_logic_tests.o queries_tests.o
 	@gcc -r obj/file_storage_tests.o obj/file_logic_tests.o obj/queries_tests.o -o obj/testscore.o 
 
-core.o: storage.o files.o file_storage.o file_logic.o folders.o vfs_entry_store.o path_utils.o queries.o vfs_context.o
-	@gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/vfs_entry_store.o obj/path_utils.o obj/queries.o obj/vfs_context.o -o obj/core.o
+core.o: storage.o files.o file_storage.o file_logic.o folders.o vfs_entry_store.o path_utils.o queries.o entry_relocation.o vfs_context.o
+	@gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/vfs_entry_store.o obj/path_utils.o obj/queries.o obj/entry_relocation.o obj/vfs_context.o -o obj/core.o
 
 
 #Entry points
@@ -66,6 +66,9 @@ path_utils.o : src/path_utils.c
 
 queries.o: src/queries.c
 	gcc -c src/queries.c -o obj/queries.o
+
+entry_relocation.o: src/entry_relocation.c
+	gcc -c src/entry_relocation.c -o obj/entry_relocation.o
 
 vfs_context.o: src/vfs_context.c 
 	gcc -c src/vfs_context.c -o obj/vfs_context.o 

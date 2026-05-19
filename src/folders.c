@@ -9,27 +9,15 @@
 static const char root_name[] = "root";
 size_t root_name_length = sizeof(root_name) - 1;
 
-StatusCode get_available_sub_folder_position(Folder *parent_folder, size_t *out_index);
-StatusCode get_available_sub_file_position(Folder *parent_folder, size_t *out_index);
 StatusCode folder_free_sub_entries(Folder *folder);
 StatusCode name_eq(const char *initialised_name, const char *uninitialised_name, size_t uninitialised_name_length, bool *out_result);
-StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result);
 StatusCode has_sub_entries(Folder *folder, bool *out_result);
 StatusCode find_sub_folder_index(Folder *sub_folder, size_t *out_sub_folder_index);
 StatusCode find_sub_file_index(Folder *parent_folder, File *file, size_t *out_sub_file_index);
 StatusCode print_folder_recursion(Folder *cur_folder, size_t step_count);
+StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result);
 
-StatusCode validate_sub_entry_name(
-    Folder *parent_folder,
-    const char *entry_name,
-    const size_t entry_name_length
-);
 
-StatusCode set_entry_name(
-    const char *name,
-    const size_t name_length,
-    char *out_entry_name
-);
 
 //Initialises folder into root directory
 StatusCode root_folder_init(Folder *folder)

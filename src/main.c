@@ -7,6 +7,8 @@
 #include "../include/queries.h"
 #include "../include/path_utils.h"
 #include "../include/vfs_context.h"
+#include "../include/entry_relocation.h"
+
 
 #include <stdio.h>
 #include <string.h>
@@ -79,16 +81,12 @@ int main(int argc, char *argv)
         &store.root
     );
     
-    print_entry_store(&store);
-
-    delete_vfs_folder(
-        test_folder,
-        &store,
-        &storage_man,
-        false
+    rename_file(
+        store.root.sub_folders[0]->sub_files[0],
+        "READYOU",
+        8
     );
     
-
     print_entry_store(&store);
 } 
 

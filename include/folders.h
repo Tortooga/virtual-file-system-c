@@ -83,4 +83,25 @@ StatusCode print_folder(Folder *folder);
 
 //Checks whether a folder has sub entries and outputs result onto out_result
 StatusCode has_sub_entries(Folder *folder, bool *out_result);
+
+//Verifies that the provided name is unique
+//And that it is of 0 < length < MAX_NAME_LENGTH 
+StatusCode validate_sub_entry_name(
+    Folder *parent_folder,
+    const char *entry_name,
+    const size_t entry_name_length
+);
+
+//helper copies provided name into out_entry_name
+StatusCode set_entry_name(
+    const char *name,
+    const size_t name_length,
+    char *out_entry_name
+);
+
+//Returns an available index in the parent folders array of sub folders
+StatusCode get_available_sub_folder_position(Folder *parent_folder, size_t *out_index);
+
+//Returns an available index in the parent folders array of sub files
+StatusCode get_available_sub_file_position(Folder *parent_folder, size_t *out_index);
 #endif
