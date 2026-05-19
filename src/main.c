@@ -81,10 +81,10 @@ int main(int argc, char *argv)
         &store.root
     );
     
-    rename_file(
-        store.root.sub_folders[0]->sub_files[0],
-        "READYOU",
-        8
+    rename_folder(
+        test_folder,
+        "lolol",
+        6
     );
     
     print_entry_store(&store);
