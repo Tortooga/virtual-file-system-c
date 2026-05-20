@@ -28,4 +28,9 @@ StatusCode rename_folder(
 //Is not responsible for verifying that new_parent is a part of the same vfs as file.
 StatusCode move_file(File *file, Folder *new_parent);
 
+//Moves folder to new parent
+//Ensures that folder.name is unique under new parent
+//Ensures that new parent is not a descendant of folder
+//Is not responsible for verifying that new_parent is a part of the same vfs as file.
+StatusCode move_folder(Folder *folder, Folder *new_parent);
 #endif

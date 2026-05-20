@@ -72,24 +72,41 @@ int main(int argc, char *argv)
     StatusCode delete_children_recursive(Folder *cur_folder, VFSEntryStore *entry_store, StorageMan *storage_man, size_t cur_step);
     
     VFSNode node;
-    char *path = "home/user/documents/resume.pdf";
+    char *path1 = "etc/nginx/conf";
+    char *path2 = "home";
 
 
     status = resolve_path(
-        path,
-        strlen(path),
+        path1,
+        strlen(path1),
         &store.root,
         &node
     );
 
-    printf("Path Resolution Status: %d\n", status);
+    printf("Path Resolution 1 Status: %d\n", status);
 
-    File *target_file = node.node.file;
-    
-    status = move_file(target_file, store.root.sub_folders[1]->sub_folders[0]->sub_folders[0]);
-    
-    printf("Move Status: %d\n", status);
+    Folder *target_folder1 = node.node.folder;
 
+    status = resolve_path(
+        path2,
+        strlen(path2),
+        &store.root,
+        &node
+    );
+
+    printf("Path Resolution 2 Status: %d\n", status);
+
+    Folder *target_folder2 = node.node.folder;
+
+StatusCode validate_no_cycle(Folder *new_parent, Folder *folder, size_t step_count);
+
+    status = move_folder(
+        target_folder1,
+        target_folder2
+    );
+
+    printf("Move Operation Status: %d\n", status);
+    
     print_entry_store(&store);
 } 
 

@@ -174,7 +174,7 @@ StatusCode unlink_sub_file(File *file)
 
 //unlinks sub_folder from parent
 //will not unlink sub_folder if it has  sub entries unless force is set to true
-StatusCode unlink_sub_folder(Folder *sub_folder)
+StatusCode unlink_sub_folder(Folder *sub_folder, bool force)
 {
     if (!sub_folder)
     {
@@ -195,7 +195,7 @@ StatusCode unlink_sub_folder(Folder *sub_folder)
         return status;
     }
 
-    if (sub_folder_has_sub_entries)
+    if (sub_folder_has_sub_entries && !force)
     {
         return ATTEMPTED_TO_DELETE_FOLDER_WITH_SUB_ENTRIES;
     }

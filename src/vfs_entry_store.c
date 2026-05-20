@@ -211,7 +211,6 @@ StatusCode delete_vfs_folder(Folder *folder, VFSEntryStore *entry_store, Storage
 
 
 //Private helper
-//folder must not have sub entries
 //folder must be a memeber of entry_store->folders_allocation_map 
 StatusCode delete_flat_folder(Folder *folder, VFSEntryStore *entry_store)
 {
@@ -220,7 +219,9 @@ StatusCode delete_flat_folder(Folder *folder, VFSEntryStore *entry_store)
         return NULL_POINTER_PASSED;
     }
 
-    StatusCode status = unlink_sub_folder(folder);
+    //force setting is set to false
+    //this means the function will not unlink and will return an error if folder has children
+    StatusCode status = unlink_sub_folder(folder, false);
         
     if (status != SUCCESS)
     {

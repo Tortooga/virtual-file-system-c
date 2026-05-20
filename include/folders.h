@@ -69,7 +69,7 @@ StatusCode root_folder_init(Folder *folder);
 //this is done by removing the folders address from the parents list of sub folders
 //as well as setting the folders parent to NULL
 //will not unlink sub_folder if it has sub entries unless force is set to true
-StatusCode unlink_sub_folder(Folder *sub_folder);
+StatusCode unlink_sub_folder(Folder *sub_folder, bool force);
 
 //unlinks sub_file from parent
 //this is done by removing the files address from the parents list of sub folders
