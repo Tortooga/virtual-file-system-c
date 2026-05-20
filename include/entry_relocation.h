@@ -23,4 +23,9 @@ StatusCode rename_folder(
     const size_t name_length
 );
 
+//Moves file to new parent 
+//Ensures that file.name is unique under new parent
+//Is not responsible for verifying that new_parent is a part of the same vfs as file.
+StatusCode move_file(File *file, Folder *new_parent);
+
 #endif

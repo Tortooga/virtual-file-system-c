@@ -71,22 +71,25 @@ int main(int argc, char *argv)
 
     StatusCode delete_children_recursive(Folder *cur_folder, VFSEntryStore *entry_store, StorageMan *storage_man, size_t cur_step);
     
-    Folder *test_folder;
-    
-    vfs_sub_folder_init(
-        &test_folder,
-        &store,
-        "test_folder",
-        12,
-        &store.root
+    VFSNode node;
+    char *path = "home/user/documents/resume.pdf";
+
+
+    status = resolve_path(
+        path,
+        strlen(path),
+        &store.root,
+        &node
     );
+
+    printf("Path Resolution Status: %d\n", status);
+
+    File *target_file = node.node.file;
     
-    rename_folder(
-        test_folder,
-        "lolol",
-        6
-    );
+    status = move_file(target_file, store.root.sub_folders[1]->sub_folders[0]->sub_folders[0]);
     
+    printf("Move Status: %d\n", status);
+
     print_entry_store(&store);
 } 
 

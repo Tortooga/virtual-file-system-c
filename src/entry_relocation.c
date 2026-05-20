@@ -2,6 +2,8 @@
 #include "../include/files.h"
 #include "../include/folders.h"
 
+#include <string.h>
+
 StatusCode rename_file(
     File *file,
     char *name,
@@ -86,4 +88,52 @@ StatusCode rename_folder(
     );
 
     return status;
+}
+
+//Moves file to new parent 
+//Ensures that file.name is unique under new parent
+//Is not responsible for verifying that new_parent is a part of the same vfs as file.
+StatusCode move_file(File *file, Folder *new_parent)
+{
+    if (!file || !new_parent)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    //verifies that the file->name is unique under new_parent
+    //file->name is guarnteed to be null terminated
+    StatusCode status = validate_sub_entry_name(
+        new_parent,
+        file->name,
+        strlen(file->name)
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    size_t new_file_index;
+
+    status = get_available_sub_file_position(
+        new_parent,
+        &new_file_index
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    status = unlink_sub_file(file);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    new_parent->sub_files[new_file_index] = file;
+    file->parent_folder = new_parent;
+
+    return SUCCESS;
 }

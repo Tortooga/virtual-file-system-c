@@ -154,7 +154,7 @@ StatusCode chread(
 {
     //Edge cases
     if (!storage_man || !out_data_array)
-    {
+    { 
         return NULL_POINTER_PASSED;
     }
     if (data_array_length < CHUNK_SIZE)
