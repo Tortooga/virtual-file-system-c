@@ -329,3 +329,38 @@ StatusCode parse_node(
         out_node_name_buffer++;
     }
 }
+
+//path is null terminated 
+//path_string_length is the length of the path until the first occurence of the null terminator
+//empty path(which corsponds to the root folder) leads to no op success
+StatusCode truncate_path(char *path, size_t path_string_length)
+{
+    if (!path)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (path_string_length == 0)
+    {
+        return SUCCESS;
+    }
+
+    char *cur_char = path + path_string_length - 1;
+
+    for (;; cur_char--)
+    {
+        if (*cur_char == PATH_DELIMITER)
+        {
+            *cur_char = '\0';
+            break;
+        }
+        *cur_char = '\0';
+
+        if (cur_char <= path)
+        {
+            break;
+        }
+    }
+
+    return SUCCESS;
+}

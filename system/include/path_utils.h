@@ -33,4 +33,9 @@ StatusCode append_node_name_to_path(
 //node name guaranteed to be null terminated 
 //out_path will be null terminated
 StatusCode get_node_path(VFSNode *node, char *out_path, size_t path_length);
+
+//path is null terminated 
+//path_string_length is the length of the path until the first occurence of the null terminator
+//empty path(which corsponds to the root folder) leads to no op success
+StatusCode truncate_path(char *path, size_t path_string_length);
 #endif
