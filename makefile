@@ -21,8 +21,8 @@ testscore.o: file_storage_tests.o file_logic_tests.o queries_tests.o
 systemReloc.o: storage.o files.o file_storage.o file_logic.o folders.o vfs_entry_store.o path_utils.o queries.o entry_relocation.o
 	@gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/vfs_entry_store.o obj/path_utils.o obj/queries.o obj/entry_relocation.o -o obj/systemReloc.o
 
-workspaceReloc.o: workspace.o
-	@gcc -r obj/workspace.o -o obj/workspaceReloc.o 
+workspaceReloc.o: workspace.o navigation.o 
+	@gcc -r obj/workspace.o obj/navigation.o -o obj/workspaceReloc.o 
 
 #Entry points
 tests_main.o: tests/tests_main.c
@@ -36,6 +36,8 @@ main.o: main.c
 workspace.o: workspace/workspace.c
 	gcc -c workspace/workspace.c -I system/include -I . -o obj/workspace.o 
 
+navigation.o: workspace/navigation.c
+	gcc -c workspace/navigation.c -I system/include -I . -o obj/navigation.o 
 
 #Test object files
 queries_tests.o: tests/queries_tests.c 

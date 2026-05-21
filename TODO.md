@@ -27,6 +27,8 @@
 instead it allocates new storage writes into it and the updates meta data to point to the new storage and free the old storage 
 - [ ] add "delete at"
 - [ ] **add print_tree command
+- [ ] move get parent folders out of path_utils
+- [ ] make empty path return root
 ## File Management
 
 ## CLI

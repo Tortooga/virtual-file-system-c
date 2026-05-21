@@ -1,7 +1,6 @@
 #ifndef workspace_H
 #define workspace_H
 
-#include "files.h"
 #include "folders.h"
 #include "vfs_entry_store.h"
 

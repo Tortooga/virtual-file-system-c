@@ -8,6 +8,7 @@
 #include "path_utils.h"
 #include "entry_relocation.h"
 #include "workspace.h"
+#include "navigation.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -54,8 +55,6 @@ int main(int argc, char *argv)
 
     status = vfs_sub_folder_init(&folder, &store, "folder", 7, &store.root);
 
-    printf("Folder creation status: %d\n", status);
-
     File *file;
 
     status = vfs_sub_file_init(
@@ -66,47 +65,17 @@ int main(int argc, char *argv)
         folder
     );
 
-    StatusCode print_folder_recursion(Folder *cur_folder, size_t indentation_count);
+    Workspace workspace;
+    workspace_init(&store, &workspace);
 
-    StatusCode delete_children_recursive(Folder *cur_folder, VFSEntryStore *entry_store, StorageMan *storage_man, size_t cur_step);
-    
     VFSNode node;
-    char *path1 = "etc/nginx/conf";
-    char *path2 = "home";
+    wp_resolve_path(&workspace, "home", &node);
 
+    workspace.cur_folder = node.node.folder;
 
-    status = resolve_path(
-        path1,
-        strlen(path1),
-        &store.root,
-        &node
-    );
-
-    printf("Path Resolution 1 Status: %d\n", status);
-
-    Folder *target_folder1 = node.node.folder;
-
-    status = resolve_path(
-        path2,
-        strlen(path2),
-        &store.root,
-        &node
-    );
-
-    printf("Path Resolution 2 Status: %d\n", status);
-
-    Folder *target_folder2 = node.node.folder;
-
-StatusCode validate_no_cycle(Folder *new_parent, Folder *folder, size_t step_count);
-
-    status = move_folder(
-        target_folder1,
-        target_folder2
-    );
-
-    printf("Move Operation Status: %d\n", status);
-    
-    print_entry_store(&store);
+    status = wp_resolve_path(&workspace, "user/documents", &node);
+    printf("Search Status: %d\n", status);
+    printf("search result: %s\n", node.node.folder->name);
 } 
 
 
