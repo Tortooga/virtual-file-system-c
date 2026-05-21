@@ -1,5 +1,5 @@
-#ifndef VFS_CONTEXT_H
-#define VFS_CONTEXT_H
+#ifndef workspace_H
+#define workspace_H
 
 #include "files.h"
 #include "folders.h"
@@ -20,12 +20,12 @@ typedef struct
     VFSEntryStore *entry_store;
     //this is enough to store the names of MAX_PATH_NODES_AMOUNT path nodes with the maximum name length along with their path delimiters and null terminator
     char cur_path[MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1]; 
-} VFSContext;
+} Workspace;
 
 
-StatusCode vfs_context_init(
+StatusCode workspace_init(
     VFSEntryStore *entry_store,
-    VFSContext *out_vfs_context
+    Workspace *out_workspace
 );
 
 #endif

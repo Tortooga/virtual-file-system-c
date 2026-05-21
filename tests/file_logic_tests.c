@@ -1,5 +1,5 @@
-#include "../include/file_logic.h"
-#include "../include/files.h"
+#include "file_logic.h"
+#include "files.h"
 #include <stdio.h>
 #include <string.h>
 

@@ -1,14 +1,13 @@
-#include "../include/storage.h"
-#include "../include/settings.h"
-#include "../include/files.h"
-#include "../include/file_storage.h"
-#include "../include/file_logic.h"
-#include "../include/folders.h"
-#include "../include/queries.h"
-#include "../include/path_utils.h"
-#include "../include/vfs_context.h"
-#include "../include/entry_relocation.h"
-
+#include "storage.h"
+#include "settings.h"
+#include "files.h"
+#include "file_storage.h"
+#include "file_logic.h"
+#include "folders.h"
+#include "queries.h"
+#include "path_utils.h"
+#include "entry_relocation.h"
+#include "workspace.h"
 
 #include <stdio.h>
 #include <string.h>

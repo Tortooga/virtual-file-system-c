@@ -1,5 +1,5 @@
-#include "../include/folders.h"
-#include "../include/status.h"
+#include "folders.h"
+#include "status.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>

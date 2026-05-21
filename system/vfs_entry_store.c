@@ -1,8 +1,8 @@
-#include "../include/files.h"
-#include "../include/folders.h"
-#include "../include/vfs_entry_store.h"
+#include "files.h"
+#include "folders.h"
+#include "vfs_entry_store.h"
 
-#include "../include/file_logic.h" //only used for deleting a files content
+#include "file_logic.h" //only used for deleting a files content
 
 #include <stdbool.h>
 #include <stdio.h>

@@ -1,16 +1,16 @@
-run: core.o main.o 
-	@gcc obj/main.o obj/core.o -o bin/app
+run: systemReloc.o workspaceReloc.o main.o 
+	@gcc obj/systemReloc.o obj/workspaceReloc.o obj/main.o -o bin/app
 	@echo "=============================================="
 	@echo "||               Running App                ||"
 	@echo "=============================================="
 	@./bin/app
 
 #Executables 
-app: core.o main.o 
-	gcc obj/main.o obj/core.o -o bin/app
+app: systemReloc.o workspaceReloc.o main.o 
+	gcc obj/systemReloc.o obj/workspaceReloc.o obj/main.o -o bin/app
 
-apptest: core.o tests_main.o testscore.o 
-	gcc obj/core.o obj/testscore.o obj/tests_main.o -o bin/apptest
+apptest: systemReloc.o tests_main.o testscore.o 
+	gcc obj/system.o obj/testscore.o obj/tests_main.o -o bin/apptest
 
 
 #Relocatable object files
@@ -18,17 +18,23 @@ apptest: core.o tests_main.o testscore.o
 testscore.o: file_storage_tests.o file_logic_tests.o queries_tests.o
 	@gcc -r obj/file_storage_tests.o obj/file_logic_tests.o obj/queries_tests.o -o obj/testscore.o 
 
-core.o: storage.o files.o file_storage.o file_logic.o folders.o vfs_entry_store.o path_utils.o queries.o entry_relocation.o vfs_context.o
-	@gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/vfs_entry_store.o obj/path_utils.o obj/queries.o obj/entry_relocation.o obj/vfs_context.o -o obj/core.o
+systemReloc.o: storage.o files.o file_storage.o file_logic.o folders.o vfs_entry_store.o path_utils.o queries.o entry_relocation.o
+	@gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/vfs_entry_store.o obj/path_utils.o obj/queries.o obj/entry_relocation.o -o obj/systemReloc.o
 
+workspaceReloc.o: workspace.o
+	@gcc -r obj/workspace.o -o obj/workspaceReloc.o 
 
 #Entry points
 tests_main.o: tests/tests_main.c
 	gcc -c tests/tests_main.c -o obj/tests_main.o 
 
-main.o: src/main.c
-	gcc -c src/main.c -o obj/main.o
+main.o: main.c
+	gcc -c main.c -I system/include -I . -I workspace -o obj/main.o
 
+
+#Workspace object files
+workspace.o: workspace/workspace.c
+	gcc -c workspace/workspace.c -I system/include -I . -o obj/workspace.o 
 
 
 #Test object files
@@ -43,32 +49,29 @@ file_logic_tests.o: tests/file_logic_tests.c
 
 #Core object files
 	
-storage.o: src/storage.c
-	gcc -c src/storage.c -o obj/storage.o
+storage.o: system/storage.c
+	gcc -c system/storage.c -I system/include -I . -o obj/storage.o
 
-files.o: src/files.c
-	gcc -c src/files.c -o obj/files.o
+files.o: system/files.c
+	gcc -c system/files.c -I system/include -I . -o obj/files.o
 
-file_storage.o: src/file_storage.c
-	gcc -c src/file_storage.c -o obj/file_storage.o
+file_storage.o: system/file_storage.c
+	gcc -c system/file_storage.c -I system/include -I . -o obj/file_storage.o
 
-file_logic.o: src/file_logic.c
-	gcc -c src/file_logic.c -o obj/file_logic.o
+file_logic.o: system/file_logic.c
+	gcc -c system/file_logic.c -I system/include -I . -o obj/file_logic.o
 
-folders.o: src/folders.c
-	gcc -c src/folders.c -o obj/folders.o 
+folders.o: system/folders.c
+	gcc -c system/folders.c -I system/include -I . -o obj/folders.o 
 
-vfs_entry_store.o: src/vfs_entry_store.c
-	gcc -c src/vfs_entry_store.c -o obj/vfs_entry_store.o 
+vfs_entry_store.o: system/vfs_entry_store.c
+	gcc -c system/vfs_entry_store.c -I system/include -I . -o obj/vfs_entry_store.o 
 
-path_utils.o : src/path_utils.c
-	gcc -c src/path_utils.c -o obj/path_utils.o
+path_utils.o : system/path_utils.c
+	gcc -c system/path_utils.c -I system/include -I . -o obj/path_utils.o
 
-queries.o: src/queries.c
-	gcc -c src/queries.c -o obj/queries.o
+queries.o: system/queries.c
+	gcc -c system/queries.c -I system/include -I . -o obj/queries.o
 
-entry_relocation.o: src/entry_relocation.c
-	gcc -c src/entry_relocation.c -o obj/entry_relocation.o
-
-vfs_context.o: src/vfs_context.c 
-	gcc -c src/vfs_context.c -o obj/vfs_context.o 
+entry_relocation.o: system/entry_relocation.c
+	gcc -c system/entry_relocation.c -I system/include -I . -o obj/entry_relocation.o

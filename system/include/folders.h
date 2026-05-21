@@ -1,7 +1,7 @@
 #ifndef FOLDERS_H
 #define FOLDERS_H
 
-#include "../include/files.h"
+#include "files.h"
 
 //Invariants
 //a sub-entry is vacant if and only if it is NULL

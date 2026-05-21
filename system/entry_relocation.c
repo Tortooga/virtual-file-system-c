@@ -1,6 +1,6 @@
-#include "../include/entry_relocation.h"
-#include "../include/files.h"
-#include "../include/folders.h"
+#include "entry_relocation.h"
+#include "files.h"
+#include "folders.h"
 
 #include <string.h>
 

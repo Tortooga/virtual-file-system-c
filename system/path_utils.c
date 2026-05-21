@@ -1,6 +1,6 @@
-#include "../include/files.h"
-#include "../include/folders.h"
-#include "../include/status.h"
+#include "files.h"
+#include "folders.h"
+#include "status.h"
 
 #include <string.h>
 

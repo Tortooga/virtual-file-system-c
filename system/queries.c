@@ -1,9 +1,9 @@
-#include "../include/queries.h"
-#include "../include/folders.h"
-#include "../include/files.h"
-#include "../include/path_utils.h"
-#include "../include/status.h"
-#include "../include/vfs_entry_store.h"
+#include "queries.h"
+#include "folders.h"
+#include "files.h"
+#include "path_utils.h"
+#include "status.h"
+#include "vfs_entry_store.h"
 #include <string.h>
 
 StatusCode get_vfs_node(const char *name, Folder *cur_folder, VFSNode *out_vfs_node);

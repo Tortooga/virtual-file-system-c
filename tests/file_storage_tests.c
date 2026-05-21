@@ -1,4 +1,4 @@
-#include "../include/file_storage.h"
+#include "file_storage.h"
 #include "test_settings.h"
 #include <stdio.h>
 #include <string.h>

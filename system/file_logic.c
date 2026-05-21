@@ -1,7 +1,7 @@
-#include "../include/file_logic.h"
-#include "../include/files.h"
-#include "../include/file_storage.h"
-#include "../include/status.h"
+#include "file_logic.h"
+#include "files.h"
+#include "file_storage.h"
+#include "status.h"
 
 #include <stdio.h>
 

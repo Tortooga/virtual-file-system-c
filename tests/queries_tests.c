@@ -1,5 +1,5 @@
-#include "../include/queries.h"
-#include "../include/folders.h"
+#include "queries.h"
+#include "folders.h"
 
 #include <stdio.h>
 #include <string.h>

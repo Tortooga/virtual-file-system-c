@@ -1,6 +1,6 @@
-#include "../include/storage.h"
+#include "storage.h"
 #include <stdio.h>
-#include "../include/settings.h"
+#include "settings.h"
 
 void mark_as_allocated(bool *offset, size_t amount);
 void allocation_map_init(StorageMan *storage_man);
