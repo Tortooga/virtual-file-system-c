@@ -1,6 +1,9 @@
 #include "vfs_entry_store.h"
-#include "workspace.h"
 #include "status.h"
+#include "folders.h"
+
+#include "workspace.h"
+#include "navigation.h"
 
 #include <string.h>
 
@@ -40,3 +43,40 @@ StatusCode ws_create_folder(Workspace *workspace, char *folder_name)
     );
 }
 
+//file_path must be null terminated
+StatusCode ws_remove_file(Workspace *workspace, const char *file_path)
+{
+    if (!workspace || !file_path)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (workspace->safe_mode)
+    {
+        return INVALID_SAFE_MODE_OP;
+    }
+
+    VFSNode path_node;
+
+    StatusCode status = ws_resolve_path(
+        workspace,
+        file_path,
+        &path_node
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (path_node.type != FILE_NODE)
+    {
+        return ATTEMPTED_TO_RM_FOLDER;
+    }
+
+    return delete_vfs_file(
+        workspace->entry_store,
+        path_node.node.file,
+        workspace->storage_man
+    );
+}

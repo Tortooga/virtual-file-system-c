@@ -67,14 +67,15 @@ int main(int argc, char *argv)
     );
 
     Workspace workspace;
-    workspace_init(&store, &workspace);
+    workspace_init(&store, &storage_man, &workspace);
 
     ws_change_cur_folder(
         &workspace,
         "/home/user/documents"
     );
 
-    ws_create_file(&workspace, "newfileletsgoooo.txt");
+    ws_create_file(&workspace, "newfileletsgoooo");
+    ws_remove_file(&workspace, "/home/user/downloads/setup.exe");
     print_entry_store(&store);
 } 
 
