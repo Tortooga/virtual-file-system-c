@@ -80,7 +80,7 @@ StatusCode ws_change_cur_folder(Workspace *workspace, const char *path)
 
     if (target_node.type != FOLDER_NODE)
     {
-        return ATTEMPTED_TO_CD_INTO_FILE;
+        return EXPECTED_FOLDER_GOT_FILE;
     }
 
     //We cannot directly assign workspace->cur_path the path

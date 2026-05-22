@@ -75,8 +75,10 @@ int main(int argc, char *argv)
     );
 
     ws_create_file(&workspace, "newfileletsgoooo");
-    ws_remove_file(&workspace, "/home/user/downloads/setup.exe");
+    status = ws_remove_folder(&workspace, "/home/user/downloads/", true);
     print_entry_store(&store);
+
+    printf("Folder Remove Status: %d\n", status);
 } 
 
 

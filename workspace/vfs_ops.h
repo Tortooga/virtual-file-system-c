@@ -14,4 +14,12 @@ StatusCode ws_create_folder(Workspace *workspace, char *folder_name);
 
 //file_path must be null terminated
 StatusCode ws_remove_file(Workspace *workspace, const char *file_path);
+
+
+//folder_path must be null terminated
+//recursive enables the recursive deletion of children
+//attempting to delete a folder with children with recursive = false return error
+StatusCode ws_remove_folder(Workspace *workspace, const char *folder_path, bool recursive);
+
+
 #endif

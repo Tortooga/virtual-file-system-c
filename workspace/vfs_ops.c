@@ -6,6 +6,7 @@
 #include "navigation.h"
 
 #include <string.h>
+#include <stdbool.h>
 
 //file_name must be null terminated
 StatusCode ws_create_file(Workspace *workspace, char *file_name)
@@ -71,12 +72,54 @@ StatusCode ws_remove_file(Workspace *workspace, const char *file_path)
 
     if (path_node.type != FILE_NODE)
     {
-        return ATTEMPTED_TO_RM_FOLDER;
+        return EXPECTED_FILE_GOT_FOLDER;
     }
 
     return delete_vfs_file(
         workspace->entry_store,
         path_node.node.file,
         workspace->storage_man
+    );
+}
+
+//folder_path must be null terminated
+//recursive enables the recursive deletion of children
+//attempting to delete a folder with children with recursive = false return error
+StatusCode ws_remove_folder(Workspace *workspace, const char *folder_path, bool recursive)
+{
+    if (!workspace || !folder_path)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (workspace->safe_mode)
+    {
+        return INVALID_SAFE_MODE_OP;
+    }
+
+    VFSNode path_node;
+
+    StatusCode status = ws_resolve_path(
+        workspace,
+        folder_path,
+        &path_node
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (path_node.type != FOLDER_NODE)
+    {
+        return EXPECTED_FILE_GOT_FOLDER;
+    } 
+
+    //delete_vfs_folder handles recursive deleting and validation of folder
+    return delete_vfs_folder(
+        path_node.node.folder,
+        workspace->entry_store,
+        workspace->storage_man,
+        recursive
     );
 }
