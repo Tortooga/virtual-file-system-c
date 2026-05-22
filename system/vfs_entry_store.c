@@ -41,6 +41,7 @@ StatusCode vfs_entry_store_init(VFSEntryStore *out_vfs_entry_store)
 }
 
 //parent_folder must be in entry_store->folders
+//out_file is optional, it can be set to null
 StatusCode vfs_sub_file_init(
     File **out_file,
     VFSEntryStore *entry_store,
@@ -49,12 +50,15 @@ StatusCode vfs_sub_file_init(
     Folder *parent_folder
 )
 {
-    if (!entry_store || !file_name || !parent_folder || !out_file)
+    if (!entry_store || !file_name || !parent_folder)
     {
         return NULL_POINTER_PASSED;
     }
     //In case of partial failure 
-    *out_file = NULL;
+    if (out_file)
+    {
+        *out_file = NULL;
+    }
 
     //verifies that the folder belongs to and is committed to VFS 
     StatusCode status = validate_vfs_folder(parent_folder, entry_store);
@@ -95,8 +99,11 @@ StatusCode vfs_sub_file_init(
         return status;
     }
 
-    //file address placed onto output parameter
-    *out_file = &entry_store->files[file_pos];
+    //file address placed onto optional output parameter
+    if (out_file)
+    {
+        *out_file = &entry_store->files[file_pos];
+    }
     //marked as occupied(visible) only after complete success
     entry_store->files_allocation_map[file_pos] = true;
     return SUCCESS;
@@ -111,12 +118,16 @@ StatusCode vfs_sub_folder_init(
     Folder *parent_folder
 )
 {
-    if (!entry_store || !folder_name || !parent_folder || !out_folder)
+    if (!entry_store || !folder_name || !parent_folder)
     {
         return NULL_POINTER_PASSED;
     }
+    
     //In case of partial failure 
-    *out_folder = NULL;
+    if (out_folder)
+    {
+        *out_folder = NULL;
+    }
 
     //verifies that the folder belongs to and is committed to VFS 
     StatusCode status = validate_vfs_folder(parent_folder, entry_store);
@@ -149,7 +160,10 @@ StatusCode vfs_sub_folder_init(
         return status;
     }
 
-    *out_folder = &entry_store->folders[folder_pos];
+    if (out_folder)
+    {
+        *out_folder = &entry_store->folders[folder_pos];
+    }
     entry_store->folders_allocation_map[folder_pos] = true;
     return SUCCESS;
 }
