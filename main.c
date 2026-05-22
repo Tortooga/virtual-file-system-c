@@ -9,6 +9,7 @@
 #include "entry_relocation.h"
 #include "workspace.h"
 #include "navigation.h"
+#include "vfs_ops.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -68,17 +69,13 @@ int main(int argc, char *argv)
     Workspace workspace;
     workspace_init(&store, &workspace);
 
-    VFSNode node;
-    ws_resolve_path(&workspace, "home", &node);
-
     ws_change_cur_folder(
         &workspace,
         "/home/user/documents"
     );
 
-    printf("Current directory: %s\n", workspace.cur_folder->name);
-    printf("Current directory path: %s\n", workspace.cur_path);
-
+    ws_create_file(&workspace, "newfileletsgoooo.txt");
+    print_entry_store(&store);
 } 
 
 
