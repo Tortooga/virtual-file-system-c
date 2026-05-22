@@ -4,4 +4,13 @@
 
 //resolve path with wp context
 //path must be null terminated
-StatusCode wp_resolve_path(Workspace *workspace, const char *path, VFSNode *out_node);
+StatusCode ws_resolve_path(Workspace *workspace, const char *path, VFSNode *out_node);
+
+//Path must be null terminated
+//Changes workspace.cur_path to the folder at path
+StatusCode change_cur_folder(Workspace *workspace, const char *path);
+
+//Path must be null terminated
+//Changes workspace.cur_folder to the folder at path
+//Changes workspace.cur_path to the path of the new folder
+StatusCode ws_change_cur_folder(Workspace *workspace, const char *path);

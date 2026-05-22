@@ -69,13 +69,16 @@ int main(int argc, char *argv)
     workspace_init(&store, &workspace);
 
     VFSNode node;
-    wp_resolve_path(&workspace, "home", &node);
+    ws_resolve_path(&workspace, "home", &node);
 
-    workspace.cur_folder = node.node.folder;
+    ws_change_cur_folder(
+        &workspace,
+        "/home/user/documents"
+    );
 
-    status = wp_resolve_path(&workspace, "user/documents", &node);
-    printf("Search Status: %d\n", status);
-    printf("search result: %s\n", node.node.folder->name);
+    printf("Current directory: %s\n", workspace.cur_folder->name);
+    printf("Current directory path: %s\n", workspace.cur_path);
+
 } 
 
 

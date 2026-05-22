@@ -26,5 +26,4 @@ StatusCode workspace_init(
     VFSEntryStore *entry_store,
     Workspace *out_workspace
 );
-
 #endif
