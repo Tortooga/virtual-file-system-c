@@ -10,6 +10,8 @@
 #include "workspace.h"
 #include "navigation.h"
 #include "vfs_ops.h"
+#include "file_io.h"
+
 
 #include <stdio.h>
 #include <string.h>
@@ -69,14 +71,15 @@ int main(int argc, char *argv)
     Workspace workspace;
     workspace_init(&store, &storage_man, &workspace);
 
-    ws_change_cur_folder(
+    status = ws_file_append(
         &workspace,
-        "/home/user/documents"
+        "/folder/file",
+        "hello this is a test.",
+        21
     );
 
-    ws_create_file(&workspace, "newfileletsgoooo");
-    ws_rename_node(&workspace, "/home/user/documents/newfileletsgoooo", "wejustchangeditsname");
-    print_entry_store(&store);
+    printf("Writing Status: %d\n", status);
+    print_storage(&storage_man);
 } 
 
 

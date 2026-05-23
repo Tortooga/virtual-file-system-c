@@ -87,3 +87,5 @@ explain everything about paths, their design, their invariants and their operati
 CLI client translates CLI commands into file sys functionality
 
 ## Append oriented systems simplify crashs and reduces fragmentation complexity 
+
+## statefull emulator workspace 
