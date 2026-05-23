@@ -21,5 +21,6 @@ StatusCode ws_remove_file(Workspace *workspace, const char *file_path);
 //attempting to delete a folder with children with recursive = false return error
 StatusCode ws_remove_folder(Workspace *workspace, const char *folder_path, bool recursive);
 
-
+//node_path and target_new_parent must be null terminated
+StatusCode ws_move_node(Workspace *workspace, const char *node_path, const char *target_new_parent_path);
 #endif

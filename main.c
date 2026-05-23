@@ -75,10 +75,8 @@ int main(int argc, char *argv)
     );
 
     ws_create_file(&workspace, "newfileletsgoooo");
-    status = ws_remove_folder(&workspace, "/home/user/downloads/", true);
+    ws_move_node(&workspace, "/home", "/etc");  
     print_entry_store(&store);
-
-    printf("Folder Remove Status: %d\n", status);
 } 
 
 
