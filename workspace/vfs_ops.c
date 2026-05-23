@@ -177,3 +177,45 @@ StatusCode ws_move_node(Workspace *workspace, const char *node_path, const char 
 
     return status;
 }
+
+//node_path and new_name must be null terminated
+StatusCode ws_rename_node(Workspace *workspace, const char *target_node_path, char *new_name)
+{
+    if (!workspace || !target_node_path || !new_name)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    VFSNode target_node;
+    StatusCode status = ws_resolve_path(
+        workspace,
+        target_node_path,
+        &target_node
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    //new_name is null terminated
+    //rename_[entry] handles validating new name and ensuring uniqueness within namespace
+    if (target_node.type == FILE_NODE)
+    {
+        status = rename_file(
+            target_node.node.file,
+            new_name,
+            strlen(new_name)
+        );
+    }
+    else
+    {
+        status = rename_folder(
+            target_node.node.folder,
+            new_name,
+            strlen(new_name)
+        );
+    }
+
+    return status;
+}

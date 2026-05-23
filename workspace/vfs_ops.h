@@ -23,4 +23,7 @@ StatusCode ws_remove_folder(Workspace *workspace, const char *folder_path, bool 
 
 //node_path and target_new_parent must be null terminated
 StatusCode ws_move_node(Workspace *workspace, const char *node_path, const char *target_new_parent_path);
+
+//node_path and new_name must be null terminated
+StatusCode ws_rename_node(Workspace *workspace, const char *target_node_path, const char *new_name);
 #endif

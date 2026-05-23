@@ -75,7 +75,7 @@ int main(int argc, char *argv)
     );
 
     ws_create_file(&workspace, "newfileletsgoooo");
-    ws_move_node(&workspace, "/home", "/etc");  
+    ws_rename_node(&workspace, "/home/user/documents/newfileletsgoooo", "wejustchangeditsname");
     print_entry_store(&store);
 } 
 
