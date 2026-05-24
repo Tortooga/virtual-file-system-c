@@ -30,7 +30,7 @@ StatusCode storage_man_init(
         storage_man->allocation_map = allocation_map;
         storage_man->storage = storage;
         storage_man->storage_size = storage_size;
-        storage_man->free_chunk_count = storage_size;
+        storage_man->free_chunk_count = storage_size / CHUNK_SIZE;
         allocation_map_init(storage_man);
         return SUCCESS;
     }
