@@ -36,4 +36,13 @@ StatusCode file_read_chunk(
     char *out_data,
     size_t data_length);
 
+//Assumes file.data_chunk_extents is compact.
+//Shifts all chunks beyond and including the specified position to the right by shift_amount
+//Positions shifted from must immediately be filled otherwise compactness will be broken
+StatusCode chunk_extent_right_shift(
+    ChunkExtent *position, 
+    size_t shift_amount, 
+    File *file
+);
+
 #endif

@@ -24,7 +24,30 @@ StatusCode read_full_chunks_and_update_buffer_pointer(
     size_t relative_chunk_index,
     StorageMan *storage_man,
     char **buffer,
-    size_t chunks_amount);
+    size_t chunks_amount
+);
+
+StatusCode file_truncate(
+    File *file,
+    StorageMan *storage_man,
+    size_t amount
+)
+{
+    if (!file || !storage_man)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (amount > file->allocated_size * CHUNK_SIZE)
+    {
+        amount = file->allocated_size * CHUNK_SIZE;
+    }
+    
+    size_t full_chunks_to_be_deleted = amount / CHUNK_SIZE;
+    size_t deleted_chunks_count = 0;
+
+    return IMPLEMENTATION_INCOMPLETE;
+}
 
 StatusCode file_read_at(
     File *file,
@@ -412,6 +435,35 @@ size_t get_chunks_amount(size_t data_length)
     }
 
     return (data_length / CHUNK_SIZE) + 1;
+}
+
+//extents must be compact
+StatusCode file_get_last_chunk_extent(File *file, ChunkExtent **out_chunk_extent)
+{
+    if (!file || !out_chunk_extent)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    ChunkExtent *cur_chunk_extent = &file->data_chunk_extents[0];
+
+    for (size_t i = 0; i < MAX_FILE_CHUNK_EXTENTS_AMOUNT; i++)
+    {
+        if (file->data_chunk_extents[i].is_empty)
+        {
+            if (cur_chunk_extent->is_empty)
+            {
+                return FILE_IS_EMPTY;
+            }
+
+            break;
+        }
+
+        cur_chunk_extent = &file->data_chunk_extents[i];
+    }
+
+    *out_chunk_extent = cur_chunk_extent;
+    return SUCCESS;
 }
 
 StatusCode file_delete_data(File *file, StorageMan *storage_man)

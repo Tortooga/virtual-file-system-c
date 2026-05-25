@@ -19,7 +19,9 @@ typedef struct Folder Folder;
 //At this layer extension is a part of the name
 typedef struct
 {
-    size_t allocated_size; //tracked at allocation and deallocation
+    //file size in chunks
+    //tracked at allocation and deallocation
+    size_t allocated_size; 
     Folder *parent_folder;
 
     ChunkExtent data_chunk_extents[MAX_FILE_CHUNK_EXTENTS_AMOUNT];
