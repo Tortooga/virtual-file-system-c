@@ -46,6 +46,51 @@ StatusCode file_truncate(
     size_t full_chunks_to_be_deleted = amount / CHUNK_SIZE;
     size_t deleted_chunks_count = 0;
 
+    //We get the last chunk extent in the compact file->data_chunk_extents
+    ChunkExtent *cur_chunk_extent;
+    StatusCode status = file_get_last_chunk_extent(file, &cur_chunk_extent);
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    //Deleting the full chunk extents within full_chunks_to_be_deleted
+    for (; cur_chunk_extent >= &file->data_chunk_extents[0]; cur_chunk_extent--)
+    {
+        if (deleted_chunks_count + cur_chunk_extent->chunk_amount > full_chunks_to_be_deleted)
+        {
+            break;
+        }
+
+        status = file_free_chunk_extent(
+            file,
+            cur_chunk_extent,
+            storage_man
+        );
+
+        //fetal system error. Should not happen
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+
+        deleted_chunks_count += cur_chunk_extent->chunk_amount;
+    }
+
+    //if the current chunk extent is empty this implies the full chunk extent deletion loop has deleted everything
+    if (cur_chunk_extent->is_empty)
+    {
+        if (deleted_chunks_count != full_chunks_to_be_deleted)
+        {
+            return INDEX_OUT_OF_BOUNDS;
+        }
+
+        return SUCCESS;
+    }
+
+    //truncate the last chunk extent
+
     return IMPLEMENTATION_INCOMPLETE;
 }
 

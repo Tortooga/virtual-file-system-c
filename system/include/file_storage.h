@@ -45,4 +45,7 @@ StatusCode chunk_extent_right_shift(
     File *file
 );
 
+//truncates a chunk extent
+StatusCode file_truncate_chunk_extent(File *file, ChunkExtent *chunk_extent, const size_t amount, StorageMan *storage_man);
+
 #endif

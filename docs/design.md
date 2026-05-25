@@ -89,3 +89,5 @@ CLI client translates CLI commands into file sys functionality
 ## Append oriented systems simplify crashs and reduces fragmentation complexity 
 
 ## statefull emulator workspace 
+
+## Original I implemented null terminator to indicate the end of a partial chunks data but soon I realised that prevents full byte writing

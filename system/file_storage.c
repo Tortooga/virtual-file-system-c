@@ -330,6 +330,55 @@ StatusCode get_last_chunk_extent(File *file, ChunkExtent **out_chunk_extent)
     return DATA_OVER_FLOW;
 }
 
+//truncates a chunk extent
+StatusCode file_truncate_chunk_extent(File *file, ChunkExtent *chunk_extent, const size_t amount, StorageMan *storage_man)
+{
+    if (!chunk_extent || !file || !storage_man)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (chunk_extent->is_empty)
+    {
+        return INVALID_ARGUMENT;
+    }
+
+    if (amount > chunk_extent->chunk_amount)
+    {
+        return INDEX_OUT_OF_BOUNDS;
+    }
+
+    //We entirely remove the chunk extents meta data if it is going to become empty
+    if (amount == chunk_extent->chunk_amount)
+    {
+        return file_free_chunk_extent(file, chunk_extent, storage_man);
+    }
+
+    StatusCode status;
+    
+    size_t extent_upper_lim_index = chunk_extent->start + chunk_extent->chunk_amount;
+    
+    for (
+        size_t cur_chunk = extent_upper_lim_index - amount; 
+        cur_chunk < extent_upper_lim_index; 
+        cur_chunk++
+    )
+    {
+        status = chfree(storage_man, cur_chunk);
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+        
+        //mutating meta data at each iteration 
+        // so partial failure leads to partial deallocation with accurate file and chunk extent meta data
+        file->allocated_size -= 1;
+        chunk_extent->chunk_amount -= 1;
+    }
+
+    return SUCCESS;
+}
 
 
 void chunk_extent_copy_range(ChunkExtent *target_chunk_extent, ChunkExtent *copy_chunk_extent)
