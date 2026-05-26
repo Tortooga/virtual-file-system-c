@@ -44,3 +44,19 @@ StatusCode ws_file_append(
         data_length
     );
 }
+
+StatusCode ws_file_clear(
+    Workspace *workspace,
+    File *file
+)
+{
+    if (!workspace || !file)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    return file_delete_data(
+        file,
+        workspace->storage_man
+    );
+}
