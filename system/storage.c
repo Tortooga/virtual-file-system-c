@@ -181,6 +181,45 @@ StatusCode chread(
     return SUCCESS;
 }
 
+//Overwrites the last "amount" chunks with '/0'  
+StatusCode chtrunc(size_t chunk_index, size_t amount, StorageMan *storage_man)
+{
+    if (!storage_man)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (chunk_index >= CHUNKS_AMOUNT)
+    {
+        return INDEX_OUT_OF_BOUNDS;
+    }
+
+    if (amount > CHUNK_SIZE)
+    {
+        return INDEX_OUT_OF_BOUNDS;
+    }   
+
+    if (amount == 0)
+    {
+        return INVALID_OPERATION;
+    }
+
+    char *chunk_start_addr = get_chunk_addr(storage_man, chunk_index);
+
+    if (!chunk_start_addr)
+    {
+        //chunk_index is invalid
+        return INVALID_ARGUMENT; 
+    }
+
+    for (size_t i = CHUNK_SIZE - amount; i < CHUNK_SIZE; i++)
+    {
+        chunk_start_addr[i] = '\0';
+    }
+
+    return SUCCESS;
+}
+
 inline char *get_chunk_addr(StorageMan *storage_man, size_t chunk_pos)
 {
     if (chunk_pos >= CHUNKS_AMOUNT || !storage_man)

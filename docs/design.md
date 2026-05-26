@@ -32,10 +32,7 @@ Files are mapped to storage locations using extent-based allocation
 
 ## Compact Extents Sequencing
 The order of elements in file.data_chunks_extents indicates the order of how the data is to be read.
-compactness is enforced by shifting to the right when a chunk extent is freed. This facilitates append mode
-
-## Copy on Write
-when a file is edited on modification mode the data is copied into memory, modified in memory and then rewritten into virtual storage
+compactness is enforced by shifting to the left when a chunk extent is freed. This facilitates append mode
 
 ## File Chunk Allocator And Deallocator
 file_allocate_chunks and file_free_chunks are abstractions over the storage alloc and dealloc functions challoc and chfree. they call these functions updating a files meta data accordingly 
@@ -45,6 +42,7 @@ this is the intermediate layer between raw storage IO and file IO. File cannot a
 
 It enforces file ownership and chunk extent compactness invariants.
 
+however, caller has to explicitly address chunks
 ## File Logic layer
 Abstracts the file storage layer by exposing functions that enable the caller to preform IO tasks on files without having to explicitly address and reason about file storage chunks
 

@@ -128,6 +128,9 @@ StatusCode chread(
     char *out_data_array, 
     size_t array_length);
 
+//Overwrites the last "amount" chunks with '/0'  
+StatusCode chtrunc(size_t chunk_index, size_t amount, StorageMan *storage_man);
+
 /*========================*
  * Debugging helpers      *
  *========================*/

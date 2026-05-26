@@ -55,6 +55,8 @@ StatusCode file_truncate(
         return status;
     }
 
+    /*      deleting full chunk extents       */
+
     //Deleting the full chunk extents within full_chunks_to_be_deleted
     for (; cur_chunk_extent >= &file->data_chunk_extents[0]; cur_chunk_extent--)
     {
@@ -89,8 +91,25 @@ StatusCode file_truncate(
         return SUCCESS;
     }
 
-    //truncate the last chunk extent
+    /*      Truncating final chunk extent   */
+    
+    status = file_truncate_chunk_extent(
+        file,
+        cur_chunk_extent,
+        //Guaranteed to be <= cur_chunk_extent->amount
+        full_chunks_to_be_deleted - deleted_chunks_count,
+        storage_man 
+    );
 
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    /*      Truncating final chunk      */
+
+    
+    //truncate final chunk
     return IMPLEMENTATION_INCOMPLETE;
 }
 
