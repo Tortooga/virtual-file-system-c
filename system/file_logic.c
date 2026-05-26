@@ -560,16 +560,21 @@ StatusCode file_delete_data(File *file, StorageMan *storage_man)
         return NULL_POINTER_PASSED;
     }
     StatusCode status;
-    for (size_t i = 0; i < MAX_FILE_CHUNK_EXTENTS_AMOUNT; i++)
+    
+    size_t cur_chunk_extent_index = 0;
+    for (; cur_chunk_extent_index < MAX_FILE_CHUNK_EXTENTS_AMOUNT;)
     {
-        if (file->data_chunk_extents[i].is_empty)
+        //We only increment if the index is empty
+        //this is because file_free_chunk_extent left shifts after deleting
+        //so after a left shift incrementing would skip the next element which gets shifted to the current position
+        if (file->data_chunk_extents[cur_chunk_extent_index].is_empty)
         {
+            cur_chunk_extent_index++;
             continue;
         }
-
         status = file_free_chunk_extent(
             file,
-            &file->data_chunk_extents[i],
+            &file->data_chunk_extents[cur_chunk_extent_index],
             storage_man
         );
 
