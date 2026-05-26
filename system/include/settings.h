@@ -6,6 +6,8 @@
 
 #define MAX_FILE_CHUNK_EXTENTS_AMOUNT 10
 
+#define EOC_OPERATOR 0x1E
+
 #define MAX_NAME_LENGTH 32 //(i.e file names and folder names)
 
 #define MAX_SUB_FILES_AMOUNT 10

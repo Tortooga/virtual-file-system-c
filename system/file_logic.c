@@ -9,6 +9,7 @@ StatusCode get_remaining_data(char *out_remaining_data, char *data_start, size_t
 bool uses_full_chunks(size_t data_length);
 size_t get_chunks_amount(size_t data_length);
 StatusCode get_chunk_index(File *file, size_t relative_chunk_position, size_t *out_chunk_index);
+StatusCode file_get_last_chunk_extent(File *file, ChunkExtent **out_chunk_extent);
 
 StatusCode read_chunk_from_until(
     StorageMan *storage_man,
@@ -27,7 +28,8 @@ StatusCode read_full_chunks_and_update_buffer_pointer(
     size_t chunks_amount
 );
 
-StatusCode file_truncate(
+
+StatusCode file_truncate_by(
     File *file,
     StorageMan *storage_man,
     size_t amount
@@ -40,7 +42,7 @@ StatusCode file_truncate(
 
     if (amount > file->allocated_size * CHUNK_SIZE)
     {
-        amount = file->allocated_size * CHUNK_SIZE;
+        return INDEX_OUT_OF_BOUNDS;
     }
     
     size_t full_chunks_to_be_deleted = amount / CHUNK_SIZE;
@@ -93,11 +95,18 @@ StatusCode file_truncate(
 
     /*      Truncating final chunk extent   */
     
+    size_t final_chunk_extent_truncation_amount = full_chunks_to_be_deleted - deleted_chunks_count;
+
+    //Impossible state
+    if (cur_chunk_extent->chunk_amount <= final_chunk_extent_truncation_amount)
+    {
+        return INDEX_OUT_OF_BOUNDS;
+    }
+
     status = file_truncate_chunk_extent(
         file,
         cur_chunk_extent,
-        //Guaranteed to be <= cur_chunk_extent->amount
-        full_chunks_to_be_deleted - deleted_chunks_count,
+        final_chunk_extent_truncation_amount,
         storage_man 
     );
 
@@ -106,11 +115,25 @@ StatusCode file_truncate(
         return status;
     }
 
+
     /*      Truncating final chunk      */
 
-    
-    //truncate final chunk
-    return IMPLEMENTATION_INCOMPLETE;
+    //file_truncate_chunk_extent modifies cur_chunk_extent->chunk_amount to be one after the last chunk
+    size_t final_chunk_index = cur_chunk_extent->start + cur_chunk_extent->chunk_amount - 1;
+    size_t final_chunk_truncation_amount = amount % CHUNK_SIZE;
+
+    if (final_chunk_truncation_amount == 0)
+    {
+        return SUCCESS;
+    }
+
+    status = chtrunc(
+        final_chunk_index,
+        final_chunk_truncation_amount,
+        storage_man
+    );
+
+    return status;
 }
 
 StatusCode file_read_at(
@@ -478,7 +501,7 @@ StatusCode get_remaining_data(char *out_remaining_data, char *data_start, size_t
 
     for (; cur_byte_index < CHUNK_SIZE; cur_byte_index++)
     {
-        out_remaining_data[cur_byte_index] = '\0';
+        out_remaining_data[cur_byte_index] = EOC_OPERATOR;
     }
 
     return SUCCESS;

@@ -25,6 +25,12 @@ StatusCode file_read_at(
     size_t buffer_size
 );
 
+StatusCode file_truncate_by(
+    File *file,
+    StorageMan *storage_man,
+    size_t amount
+);
+
 //frees all the files chunk extents
 //updates file and storage manager meta data
 StatusCode file_delete_data(File *file, StorageMan *storage_man);

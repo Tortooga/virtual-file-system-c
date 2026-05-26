@@ -214,7 +214,7 @@ StatusCode chtrunc(size_t chunk_index, size_t amount, StorageMan *storage_man)
 
     for (size_t i = CHUNK_SIZE - amount; i < CHUNK_SIZE; i++)
     {
-        chunk_start_addr[i] = '\0';
+        chunk_start_addr[i] = EOC_OPERATOR;
     }
 
     return SUCCESS;
