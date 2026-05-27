@@ -88,6 +88,33 @@ StatusCode cmd_tokenize(
     return SUCCESS;
 }
 
+//func_str must be a C string
+StatusCode resolve_cmd_function(
+    const char *func_str,
+    CommandFunction *out_func
+)
+{
+    if (!func_str || !out_func)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (func_str[0] == '\0')
+    {
+        return CMD_IS_EMPTY;
+    }
+
+    for (size_t i = 0; i < COMMAND_TABLE_LENGTH; i++)
+    {
+        if (strcmp(func_str, COMMAND_TABLE[i].func_str) == 0)
+        {
+            *out_func = COMMAND_TABLE[i].func;
+            return SUCCESS;
+        }
+    }
+
+    return INVALID_CMD_FUNCTION;
+}
 
 //command_str must be a C string
 StatusCode cmd_parse(
@@ -100,33 +127,36 @@ StatusCode cmd_parse(
         return NULL_POINTER_PASSED;
     }
 
-    size_t command_str_length = strlen(command_str);
+    size_t command_length = strlen(command_str);
     
-    size_t cur_char_index = 0;
-
-    for (; cur_char_index < command_str_length; cur_char_index++)
+    if (command_length == 0)
     {
-        
+        return CMD_IS_EMPTY;
+    }
+    
+    if (command_length < MAX_COMMAND_LENGTH)
+    {
+        return CMD_IS_TOO_LONG;
+    }
+    
+    char *tokens[MAX_TOKENS_AMOUNT];
+    size_t tokens_amount;
+    StatusCode status = cmd_tokenize(
+        command_str,
+        tokens,
+        MAX_TOKENS_AMOUNT,
+        &tokens_amount
+    );
+
+    if (status != SUCCESS)
+    {
+        return SUCCESS;
     }
 
-    size_t cur_arg_index = 0;
-    size_t cur_opt_index = 0;
-
-    size_t cur_item_length;
-    for (; cur_char_index < command_str_length; cur_char_index++)
+    if (tokens_amount == 0)
     {
-        if (cur_arg_index >= MAX_CMD_ARGUMENT_AMOUNT)
-        {
-            return TOO_MANY_ARGUMENTS;
-        }
-
-        if (cur_opt_index >= MAX_CMD_OPTION_AMOUNT)
-        {
-            return TOO_MANY_OPTIONS;
-        }
-
-
+        return CMD_IS_EMPTY;
     }
 
-    return IMPLEMENTATION_INCOMPLETE;
+
 }

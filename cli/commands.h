@@ -12,7 +12,9 @@
 #define MAX_CMD_OPTION_AMOUNT 1
 
 #define COMMAND_DELIMITER ' '
+#define MAX_COMMAND_LENGTH MAX_CMD_ARGUMENT_AMOUNT * MAX_CMD_ARGUMENT_LENGTH + MAX_CMD_OPTION_AMOUNT
 #define MAX_TOKEN_LENGTH MAX_CMD_ARGUMENT_LENGTH
+#define MAX_TOKENS_AMOUNT 1 + MAX_CMD_ARGUMENT_AMOUNT + MAX_CMD_OPTION_AMOUNT
 
 typedef enum {
     //Navigation
@@ -45,7 +47,7 @@ typedef enum {
 
     //UI
     CMD_HELP,
-    EXIT
+    CMD_EXIT
 } CommandFunction;
 
 
@@ -56,15 +58,46 @@ typedef struct
     char arguments[MAX_CMD_ARGUMENT_AMOUNT][MAX_CMD_ARGUMENT_LENGTH];
 } Command;
 
+typedef struct
+{
+    CommandFunction func;
+    char *func_str;
+} CommandEntry;
 
-//Tokenizes command_str by replacing each ' ' with '\0' and storing pointers to the start of each token in out_tokens
-//Consecutive occurences of COMMAND_DELIMITER are treated as one seperation
-StatusCode cmd_tokenize(
-    char *command_str,
-    char **out_tokens,
-    const size_t tokens_capacity,
-    size_t *out_tokens_length
-);
+static const CommandEntry COMMAND_TABLE[] =
+{
+    // Navigation
+    {CMD_CD, "cd"},
+    {CMD_PWD, "pwd"},
+    {CMD_LS, "ls"},
+    {CMD_TREE, "tree"},
 
+    // File System Operations
+    {CMD_TOUCH, "touch"},
+    {CMD_MKDIR, "mkdir"},
+    {CMD_RM, "rm"},
+    {CMD_RMDIR, "rmdir"},
+    {CMD_MV, "mv"},
+    {CMD_RENAME, "rename"},
 
+    // Queries
+    {CMD_FIND, "find"},
+
+    // Space
+    {CMD_DF, "df"},
+    {CMD_DU, "du"},
+    {CMD_STAT, "stat"},
+
+    // File IO
+    {CMD_CAT, "cat"},
+    {CMD_READAT, "readat"},
+    {CMD_APPEND, "append"},
+    {CMD_CLEAR, "clear"},
+
+    // UI
+    {CMD_HELP, "help"},
+    {CMD_EXIT, "exit"}
+};
+
+static const size_t COMMAND_TABLE_LENGTH = sizeof(COMMAND_TABLE) / sizeof(COMMAND_TABLE[0]);
 #endif
