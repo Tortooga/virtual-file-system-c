@@ -90,3 +90,34 @@ StatusCode ws_file_read_all(
         buffer_size
     );
 }
+
+
+StatusCode ws_file_read_at(
+    Workspace *workspace,
+    File *file,
+    const size_t offset,
+    const size_t amount,
+    char *buffer,
+    const size_t buffer_size
+)
+{
+    if (!workspace || !file || !buffer)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (buffer_size < amount)
+    {
+        return INSUFFICIENT_ARRAY_PASSED;
+    }
+
+    //file_read_at validates offset and whether offset + amount is in bound
+    return file_read_at(
+        file,
+        workspace->storage_man,
+        offset,
+        amount,
+        buffer,
+        buffer_size
+    );
+}
