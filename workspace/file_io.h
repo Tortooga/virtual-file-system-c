@@ -13,4 +13,20 @@ StatusCode ws_file_append(
     const size_t data_length
 );
 
+//Removes all the files storage data
+StatusCode ws_file_clear(
+    Workspace *workspace,
+    File *file
+);
+
+//Read all the data in a file
+//Buffer must be of size file->allocated_size * CHUNK_SIZE at least
+StatusCode ws_file_read_all(
+    Workspace *workspace,
+    File *file,
+    char *buffer,
+    const size_t buffer_size
+);
+
+
 #endif

@@ -72,7 +72,7 @@ int main(int argc, char *argv)
     workspace_init(&store, &storage_man, &workspace);
 
     char message[] = "hello this is a message test whats up?";
-    size_t message_length = strlen(message);
+    size_t message_length = 38;
 
     status = ws_file_append(
         &workspace,
@@ -81,86 +81,21 @@ int main(int argc, char *argv)
         message_length
     );
 
-    status = ws_file_append(
-        &workspace,
-        "/folder/file",
-        message,
-        message_length
-    );
-
-    print_file(file, true);
-    printf("Append Status: %d\n", status);
+    char buffer[message_length + 1];
     
-    /*status = file_truncate_by(
+    status = ws_file_read_all(
+        &workspace,
         file,
-        &storage_man,
-        39
-        );*/
-        
-        printf("Truncate Status: %d\n", status);
-        
-        char buffer[message_length * 5];
-        
-        status = file_read_at(
-            file,
-            &storage_man,
-            0,
-            file->allocated_size * CHUNK_SIZE,
-            buffer,
-            message_length * 5
-        );
-        
-        
-        printf("Read Status: %d\n", status);
-        
-        if (status != SUCCESS)
-        {
-            return status;
-        }
-        for (int i = 0; i < 85; i++)
-    {
-        printf("\n");
-        
-        status = file_delete_data(
-            file,
-            &storage_man
-        );
+        buffer,
+        40
+    );
 
-        
-        status = ws_file_append(
-            &workspace,
-            "/folder/file",
-            message,
-            message_length
-        );
-        
-        status = ws_file_append(
-            &workspace,
-            "/folder/file",
-            message,
-            message_length
-        );
-        
-        file_truncate_by(
-            file,
-            &storage_man,
-            i
-        );
+    printf("Read Status: %d\n", status);
+    printf("File Allocated Size %zu\n", file->allocated_size);
+    printf("Message Length %zu\n", message_length);
+    buffer[40] = '\0';
 
-        file_read_at(
-            file,
-            &storage_man,
-            0,
-            file->allocated_size * CHUNK_SIZE,
-            buffer,
-            message_length * 5
-        );
-        for (int i = 0; i < file->allocated_size * CHUNK_SIZE; i++)
-        {
-            printf("%c", buffer[i]);
-        }
-    }
-    //print_storage(&storage_man);    
+    printf("%s", buffer);
 } 
 
 
