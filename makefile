@@ -1,11 +1,16 @@
-run: binDir objDir systemReloc.o workspaceReloc.o main.o 
-	@mkdir -p bin 
-	@mkdir -p obj 
-	@gcc obj/systemReloc.o obj/workspaceReloc.o obj/main.o -o bin/app
+run: app
 	@echo "=============================================="
 	@echo "||               Running App                ||"
 	@echo "=============================================="
 	@./bin/app
+
+
+#Executables 
+app: systemReloc.o workspaceReloc.o CLIReloc.o objDir binDir main.o 
+	gcc obj/systemReloc.o obj/workspaceReloc.o obj/CLIReloc.o obj/main.o -o bin/app
+
+apptest: systemReloc.o tests_main.o objDir binDir testscore.o 
+	gcc obj/system.o obj/testscore.o obj/tests_main.o -o bin/apptest
 
 #Important Directories
 binDir: 
@@ -13,14 +18,6 @@ binDir:
 
 objDir: 
 	@mkdir -p obj 
-
-#Executables 
-app: systemReloc.o workspaceReloc.o main.o 
-	gcc obj/systemReloc.o obj/workspaceReloc.o obj/main.o -o bin/app
-
-apptest: systemReloc.o tests_main.o testscore.o 
-	gcc obj/system.o obj/testscore.o obj/tests_main.o -o bin/apptest
-
 
 #Relocatable object files
 #We hide linking 
@@ -33,12 +30,19 @@ systemReloc.o: storage.o files.o file_storage.o file_logic.o folders.o vfs_entry
 workspaceReloc.o: workspace.o navigation.o vfs_ops.o file_io.o 
 	@gcc -r obj/workspace.o obj/navigation.o obj/vfs_ops.o obj/file_io.o -o obj/workspaceReloc.o 
 
+CLIReloc.o: commands.o
+	@gcc -r obj/commands.o -o obj/CLIReloc.o
+
 #Entry points
 tests_main.o: tests/tests_main.c
 	gcc -c tests/tests_main.c -o obj/tests_main.o 
 
 main.o: main.c
-	gcc -c main.c -I system/include -I . -I workspace -o obj/main.o
+	gcc -c main.c -I system/include -I . -I workspace -I cli -o obj/main.o
+
+#CLI object files
+commands.o: cli/commands.c
+	gcc -c cli/commands.c -I system/include -I . -o obj/commands.o
 
 
 #Workspace object files

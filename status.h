@@ -41,12 +41,20 @@ typedef enum
     //Tests
     TEST_ASSERTION_FAILED = -101,
     
+    //Meta
     IMPLEMENTATION_INCOMPLETE = -201,
     
+    //Workspace
     EXPECTED_FOLDER_GOT_FILE = -301,
     EXPECTED_FILE_GOT_FOLDER = -302,
 
-    INVALID_SAFE_MODE_OP = -311
+    INVALID_SAFE_MODE_OP = -311,
+
+    //CMD
+    TOO_MANY_ARGUMENTS = -401,
+    TOO_MANY_OPTIONS = -402,
+    TOO_MANY_TOKENS = -403,
+    CMD_IS_EMPTY = -404
 
 } StatusCode;
 
