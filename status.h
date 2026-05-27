@@ -56,8 +56,8 @@ typedef enum
     TOO_MANY_TOKENS = -403,
     CMD_IS_TOO_LONG = -404,
     CMD_IS_EMPTY = -405,
-    INVALID_CMD_FUNCTION = -406
-
+    INVALID_CMD_FUNCTION = -406,
+    INVALID_CMD_OPT = -407
 
 } StatusCode;
 

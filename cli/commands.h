@@ -11,11 +11,12 @@
 #define MAX_CMD_ARGUMENT_AMOUNT 2
 #define MAX_CMD_OPTION_AMOUNT 1
 
-#define COMMAND_DELIMITER ' '
 #define MAX_COMMAND_LENGTH MAX_CMD_ARGUMENT_AMOUNT * MAX_CMD_ARGUMENT_LENGTH + MAX_CMD_OPTION_AMOUNT
 #define MAX_TOKEN_LENGTH MAX_CMD_ARGUMENT_LENGTH
 #define MAX_TOKENS_AMOUNT 1 + MAX_CMD_ARGUMENT_AMOUNT + MAX_CMD_OPTION_AMOUNT
 
+#define COMMAND_DELIMITER ' '
+#define OPTION_PREFIX '-'
 typedef enum {
     //Navigation
     CMD_CD,
@@ -54,8 +55,13 @@ typedef enum {
 typedef struct 
 {
     CommandFunction func;
+    
+    size_t opts_amount;
+    size_t args_amount;
+
     char opts[MAX_CMD_OPTION_AMOUNT];
-    char arguments[MAX_CMD_ARGUMENT_AMOUNT][MAX_CMD_ARGUMENT_LENGTH];
+    char *args[MAX_CMD_ARGUMENT_AMOUNT];
+
 } Command;
 
 typedef struct
@@ -100,4 +106,14 @@ static const CommandEntry COMMAND_TABLE[] =
 };
 
 static const size_t COMMAND_TABLE_LENGTH = sizeof(COMMAND_TABLE) / sizeof(COMMAND_TABLE[0]);
+
+//command_str must be a C string
+//first token is assumed to be the cmd function
+//options are only one letter long
+//options must be preceded by an instance of COMMAD_DELIMITER
+StatusCode cmd_parse(
+    char *command_str,
+    Command *out_command
+);
+
 #endif

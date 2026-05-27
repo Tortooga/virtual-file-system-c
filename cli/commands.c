@@ -117,6 +117,9 @@ StatusCode resolve_cmd_function(
 }
 
 //command_str must be a C string
+//first token is assumed to be the cmd function
+//options are only one letter long
+//options must be preceded by an instance of COMMAD_DELIMITER
 StatusCode cmd_parse(
     char *command_str,
     Command *out_command
@@ -126,6 +129,9 @@ StatusCode cmd_parse(
     {
         return NULL_POINTER_PASSED;
     }
+    
+    out_command->args_amount = 0;
+    out_command->opts_amount = 0;
 
     size_t command_length = strlen(command_str);
     
@@ -134,29 +140,77 @@ StatusCode cmd_parse(
         return CMD_IS_EMPTY;
     }
     
-    if (command_length < MAX_COMMAND_LENGTH)
+    if (command_length > MAX_COMMAND_LENGTH)
     {
         return CMD_IS_TOO_LONG;
     }
     
     char *tokens[MAX_TOKENS_AMOUNT];
     size_t tokens_amount;
+    
     StatusCode status = cmd_tokenize(
         command_str,
         tokens,
         MAX_TOKENS_AMOUNT,
         &tokens_amount
     );
-
+    
     if (status != SUCCESS)
     {
-        return SUCCESS;
+        return status;
     }
-
+    
     if (tokens_amount == 0)
     {
         return CMD_IS_EMPTY;
     }
+    
+    //The first token is always the command function
+    status = resolve_cmd_function(
+        tokens[0],
+        &out_command->func
+    );
+    
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+    
+    for (size_t cur_token_index = 1; cur_token_index < tokens_amount; cur_token_index++)
+    {
+        if (*tokens[cur_token_index] == OPTION_PREFIX)
+        {
+            if (out_command->opts_amount == MAX_CMD_OPTION_AMOUNT)
+            {
+                return TOO_MANY_OPTIONS;
+            }
+            
+            //Checking if the option empty
+            if (*(tokens[cur_token_index] + 1) == '\0')
+            {
+                return INVALID_CMD_OPT;
+            }
+            
+            //checking if the option is too long
+            if (*(tokens[cur_token_index] + 2) != '\0')
+            {
+                return INVALID_CMD_OPT;
+            }
 
+            out_command->opts[out_command->opts_amount] = *(tokens[cur_token_index] + 1);
+            (out_command->opts_amount)++;
 
+            continue;
+        }
+
+        if (out_command->args_amount == MAX_CMD_ARGUMENT_AMOUNT)
+        {
+            return TOO_MANY_ARGUMENTS;
+        }
+
+        out_command->args[out_command->args_amount] = tokens[cur_token_index];
+        (out_command->args_amount)++;
+    }
+
+    return SUCCESS;
 }
