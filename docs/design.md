@@ -89,3 +89,11 @@ CLI client translates CLI commands into file sys functionality
 ## statefull emulator workspace 
 
 ## Original I implemented null terminator to indicate the end of a partial chunks data but soon I realised that prevents full byte writing
+
+## input handler
+raw mode with posix read()
+
+## tokenizer
+in place breaking command into tokens
+
+## parser

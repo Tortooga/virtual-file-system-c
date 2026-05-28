@@ -30,8 +30,8 @@ systemReloc.o: storage.o files.o file_storage.o file_logic.o folders.o vfs_entry
 workspaceReloc.o: workspace.o navigation.o vfs_ops.o file_io.o 
 	@gcc -r obj/workspace.o obj/navigation.o obj/vfs_ops.o obj/file_io.o -o obj/workspaceReloc.o 
 
-CLIReloc.o: commands.o
-	@gcc -r obj/commands.o -o obj/CLIReloc.o
+CLIReloc.o: commands.o input_handler.o
+	@gcc -r obj/commands.o obj/input_handler.o -o obj/CLIReloc.o
 
 #Entry points
 tests_main.o: tests/tests_main.c
@@ -44,6 +44,8 @@ main.o: main.c
 commands.o: cli/commands.c
 	gcc -c cli/commands.c -I system/include -I . -o obj/commands.o
 
+input_handler.o: cli/input_handler.o 
+	gcc -c cli/input_handler.c -I system/include -I . -o obj/input_handler.o
 
 #Workspace object files
 workspace.o: workspace/workspace.c
