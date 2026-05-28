@@ -59,6 +59,9 @@ StatusCode cmd_tokenize(
     {
         if (command_str[cur_char_index] == COMMAND_DELIMITER)
         {
+            
+            command_str[cur_char_index] = '\0';
+            
             //if space comes directly before null terminator we terminate
             if (cur_char_index + 1 >= command_length)
             {
@@ -78,7 +81,6 @@ StatusCode cmd_tokenize(
             //We store the address of the beginning of the next token
             out_tokens[cur_token_index] = &command_str[cur_char_index + 1];
 
-            command_str[cur_char_index] = '\0';
 
             cur_token_index++;
             (*out_tokens_length)++;
