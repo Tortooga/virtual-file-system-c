@@ -1,7 +1,7 @@
 #ifndef STATUS_H
 #define STATUS_H
 
-//Global status codes. This allows for the recursive passing of status codes through call chains 
+//Global status codes. This allows for error propogation through call chains
 typedef enum
 {
     SUCCESS = 0,
@@ -57,8 +57,12 @@ typedef enum
     CMD_IS_TOO_LONG = -404,
     CMD_IS_EMPTY = -405,
     INVALID_CMD_FUNCTION = -406,
-    INVALID_CMD_OPT = -407
+    INVALID_CMD_OPT = -407,
 
+    //Input Handler
+    READ_ERROR = -411,
+    ATTEMPTED_TO_READ_AT_EOF = -412,
+    INPUT_BUFFER_OVER_FLOW = -413,
 } StatusCode;
 
 #endif

@@ -3,10 +3,11 @@
 
 #define INPUT_BUFFER_SIZE 100
 
+#include "status.h"
 typedef enum
 {
-    MULTILINE,
-    LINETERMINATED
+    MULTI_LINE,
+    NEW_LINE_TERMINATED
 } InputMode;
 
 typedef struct
@@ -16,5 +17,7 @@ typedef struct
 
 } InputHandler;
 
+//Data over INPUT_BUFFER_SIZE - 1 causes buffer over flow error
+StatusCode new_line_terminated_read(InputHandler *in_handler);
 
 #endif

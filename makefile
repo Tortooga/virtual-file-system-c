@@ -44,7 +44,7 @@ main.o: main.c
 commands.o: cli/commands.c
 	gcc -c cli/commands.c -I system/include -I . -o obj/commands.o
 
-input_handler.o: cli/input_handler.o 
+input_handler.o: cli/input_handler.c
 	gcc -c cli/input_handler.c -I system/include -I . -o obj/input_handler.o
 
 #Workspace object files
