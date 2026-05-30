@@ -63,6 +63,7 @@ typedef enum
     READ_ERROR = -411,
     ATTEMPTED_TO_READ_AT_EOF = -412,
     INPUT_BUFFER_OVER_FLOW = -413,
+    TOO_MANY_LINES = -414,
 } StatusCode;
 
 #endif

@@ -1,8 +1,9 @@
 #ifndef INPUT_HANDLER_H
 #define INPUT_HANDLER_H
 
-#define INPUT_BUFFER_SIZE 100
-
+#define INPUT_BUFFER_SIZE 256
+#define MAX_INPUT_LINES_AMOUNT 16
+#define MAX_INPUT_LINE_LENGTH 64 
 #include "status.h"
 typedef enum
 {
@@ -20,4 +21,6 @@ typedef struct
 //Data over INPUT_BUFFER_SIZE - 1 causes buffer over flow error
 StatusCode new_line_terminated_read(InputHandler *in_handler);
 
+//Terminates after EOF is encountered
+StatusCode multi_line_read(InputHandler *in_handler);
 #endif
