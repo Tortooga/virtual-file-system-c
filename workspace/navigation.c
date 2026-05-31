@@ -4,6 +4,7 @@
 #include "path_utils.h"
 #include "queries.h"
 #include "status.h"
+#include "settings.h"
 
 #include <string.h>
 
@@ -63,11 +64,39 @@ StatusCode ws_change_cur_folder(Workspace *workspace, const char *path)
     {
         return NULL_POINTER_PASSED;
     }
-
+    
+    StatusCode status;
     VFSNode target_node;
 
+    if (strcmp(path, BACK_TO_PARENT_OPERATOR) == 0)
+    {
+        if (workspace->cur_folder->is_root)
+        {
+            return INVALID_ROOT_OPERATION;
+        }
+
+        target_node.type = FOLDER_NODE;
+        target_node.node.folder = workspace->cur_folder->parent_folder;
+
+        status = get_node_path(
+            &target_node,
+            workspace->cur_path,
+            MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1
+        );
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+        
+        workspace->cur_folder = workspace->cur_folder->parent_folder;
+
+        return SUCCESS;
+    }
+
+
     //path validation handled by ws_resolve_path
-    StatusCode status = ws_resolve_path(
+    status = ws_resolve_path(
         workspace,
         path,
         &target_node
