@@ -31,3 +31,14 @@ StatusCode cmd_cd_exec(Workspace *workspace, Command *cmd)
         cmd->args[0]
     );
 }
+
+StatusCode cmd_pwd_exec(Workspace *workspace, Command *cmd)
+{
+    if (!workspace || !cmd)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    printf("%s\n", workspace->cur_path);
+    return SUCCESS;
+}
