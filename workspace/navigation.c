@@ -129,3 +129,81 @@ StatusCode ws_change_cur_folder(Workspace *workspace, const char *path)
     
     return SUCCESS;
 }
+
+//if path is null target folder will be WD 
+//path must be null terminated
+StatusCode ws_get_sub_entries(
+    Workspace *workspace,
+    const char *path,
+    VFSNode *node_buffer,
+    const size_t node_buffer_length,
+    size_t *out_nodes_amount
+)
+{
+    if (!workspace || !node_buffer || !out_nodes_amount)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    *out_nodes_amount = 0;
+
+    Folder *target_folder = workspace->cur_folder;
+
+    if (path)
+    {
+        VFSNode node;
+
+        StatusCode status = ws_resolve_path(
+            workspace,
+            path,
+            &node
+        );
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+
+        if (node.type == FILE_NODE)
+        {
+            return EXPECTED_FOLDER_GOT_FILE;
+        }
+        target_folder = node.node.folder;
+    }
+
+    for (size_t i = 0; i < MAX_SUB_FILES_AMOUNT; i++)
+    {
+        if (target_folder->sub_files[i] == NULL)
+        {
+            continue;
+        }
+        if (*out_nodes_amount >= node_buffer_length)
+        {
+            return DATA_OVER_FLOW;
+        }
+        node_buffer[*out_nodes_amount].node.file = target_folder->sub_files[i];
+        node_buffer[*out_nodes_amount].type = FILE_NODE;
+        
+        (*out_nodes_amount)++;
+    }
+
+    for (size_t i = 0; i < MAX_SUB_FOLDERS_AMOUNT; i++)
+    {
+        if (target_folder->sub_folders[i] == NULL)
+        {
+            continue;
+        }
+
+        if (*out_nodes_amount >= node_buffer_length)
+        {
+            return DATA_OVER_FLOW;
+        }
+
+        node_buffer[*out_nodes_amount].node.folder = target_folder->sub_folders[i];
+        node_buffer[*out_nodes_amount].type = FOLDER_NODE;
+
+        (*out_nodes_amount)++;
+    }
+
+    return SUCCESS;
+}
