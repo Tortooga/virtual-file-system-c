@@ -50,7 +50,7 @@ typedef enum
 
     INVALID_SAFE_MODE_OP = -311,
 
-    //CMD
+    //CMD parser and tokenizer
     TOO_MANY_ARGUMENTS = -401,
     TOO_MANY_OPTIONS = -402,
     TOO_MANY_TOKENS = -403,
@@ -64,6 +64,15 @@ typedef enum
     ATTEMPTED_TO_READ_AT_EOF = -412,
     INPUT_BUFFER_OVER_FLOW = -413,
     TOO_MANY_LINES = -414,
+
+    //Dispatcher
+    COMMAND_FUNCTION_NOT_FOUND = -421,
+
+    //CMD Executer
+    CMD_TOO_FEW_ARGS = -431,
+    CMD_TOO_MANY_ARGS = -432,
+    CMD_TOO_FEW_OPTS = -433,
+    CMD_TOO_MANY_OPTS = -434    
 } StatusCode;
 
 #endif

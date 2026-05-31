@@ -21,4 +21,5 @@
 #define VFS_MAX_FILES_AMOUNT 20
 #define VFS_MAX_FOLDERS_AMOUNT 20
 
+static const char BACK_TO_PARENT_OPERATOR[] = "..";
 #endif

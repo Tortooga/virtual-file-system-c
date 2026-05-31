@@ -1,0 +1,27 @@
+#ifndef COMMAND_DISPATCHER_H
+#define COMMAND_DISPATCHER_H
+
+#include "status.h"
+
+#include "commands.h"
+#include "command_exec.h"
+
+#include "workspace.h"
+
+typedef struct
+{
+    StatusCode (*dispatcher_function)(Workspace *, Command *);
+    CommandFunction command_function;
+} CommandDispatcherFunctionEntry;
+
+static const CommandDispatcherFunctionEntry COMMAND_DISPATCHER_FUNCTIONS_TABLE[] =
+{
+    {cmd_cd_exec, CMD_CD}
+};
+
+static const size_t COMMAND_DISPATCHER_FUNCTIONS_TABLE_LENGTH = 
+    sizeof(COMMAND_DISPATCHER_FUNCTIONS_TABLE) /
+    sizeof(COMMAND_DISPATCHER_FUNCTIONS_TABLE[0]);
+
+StatusCode command_dispatch(Workspace *workspace, Command *cmd);
+#endif
