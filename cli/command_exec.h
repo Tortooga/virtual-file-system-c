@@ -16,5 +16,5 @@ StatusCode cmd_cd_exec(Workspace *workspace, Command *cmd);
 StatusCode cmd_pwd_exec(Workspace *workspace, Command *cmd);
 StatusCode cmd_ls_exec(Workspace *workspace, Command *cmd);
 StatusCode cmd_touch_exec(Workspace *workspace, Command *cmd);
-
+StatusCode cmd_mkdir_exec(Workspace *workspace, Command *cmd);
 #endif
