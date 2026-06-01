@@ -19,6 +19,7 @@ static const CommandDispatcherFunctionEntry COMMAND_DISPATCHER_FUNCTIONS_TABLE[]
     {cmd_cd_exec, CMD_CD},
     {cmd_pwd_exec, CMD_PWD},
     {cmd_ls_exec, CMD_LS},
+    {cmd_touch_exec, CMD_TOUCH}
 };
 
 static const size_t COMMAND_DISPATCHER_FUNCTIONS_TABLE_LENGTH = 

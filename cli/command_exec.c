@@ -3,6 +3,7 @@
 
 #include "workspace.h"
 #include "navigation.h"
+#include "vfs_ops.h"
 
 #include "path_utils.h"
 
@@ -58,12 +59,12 @@ StatusCode cmd_ls_exec(Workspace *workspace, Command *cmd)
 
     if (cmd->opts_amount > 0)
     {
-        return TOO_MANY_OPTIONS;
+        return CMD_TOO_MANY_OPTS;
     }
 
     if (cmd->args_amount > 1)
     {
-        return TOO_MANY_ARGUMENTS;
+        return CMD_TOO_MANY_OPTS;
     }
 
     VFSNode node_buffer[MAX_SUB_FILES_AMOUNT + MAX_SUB_FOLDERS_AMOUNT];
@@ -129,5 +130,33 @@ static void print_entry_name_column(char *name)
         "%*s",
         SUB_ENTRY_SPACING_WIDTH,
         ""
+    );
+}
+
+StatusCode cmd_touch_exec(Workspace *workspace, Command *cmd)
+{
+    if (!workspace || !cmd)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 1)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    if (cmd->args_amount == 0)
+    {
+        return CMD_TOO_FEW_ARGS;
+    }
+
+    return ws_create_file(
+        workspace,
+        cmd->args[0]
     );
 }
