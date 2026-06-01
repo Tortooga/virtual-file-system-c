@@ -17,7 +17,8 @@ typedef struct
 static const CommandDispatcherFunctionEntry COMMAND_DISPATCHER_FUNCTIONS_TABLE[] =
 {
     {cmd_cd_exec, CMD_CD},
-    {cmd_pwd_exec, CMD_PWD}
+    {cmd_pwd_exec, CMD_PWD},
+    {cmd_ls_exec, CMD_LS},
 };
 
 static const size_t COMMAND_DISPATCHER_FUNCTIONS_TABLE_LENGTH = 
