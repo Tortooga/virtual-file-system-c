@@ -19,5 +19,6 @@ StatusCode cmd_touch_exec(Workspace *workspace, Command *cmd);
 StatusCode cmd_mkdir_exec(Workspace *workspace, Command *cmd);
 StatusCode cmd_rm_exec(Workspace *workspace, Command *cmd);
 StatusCode cmd_rmdir_exec(Workspace *workspace, Command *cmd);
+StatusCode cmd_mv_exec(Workspace *workspace, Command *cmd);
 
 #endif
