@@ -72,7 +72,9 @@ typedef enum
     CMD_TOO_FEW_ARGS = -431,
     CMD_TOO_MANY_ARGS = -432,
     CMD_TOO_FEW_OPTS = -433,
-    CMD_TOO_MANY_OPTS = -434    
+    CMD_TOO_MANY_OPTS = -434,
+    CMD_UNKNOWN_OPT = -435,
+    CMD_UNKNOWN_ARG = -436
 } StatusCode;
 
 #endif
