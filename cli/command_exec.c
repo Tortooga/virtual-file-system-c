@@ -286,3 +286,32 @@ StatusCode cmd_mv_exec(Workspace *workspace, Command *cmd)
         cmd->args[1]
     );
 }
+
+StatusCode cmd_rename_exec(Workspace *workspace, Command *cmd)
+{
+    if (!workspace || !cmd)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 2)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    if (cmd->args_amount < 2)
+    {
+        return CMD_TOO_FEW_ARGS;
+    }
+
+    return ws_rename_node(
+        workspace,
+        cmd->args[0],
+        cmd->args[1]
+    );
+}

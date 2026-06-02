@@ -23,7 +23,8 @@ static const CommandDispatcherFunctionEntry COMMAND_DISPATCHER_FUNCTIONS_TABLE[]
     {cmd_mkdir_exec, CMD_MKDIR},
     {cmd_rm_exec, CMD_RM},
     {cmd_rmdir_exec, CMD_RMDIR},
-    {cmd_mv_exec, CMD_MV}
+    {cmd_mv_exec, CMD_MV},
+    {cmd_rename_exec, CMD_RENAME}
 };
 
 static const size_t COMMAND_DISPATCHER_FUNCTIONS_TABLE_LENGTH = 
