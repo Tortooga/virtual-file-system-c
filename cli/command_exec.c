@@ -188,3 +188,31 @@ StatusCode cmd_mkdir_exec(Workspace *workspace, Command *cmd)
         cmd->args[0]
     );
 }
+
+StatusCode cmd_rm_exec(Workspace *workspace, Command *cmd)
+{
+    if (!workspace || !cmd)
+    {
+        return NULL_POINTER_PASSED;
+    }
+    
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }   
+
+    if (cmd->args_amount > 1)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    if (cmd->args_amount < 1)
+    {
+        return CMD_TOO_FEW_ARGS;
+    }
+
+    return ws_remove_file(
+        workspace,
+        cmd->args[0]
+    );
+}
