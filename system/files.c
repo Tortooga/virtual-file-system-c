@@ -9,26 +9,29 @@ StatusCode file_init(
     File *out_file,
     char *file_name,
     size_t file_name_length)
-    {
+{
         if (!out_file || !file_name)
         {
             return NULL_POINTER_PASSED;
         }
-        if (file_name_length > MAX_NAME_LENGTH)
+        //Leaving one position for the null terminator
+        if (file_name_length >= MAX_NAME_LENGTH)
         {
             return INSUFFICIENT_ARRAY_PASSED;
         }
-        //Caller guarantees file_name is initialised
+
+        //Caller guarantees file_name is readable up until file_name_length
         memcpy(out_file->name, file_name, file_name_length);
 
+        out_file->name[file_name_length] = '\0';
         out_file->allocated_size = 0;
+
 
         init_empty_extensions(out_file);
         
         out_file->parent_folder = NULL;
-
         return SUCCESS;
-    }
+}
 
 int init_empty_extensions(File *file)
 {
