@@ -94,6 +94,8 @@ StatusCode ws_file_read_all(
         return NULL_POINTER_PASSED;
     }
 
+    *out_data_amount = 0;
+    
     VFSNode node;
     StatusCode status = ws_resolve_path(
         workspace,
@@ -114,6 +116,11 @@ StatusCode ws_file_read_all(
     if (buffer_size < node.node.file->allocated_size * CHUNK_SIZE)
     {
         return INSUFFICIENT_ARRAY_PASSED;
+    }
+
+    if (node.node.file->allocated_size == 0)
+    {
+        return SUCCESS;
     }
 
     status = file_read_at(
