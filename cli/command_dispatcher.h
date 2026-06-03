@@ -9,8 +9,6 @@
 
 #include "workspace.h"
 
-#define PROMPTED_DATA_BUFFER_SIZE 256
-
 typedef struct
 {
     StatusCode (*executor_function)(Workspace *, Command *);
@@ -21,7 +19,7 @@ typedef struct
 {
     StatusCode (*executor_function)(Workspace *, Command *, char *, size_t);
     CommandFunction command_function;
-} CMDPromptingFunctionEntry;
+} CMDPayloadBasedFunctionEntry;
 
 static const CMDArgumentBasedFunctionEntry CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[] =
 {
@@ -36,21 +34,38 @@ static const CMDArgumentBasedFunctionEntry CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[] 
     {cmd_rename_exec, CMD_RENAME}
 };
 
-static const CMDPromptingFunctionEntry CMD_PROMPTING_FUNCTIONS_TABLE[] =
-{
-    {cmd_append_exec, CMD_APPEND}
-};
-
 static const size_t CMD_ARGUMENT_BASED_FUNCTIONS_TABLE_LENGTH = 
     sizeof(CMD_ARGUMENT_BASED_FUNCTIONS_TABLE) /
     sizeof(CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[0]);
 
-static const size_t CMD_PROMPTING_FUNCTIONS_TABLE_LENGTH = 
-    sizeof(CMD_PROMPTING_FUNCTIONS_TABLE) /
-    sizeof(CMD_PROMPTING_FUNCTIONS_TABLE[0]);
+static const CMDPayloadBasedFunctionEntry CMD_PAYLOAD_BASED_FUNCTIONS_TABLE[] =
+{
+    {cmd_append_exec, CMD_APPEND}
+};
 
+static const size_t CMD_PAYLOAD_BASED_FUNCTIONS_TABLE_LENGTH = 
+    sizeof(CMD_PAYLOAD_BASED_FUNCTIONS_TABLE) /
+    sizeof(CMD_PAYLOAD_BASED_FUNCTIONS_TABLE[0]);
+
+static const CommandFunction MULTI_LINE_READ_PROMPTING_FUNCTIONS[] = 
+{
+    CMD_APPEND
+};
+
+static const size_t MULTI_LINE_READ_PROMPTING_FUNCTIONS_LENGTH = 
+    sizeof(MULTI_LINE_READ_PROMPTING_FUNCTIONS) /
+    sizeof(MULTI_LINE_READ_PROMPTING_FUNCTIONS[0]);
+
+static const CommandFunction DATA_OUTPUTING_FUNCTIONS[] =
+{
+    CMD_CAT,
+};
+
+static const size_t DATA_OUTPUTING_FUNCTIONS_LENGTH =
+    sizeof(DATA_OUTPUTING_FUNCTIONS) /
+    sizeof(DATA_OUTPUTING_FUNCTIONS[0]);
 
 //Calls appropriate command executer 
 //Is responsible for prompting secondary input
-StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *input_handler);
+StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *input_handler, char *output_buffer, size_t output_buffer_size);
 #endif

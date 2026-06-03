@@ -55,12 +55,14 @@ StatusCode new_line_terminated_read(char *buffer, size_t buffer_length)
 }
 
 //Terminates after EOF is encountered
-StatusCode multi_line_read(char *buffer, size_t buffer_size)
+StatusCode multi_line_read(char *buffer, size_t buffer_size, size_t *out_data_amount)
 {
-    if (!buffer)
+    if (!buffer || !out_data_amount)
     {
         return NULL_POINTER_PASSED;
     }
+
+    *out_data_amount = 0;
 
     //Extra position to detect overflow 
     char line_buffer[MAX_MULTI_LINE_INPUT_LINE_LENGTH + 1];
@@ -108,6 +110,7 @@ StatusCode multi_line_read(char *buffer, size_t buffer_size)
             amount_read
         );
         
+        *out_data_amount += amount_read;
         cur_input_buffer_pos += amount_read;
     }
 

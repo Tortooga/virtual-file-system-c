@@ -8,9 +8,12 @@
 
 #include <string.h>
 
+bool is_multi_line_read_prompting(CommandFunction command_func);
+bool is_data_outputting(CommandFunction command_func);
+
 //Calls appropriate command executer 
 //Is responsible for prompting secondary input
-StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *input_handler)
+StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *input_handler, char *output_buffer, size_t output_buffer_size)
 {
     if (!workspace || !cmd || !input_handler)
     {
@@ -31,27 +34,68 @@ StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *in
 
     for (
         size_t i = 0;
-        i < CMD_PROMPTING_FUNCTIONS_TABLE_LENGTH;
+        i < CMD_PAYLOAD_BASED_FUNCTIONS_TABLE_LENGTH;
         i++
     )
     {
-        if (cmd->func == CMD_PROMPTING_FUNCTIONS_TABLE[i].command_function)
+        if (cmd->func == CMD_PAYLOAD_BASED_FUNCTIONS_TABLE[i].command_function)
         {
-            StatusCode status = multi_line_read(input_handler->data_buffer, DATA_BUFFER_SIZE);
-            
-            if (status != SUCCESS)
+            if (is_multi_line_read_prompting(cmd->func))
             {
-                return status;
+                return CMD_PAYLOAD_BASED_FUNCTIONS_TABLE[i].executor_function(
+                    workspace,
+                    cmd,
+                    input_handler->data_buffer,
+                    INPUT_DATA_BUFFER_SIZE
+                );
             }
 
-            return CMD_PROMPTING_FUNCTIONS_TABLE[i].executor_function(
-                workspace, 
-                cmd, 
-                input_handler->data_buffer, 
-                strlen(input_handler->data_buffer)
-            );
+            if (is_data_outputting(cmd->func))
+            {
+                return CMD_PAYLOAD_BASED_FUNCTIONS_TABLE[i].executor_function(
+                    workspace,
+                    cmd,
+                    output_buffer,
+                    output_buffer_size
+                );
+            }
+            break;
         }
     }
 
     return COMMAND_FUNCTION_NOT_FOUND;
+}
+
+bool is_data_outputting(CommandFunction command_func)
+{
+    for (
+        size_t i = 0;
+        i < DATA_OUTPUTING_FUNCTIONS_LENGTH;
+        i++
+    )
+    {
+        if (command_func == DATA_OUTPUTING_FUNCTIONS[i])
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool is_multi_line_read_prompting(CommandFunction command_func)
+{
+    for (
+        size_t i = 0;
+        i < MULTI_LINE_READ_PROMPTING_FUNCTIONS_LENGTH; 
+        i++
+    )
+    {
+        if (command_func == MULTI_LINE_READ_PROMPTING_FUNCTIONS[i])
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

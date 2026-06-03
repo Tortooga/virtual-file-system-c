@@ -30,5 +30,5 @@ typedef struct
 StatusCode new_line_terminated_read(char *buffer, size_t buffer_size);
 
 //Terminates after EOF is encountered
-StatusCode multi_line_read(char *buffer, size_t buffer_size);
+StatusCode multi_line_read(char *buffer, size_t buffer_size, size_t *out_amount_read);
 #endif
