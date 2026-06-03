@@ -97,6 +97,10 @@ StatusCode cmd_ls_exec(Workspace *workspace, Command *cmd)
         return status;
     }
 
+    if (nodes_amount == 0)
+    {
+        return SUCCESS;
+    }
     for (size_t i = 0; i < nodes_amount; i++)
     {
         if (i != 0 && i % SUB_ENTRIES_PRINTED_PER_LINE == 0)
