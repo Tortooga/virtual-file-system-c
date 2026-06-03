@@ -92,7 +92,10 @@ CLI client translates CLI commands into file sys functionality
 
 ## input handler
 raw mode with posix read()
-
+commands dont own their args the input handler command buffer does
+for that purpose the command buffer cannot be reused for data as it would make the command args pointer go stale
+thats why there is a seperate buffer for data
+ 
 ## tokenizer
 in place breaking command into tokens
 

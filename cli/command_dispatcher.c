@@ -2,27 +2,41 @@
 
 #include "command_dispatcher.h"
 #include "commands.h"
+#include "input_handler.h"
 
 #include "workspace.h"
 
 
-
-StatusCode command_dispatch(Workspace *workspace, Command *cmd)
+//Calls appropriate command executer 
+//Is responsible for prompting secondary input
+StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *input_handler)
 {
-    if (!workspace || !cmd)
+    if (!workspace || !cmd || !input_handler)
     {
         return NULL_POINTER_PASSED;
     }
 
     for (
         size_t i = 0;
-        i < COMMAND_DISPATCHER_FUNCTIONS_TABLE_LENGTH;
+        i < CMD_ARGUMENT_BASED_FUNCTIONS_TABLE_LENGTH;
         i++
     )
     {
-        if (cmd->func == COMMAND_DISPATCHER_FUNCTIONS_TABLE[i].command_function)
+        if (cmd->func == CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[i].command_function)
         {
-            return COMMAND_DISPATCHER_FUNCTIONS_TABLE[i].dispatcher_function(workspace, cmd);
+            return CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[i].dispatcher_function(workspace, cmd);
+        }
+    }
+
+    for (
+        size_t i = 0;
+        i < CMD_PROMPTING_FUNCTIONS_TABLE_LENGTH;
+        i++
+    )
+    {
+        if (cmd->func == CMD_PROMPTING_FUNCTIONS_TABLE[i].command_function)
+        {
+            
         }
     }
 

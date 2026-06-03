@@ -1,10 +1,17 @@
 #ifndef INPUT_HANDLER_H
+
+#include "status.h"
+#include "stddef.h"
+
 #define INPUT_HANDLER_H
 
-#define INPUT_BUFFER_SIZE 256
-#define MAX_INPUT_LINES_AMOUNT 16
-#define MAX_INPUT_LINE_LENGTH 64 
-#include "status.h"
+#define COMMAND_BUFFER_SIZE 256
+
+#define MAX_MULTI_LINE_INPUT_LINES_AMOUNT 16
+#define MAX_MULTI_LINE_INPUT_LINE_LENGTH 64 
+
+#define DATA_BUFFER_SIZE MAX_MULTI_LINE_INPUT_LINE_LENGTH * MAX_MULTI_LINE_INPUT_LINES_AMOUNT
+
 typedef enum
 {
     MULTI_LINE,
@@ -14,13 +21,14 @@ typedef enum
 typedef struct
 {
     InputMode input_mode;
-    char buffer[INPUT_BUFFER_SIZE];
+    char command_buffer[COMMAND_BUFFER_SIZE];
 
+    char data_buffer[DATA_BUFFER_SIZE];
 } InputHandler;
 
-//Data over INPUT_BUFFER_SIZE - 1 causes buffer over flow error
-StatusCode new_line_terminated_read(InputHandler *in_handler);
+//Data over buffer_size - 1 causes buffer over flow error
+StatusCode new_line_terminated_read(char *buffer, size_t buffer_size);
 
 //Terminates after EOF is encountered
-StatusCode multi_line_read(InputHandler *in_handler);
+StatusCode multi_line_read(char *buffer, size_t buffer_size);
 #endif

@@ -5,16 +5,25 @@
 
 #include "commands.h"
 #include "command_exec.h"
+#include "input_handler.h"
 
 #include "workspace.h"
+
+#define PROMPTED_DATA_BUFFER_SIZE 256
 
 typedef struct
 {
     StatusCode (*dispatcher_function)(Workspace *, Command *);
     CommandFunction command_function;
-} CommandDispatcherFunctionEntry;
+} CMDArgumentBasedFunctionEntry;
 
-static const CommandDispatcherFunctionEntry COMMAND_DISPATCHER_FUNCTIONS_TABLE[] =
+typedef struct
+{
+    StatusCode (*dispatcher_function)(Workspace *, Command *, char *, size_t);
+    CommandFunction command_function;
+} CommandDispatcherArgumentBasedFunctionEntry;
+
+static const CMDArgumentBasedFunctionEntry CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[] =
 {
     {cmd_cd_exec, CMD_CD},
     {cmd_pwd_exec, CMD_PWD},
@@ -27,9 +36,21 @@ static const CommandDispatcherFunctionEntry COMMAND_DISPATCHER_FUNCTIONS_TABLE[]
     {cmd_rename_exec, CMD_RENAME}
 };
 
-static const size_t COMMAND_DISPATCHER_FUNCTIONS_TABLE_LENGTH = 
-    sizeof(COMMAND_DISPATCHER_FUNCTIONS_TABLE) /
-    sizeof(COMMAND_DISPATCHER_FUNCTIONS_TABLE[0]);
+static const CommandDispatcherArgumentBasedFunctionEntry CMD_PROMPTING_FUNCTIONS_TABLE[] =
+{
+    
+};
 
-StatusCode command_dispatch(Workspace *workspace, Command *cmd);
+static const size_t CMD_ARGUMENT_BASED_FUNCTIONS_TABLE_LENGTH = 
+    sizeof(CMD_ARGUMENT_BASED_FUNCTIONS_TABLE) /
+    sizeof(CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[0]);
+
+static const size_t CMD_PROMPTING_FUNCTIONS_TABLE_LENGTH = 
+    sizeof(CMD_PROMPTING_FUNCTIONS_TABLE) /
+    sizeof(CMD_PROMPTING_FUNCTIONS_TABLE[0]);
+
+
+//Calls appropriate command executer 
+//Is responsible for prompting secondary input
+StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *input_handler);
 #endif
