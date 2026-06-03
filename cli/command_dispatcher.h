@@ -13,15 +13,15 @@
 
 typedef struct
 {
-    StatusCode (*dispatcher_function)(Workspace *, Command *);
+    StatusCode (*executor_function)(Workspace *, Command *);
     CommandFunction command_function;
 } CMDArgumentBasedFunctionEntry;
 
 typedef struct
 {
-    StatusCode (*dispatcher_function)(Workspace *, Command *, char *, size_t);
+    StatusCode (*executor_function)(Workspace *, Command *, char *, size_t);
     CommandFunction command_function;
-} CommandDispatcherArgumentBasedFunctionEntry;
+} CMDPromptingFunctionEntry;
 
 static const CMDArgumentBasedFunctionEntry CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[] =
 {
@@ -36,9 +36,9 @@ static const CMDArgumentBasedFunctionEntry CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[] 
     {cmd_rename_exec, CMD_RENAME}
 };
 
-static const CommandDispatcherArgumentBasedFunctionEntry CMD_PROMPTING_FUNCTIONS_TABLE[] =
+static const CMDPromptingFunctionEntry CMD_PROMPTING_FUNCTIONS_TABLE[] =
 {
-    
+    {cmd_append_exec, CMD_APPEND}
 };
 
 static const size_t CMD_ARGUMENT_BASED_FUNCTIONS_TABLE_LENGTH = 

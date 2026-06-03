@@ -64,7 +64,8 @@ typedef enum
     ATTEMPTED_TO_READ_AT_EOF = -412,
     INPUT_BUFFER_OVER_FLOW = -413,
     TOO_MANY_LINES = -414,
-
+    INPUT_LINE_IS_TOO_LONG = -415,
+    
     //Dispatcher
     COMMAND_FUNCTION_NOT_FOUND = -421,
 

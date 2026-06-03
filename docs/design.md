@@ -87,6 +87,7 @@ CLI client translates CLI commands into file sys functionality
 ## Append oriented systems simplify crashs and reduces fragmentation complexity 
 
 ## statefull emulator workspace 
+Add convenience layer as it only takes paths not node pointers
 
 ## Original I implemented null terminator to indicate the end of a partial chunks data but soon I realised that prevents full byte writing
 
@@ -100,3 +101,7 @@ thats why there is a seperate buffer for data
 in place breaking command into tokens
 
 ## parser
+
+
+## Prompting executor functions
+when a command is read if the commands function is not found in the CMD_ARGUMENT_BASED_FUNCTIONS_TABLE the dispatcher searchs for the command function in CMD_PROMPTING_FUNCTIONS_TABLE. If found, the dispatcher calls the mutli_line_read function on the dispatchers data buffer. then the input handlers data buffer is passed to the executor along with the datas length.

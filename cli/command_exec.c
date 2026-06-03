@@ -4,6 +4,7 @@
 #include "workspace.h"
 #include "navigation.h"
 #include "vfs_ops.h"
+#include "file_io.h"
 
 #include "path_utils.h"
 
@@ -313,5 +314,40 @@ StatusCode cmd_rename_exec(Workspace *workspace, Command *cmd)
         workspace,
         cmd->args[0],
         cmd->args[1]
+    );
+}
+
+StatusCode cmd_append_exec(Workspace *workspace, Command *cmd, char *data_buffer, size_t data_buffer_length)
+{
+    if (!workspace || !cmd || !data_buffer)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 1)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    if (cmd->args_amount < 1)
+    {
+        return CMD_TOO_FEW_ARGS;
+    }
+
+    if (data_buffer_length == 0)
+    {
+        return SUCCESS;
+    }
+    
+    return ws_file_append(
+        workspace,
+        cmd->args[0],
+        data_buffer,
+        data_buffer_length
     );
 }

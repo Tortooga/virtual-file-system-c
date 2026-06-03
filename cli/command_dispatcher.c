@@ -6,6 +6,7 @@
 
 #include "workspace.h"
 
+#include <string.h>
 
 //Calls appropriate command executer 
 //Is responsible for prompting secondary input
@@ -24,7 +25,7 @@ StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *in
     {
         if (cmd->func == CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[i].command_function)
         {
-            return CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[i].dispatcher_function(workspace, cmd);
+            return CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[i].executor_function(workspace, cmd);
         }
     }
 
@@ -36,7 +37,19 @@ StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *in
     {
         if (cmd->func == CMD_PROMPTING_FUNCTIONS_TABLE[i].command_function)
         {
+            StatusCode status = multi_line_read(input_handler->data_buffer, DATA_BUFFER_SIZE);
             
+            if (status != SUCCESS)
+            {
+                return status;
+            }
+
+            return CMD_PROMPTING_FUNCTIONS_TABLE[i].executor_function(
+                workspace, 
+                cmd, 
+                input_handler->data_buffer, 
+                strlen(input_handler->data_buffer)
+            );
         }
     }
 

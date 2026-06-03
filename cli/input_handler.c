@@ -93,7 +93,7 @@ StatusCode multi_line_read(char *buffer, size_t buffer_size)
         //If the input overflows the logical limit of MAX_INPUT_LINE_LENGTH 
         if (amount_read == MAX_MULTI_LINE_INPUT_LINE_LENGTH + 1)
         {
-            return CMD_IS_TOO_LONG;
+            return INPUT_LINE_IS_TOO_LONG;
         }
 
         //extra space for null terminator
