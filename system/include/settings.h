@@ -2,7 +2,7 @@
 #define SETTINGS_H
 
 #define CHUNK_SIZE 8 //bytes
-#define CHUNKS_AMOUNT 20
+#define CHUNKS_AMOUNT 500
 
 #define MAX_FILE_CHUNK_EXTENTS_AMOUNT 10
 

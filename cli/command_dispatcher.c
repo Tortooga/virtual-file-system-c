@@ -12,10 +12,9 @@ bool is_multi_line_read_prompting(CommandFunction command_func);
 bool is_data_outputting(CommandFunction command_func);
 
 //Calls appropriate command executer 
-//Is responsible for prompting secondary input
 StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *input_handler, char *output_buffer, size_t output_buffer_size)
 {
-    if (!workspace || !cmd || !input_handler)
+    if (!workspace || !cmd || !input_handler || !output_buffer)
     {
         return NULL_POINTER_PASSED;
     }

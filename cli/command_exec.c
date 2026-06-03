@@ -1,5 +1,6 @@
 #include "command_exec.h"
 #include "commands.h"
+#include "input_handler.h"
 
 #include "workspace.h"
 #include "navigation.h"
@@ -348,10 +349,73 @@ StatusCode cmd_append_exec(Workspace *workspace, Command *cmd, char *data_buffer
         return SUCCESS;
     }
     
+    size_t amount_read;
+
+    StatusCode status = multi_line_read(
+        data_buffer,
+        data_buffer_length,
+        &amount_read
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (amount_read == 0)
+    {
+        return SUCCESS;
+    }
+
     return ws_file_append(
         workspace,
         cmd->args[0],
         data_buffer,
-        data_buffer_length
+        amount_read
     );
+}
+
+StatusCode cmd_cat_exec(Workspace *workspace, Command *cmd, char *data_buffer, size_t data_buffer_length)
+{
+    if (!workspace || !cmd || !data_buffer_length)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 1)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    if (cmd->args_amount < 1)
+    {
+        return CMD_TOO_FEW_ARGS;
+    }
+
+    size_t data_amount;
+
+    StatusCode status = ws_file_read_all(
+        workspace, 
+        cmd->args[0],
+        data_buffer,
+        data_buffer_length,
+        &data_amount
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    for (size_t i = 0; i < data_amount; i++)
+    {
+        printf("%c", data_buffer[i]);
+    }
+
+    return SUCCESS;
 }

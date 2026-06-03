@@ -11,7 +11,6 @@
 #define SUB_ENTRIES_PRINTED_PER_LINE 7
 #define SUB_ENTRY_PADDING_WIDTH 7
 #define SUB_ENTRY_SPACING_WIDTH 3
-#define FILE_DATA_INPUT_BUFFER_SIZE 512
 
 StatusCode cmd_cd_exec(Workspace *workspace, Command *cmd);
 StatusCode cmd_pwd_exec(Workspace *workspace, Command *cmd);
@@ -25,5 +24,6 @@ StatusCode cmd_rename_exec(Workspace *workspace, Command *cmd);
 
 
 StatusCode cmd_append_exec(Workspace *workspace, Command *cmd, char *data_buffer, size_t data_buffer_length);
+StatusCode cmd_cat_exec(Workspace *workspace, Command *cmd, char *data_buffer, size_t data_buffer_length);
 
 #endif

@@ -105,3 +105,8 @@ in place breaking command into tokens
 
 ## Prompting executor functions
 when a command is read if the commands function is not found in the CMD_ARGUMENT_BASED_FUNCTIONS_TABLE the dispatcher searchs for the command function in CMD_PROMPTING_FUNCTIONS_TABLE. If found, the dispatcher calls the mutli_line_read function on the dispatchers data buffer. then the input handlers data buffer is passed to the executor along with the datas length.
+
+effectively commands are classified under 2 architectural categories. Argument based functions and payload based functions.
+Argument based functions do not rely on inputting or outputting data of arbitrary length
+payload based functions are split into 2 categories. prompting functions and outputing functions. Prompting functions prompt the user for input and so the dispatcher passes to them the input buffer.
+outputting functions output data after reading it from a file. And that is why the dispatcher passes to them the output buffer.

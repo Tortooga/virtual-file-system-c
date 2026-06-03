@@ -10,7 +10,7 @@
 #define MAX_MULTI_LINE_INPUT_LINES_AMOUNT 16
 #define MAX_MULTI_LINE_INPUT_LINE_LENGTH 64 
 
-#define DATA_BUFFER_SIZE MAX_MULTI_LINE_INPUT_LINE_LENGTH * MAX_MULTI_LINE_INPUT_LINES_AMOUNT
+#define INPUT_DATA_BUFFER_SIZE MAX_MULTI_LINE_INPUT_LINE_LENGTH * MAX_MULTI_LINE_INPUT_LINES_AMOUNT
 
 typedef enum
 {
@@ -23,7 +23,7 @@ typedef struct
     InputMode input_mode;
     char command_buffer[COMMAND_BUFFER_SIZE];
 
-    char data_buffer[DATA_BUFFER_SIZE];
+    char data_buffer[INPUT_DATA_BUFFER_SIZE];
 } InputHandler;
 
 //Data over buffer_size - 1 causes buffer over flow error

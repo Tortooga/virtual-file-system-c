@@ -48,16 +48,33 @@ StatusCode ws_file_append(
 //Removes all the files storage data
 StatusCode ws_file_clear(
     Workspace *workspace,
-    File *file
+    char *target_file_path
 )
 {
-    if (!workspace || !file)
+    if (!workspace || !target_file_path)
     {
         return NULL_POINTER_PASSED;
     }
 
+    VFSNode node;
+    StatusCode status = ws_resolve_path(
+        workspace,
+        target_file_path,
+        &node
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (node.type != FILE_NODE)
+    {
+        return EXPECTED_FILE_GOT_FOLDER;
+    }
+
     return file_delete_data(
-        file,
+        node.node.file,
         workspace->storage_man
     );
 }
@@ -66,42 +83,69 @@ StatusCode ws_file_clear(
 //Buffer must be of size file->allocated_size * CHUNK_SIZE at least
 StatusCode ws_file_read_all(
     Workspace *workspace,
-    File *file,
+    char *target_file_path,
     char *buffer,
-    const size_t buffer_size
+    const size_t buffer_size,
+    size_t *out_data_amount
 )
 {
-    if (!workspace || !file || !buffer)
+    if (!workspace || !target_file_path || !buffer || !out_data_amount)
     {
         return NULL_POINTER_PASSED;
     }
 
-    if (buffer_size < file->allocated_size * CHUNK_SIZE)
+    VFSNode node;
+    StatusCode status = ws_resolve_path(
+        workspace,
+        target_file_path,
+        &node
+    );
+    
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+    
+    if (node.type != FILE_NODE)
+    {
+        return EXPECTED_FILE_GOT_FOLDER;
+    }
+    
+    if (buffer_size < node.node.file->allocated_size * CHUNK_SIZE)
     {
         return INSUFFICIENT_ARRAY_PASSED;
     }
 
-    return file_read_at(
-        file,
+    status = file_read_at(
+        node.node.file,
         workspace->storage_man,
         0, //offset = 0 since we are reading the whole file
-        file->allocated_size * CHUNK_SIZE,
+        node.node.file->allocated_size * CHUNK_SIZE,
         buffer,
         buffer_size
     );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    *out_data_amount = node.node.file->allocated_size * CHUNK_SIZE;
+
+    return SUCCESS;
 }
 
 
 StatusCode ws_file_read_at(
     Workspace *workspace,
-    File *file,
+    char *target_file_path,
     const size_t offset,
     const size_t amount,
     char *buffer,
     const size_t buffer_size
 )
 {
-    if (!workspace || !file || !buffer)
+    if (!workspace || !target_file_path || !buffer)
     {
         return NULL_POINTER_PASSED;
     }
@@ -111,9 +155,27 @@ StatusCode ws_file_read_at(
         return INSUFFICIENT_ARRAY_PASSED;
     }
 
+    VFSNode node;
+
+    StatusCode status = ws_resolve_path(
+        workspace,
+        target_file_path,
+        &node
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (node.type != FILE_NODE)
+    {
+        return EXPECTED_FILE_GOT_FOLDER;
+    }
+
     //file_read_at validates offset and whether offset + amount is in bound
     return file_read_at(
-        file,
+        node.node.file,
         workspace->storage_man,
         offset,
         amount,
