@@ -190,3 +190,38 @@ StatusCode ws_file_read_at(
         buffer_size
     );
 }
+//target_file_path must be null terminated
+StatusCode ws_file_truncate(
+    Workspace *workspace,
+    char *target_file_path,
+    size_t amount 
+)
+{
+    if (!target_file_path || ! workspace)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    VFSNode node;
+    StatusCode status = ws_resolve_path(
+        workspace,
+        target_file_path,
+        &node
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (node.type != FILE_NODE)
+    {
+        return EXPECTED_FILE_GOT_FOLDER;
+    }
+
+    return file_truncate_by(
+        node.node.file,
+        workspace->storage_man,
+        amount
+    );
+}

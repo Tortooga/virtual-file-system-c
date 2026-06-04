@@ -32,7 +32,8 @@ static const CMDArgumentBasedFunctionEntry CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[] 
     {cmd_rmdir_exec, CMD_RMDIR},
     {cmd_mv_exec, CMD_MV},
     {cmd_rename_exec, CMD_RENAME},
-    {cmd_clear_exec, CMD_CLEAR}
+    {cmd_clear_exec, CMD_CLEAR},
+    {cmd_trunc_exec, CMD_TRUNC},
 };
 
 static const size_t CMD_ARGUMENT_BASED_FUNCTIONS_TABLE_LENGTH = 

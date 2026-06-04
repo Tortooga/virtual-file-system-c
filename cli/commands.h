@@ -45,6 +45,7 @@ typedef enum {
     CMD_READ,
     CMD_APPEND,
     CMD_CLEAR,
+    CMD_TRUNC,
 
     //UI
     CMD_HELP,
@@ -99,6 +100,7 @@ static const CommandEntry COMMAND_TABLE[] =
     {CMD_READ, "read"},
     {CMD_APPEND, "append"},
     {CMD_CLEAR, "clear"},
+    {CMD_TRUNC, "trunc"},
 
     // UI
     {CMD_HELP, "help"},

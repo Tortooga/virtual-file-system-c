@@ -416,10 +416,17 @@ StatusCode cmd_cat_exec(Workspace *workspace, Command *cmd, char *data_buffer, s
         return status;
     }
 
+    if (data_amount == 0)
+    {
+        return SUCCESS;
+    }
+    
     for (size_t i = 0; i < data_amount; i++)
     {
         printf("%c", data_buffer[i]);
     }
+
+    printf("\n");
 
     return SUCCESS;
 }
@@ -540,4 +547,57 @@ StatusCode cmd_read_exec(Workspace *workspace, Command *cmd, char *data_buffer, 
 
     printf("\n");
     return SUCCESS;
+}
+
+StatusCode cmd_trunc_exec(Workspace *workspace, Command *cmd)
+{
+    if (!workspace || !cmd)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 2)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    if (cmd->args_amount < 2)
+    {
+        return CMD_TOO_FEW_ARGS;
+    }
+
+    errno = 0;
+    char *termination_point;
+    
+    long amount = strtol(
+        cmd->args[1],
+        &termination_point,
+        NUMBER_SYSTEM_BASE
+    );
+
+    if (errno == ERANGE)
+    {
+        return CMD_INPUT_OUT_OF_RANGE;
+    }
+
+    if (*termination_point != '\0')
+    {
+        return CMD_EXPECTED_INT;
+    }
+
+    if (amount < 0)
+    {
+        return CMD_EXPECTED_POSATIVE_NUMBER;
+    }
+
+    return ws_file_truncate(
+        workspace,
+        cmd->args[0],
+        amount
+    );
 }

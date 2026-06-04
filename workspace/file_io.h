@@ -38,4 +38,11 @@ StatusCode ws_file_read_at(
     const size_t buffer_size
 );
 
+//target_file_path must be null terminated
+StatusCode ws_file_truncate(
+    Workspace *workspace,
+    char *target_file_path,
+    size_t amount 
+);
+
 #endif
