@@ -8,7 +8,7 @@
 #include <stddef.h>
 
 #define MAX_CMD_ARGUMENT_LENGTH MAX_NAME_LENGTH * MAX_PATH_NODES_AMOUNT
-#define MAX_CMD_ARGUMENT_AMOUNT 2
+#define MAX_CMD_ARGUMENT_AMOUNT 3
 #define MAX_CMD_OPTION_AMOUNT 1
 
 #define MAX_COMMAND_LENGTH MAX_CMD_ARGUMENT_AMOUNT * MAX_CMD_ARGUMENT_LENGTH + MAX_CMD_OPTION_AMOUNT
@@ -42,7 +42,7 @@ typedef enum {
 
     //file IO
     CMD_CAT,
-    CMD_READAT,
+    CMD_READ,
     CMD_APPEND,
     CMD_CLEAR,
 
@@ -96,7 +96,7 @@ static const CommandEntry COMMAND_TABLE[] =
 
     // File IO
     {CMD_CAT, "cat"},
-    {CMD_READAT, "readat"},
+    {CMD_READ, "read"},
     {CMD_APPEND, "append"},
     {CMD_CLEAR, "clear"},
 

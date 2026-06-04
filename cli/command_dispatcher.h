@@ -42,7 +42,8 @@ static const size_t CMD_ARGUMENT_BASED_FUNCTIONS_TABLE_LENGTH =
 static const CMDPayloadBasedFunctionEntry CMD_PAYLOAD_BASED_FUNCTIONS_TABLE[] =
 {
     {cmd_append_exec, CMD_APPEND},
-    {cmd_cat_exec, CMD_CAT}
+    {cmd_cat_exec, CMD_CAT},
+    {cmd_read_exec, CMD_READ}
 };
 
 static const size_t CMD_PAYLOAD_BASED_FUNCTIONS_TABLE_LENGTH = 
@@ -61,6 +62,7 @@ static const size_t MULTI_LINE_READ_PROMPTING_FUNCTIONS_LENGTH =
 static const CommandFunction DATA_OUTPUTING_FUNCTIONS[] =
 {
     CMD_CAT,
+    CMD_READ,
 };
 
 static const size_t DATA_OUTPUTING_FUNCTIONS_LENGTH =

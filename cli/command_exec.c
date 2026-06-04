@@ -10,6 +10,10 @@
 #include "path_utils.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+
+#define NUMBER_SYSTEM_BASE 10
 
 static void print_entry_name_column(char *name);
 
@@ -446,4 +450,94 @@ StatusCode cmd_clear_exec(Workspace *workspace, Command *cmd)
         workspace,
         cmd->args[0]
     );
+}
+
+StatusCode cmd_read_exec(Workspace *workspace, Command *cmd, char *data_buffer, size_t data_buffer_length)
+{
+    if (!workspace || !cmd || !data_buffer)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 3)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    if (cmd->args_amount < 3)
+    {
+        return CMD_TOO_FEW_ARGS;
+    }
+
+    errno = 0;
+    char *termination_point;
+    long offset = strtol(
+        cmd->args[1],
+        &termination_point,
+        NUMBER_SYSTEM_BASE
+    );
+
+    if (*termination_point != '\0')
+    {
+        return CMD_EXPECTED_INT;
+    }
+
+    if (errno == ERANGE)
+    {
+        return CMD_INPUT_OUT_OF_RANGE;
+    }
+
+    long amount = strtol(
+        cmd->args[2],
+        &termination_point,
+        NUMBER_SYSTEM_BASE
+    );
+
+    if (*termination_point != '\0')
+    {
+        printf("%s", termination_point);
+        return CMD_EXPECTED_INT;
+    }
+
+    if (errno == ERANGE)
+    {
+        return CMD_INPUT_OUT_OF_RANGE;
+    }
+
+    if (offset < 0 || amount < 0)
+    {
+        return CMD_EXPECTED_POSATIVE_NUMBER;
+    }
+
+    if (amount == 0)
+    {
+        return SUCCESS;
+    }
+
+    StatusCode status = ws_file_read_at(
+        workspace,
+        cmd->args[0],
+        (size_t) offset,
+        (size_t) amount,
+        data_buffer,
+        data_buffer_length
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    for (size_t i = 0; i < amount; i++)
+    {
+        printf("%c", data_buffer[i]);
+    }
+
+    printf("\n");
+    return SUCCESS;
 }
