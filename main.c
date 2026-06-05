@@ -7,11 +7,15 @@
 #include "queries.h"
 #include "path_utils.h"
 #include "entry_relocation.h"
+
 #include "workspace.h"
 #include "navigation.h"
 #include "vfs_ops.h"
 #include "file_io.h"
 
+#include "commands.h"
+#include "input_handler.h"
+#include "command_dispatcher.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -41,21 +45,10 @@ int main(int argc, char *argv)
     vfs_entry_store_init(&store);
 
     load_test_data(&store);
-
-    VFSNode nodes[10];
-    size_t nodes_amount;
-
-    StatusCode status = global_search_nodes_by_name(
-        "setup.exe",
-        10,
-        &store,
-        nodes,
-        10,
-        &nodes_amount
-    );
-
+    
     Folder *folder;
 
+    StatusCode status;
     status = vfs_sub_folder_init(&folder, &store, "folder", 7, &store.root);
 
     File *file;
@@ -71,31 +64,66 @@ int main(int argc, char *argv)
     Workspace workspace;
     workspace_init(&store, &storage_man, &workspace);
 
-    char message[] = "hello this is a message test whats up?";
-    size_t message_length = 38;
+    InputHandler IH;
+    Command cmd;
 
-    status = ws_file_append(
+    VFSNode nodes[MAX_SUB_FILES_AMOUNT + MAX_SUB_FOLDERS_AMOUNT];
+
+    size_t nodes_amount;
+    status = ws_get_sub_entries(
         &workspace,
-        "/folder/file",
-        message,
-        message_length
+        "home",
+        nodes,
+        MAX_SUB_FILES_AMOUNT + MAX_SUB_FOLDERS_AMOUNT,
+        &nodes_amount
     );
 
-    char buffer[message_length + 1];
-    
-    status = ws_file_read_all(
-        &workspace,
-        file,
-        buffer,
-        40
-    );
+    printf("%d\n", status);
 
-    printf("Read Status: %d\n", status);
-    printf("File Allocated Size %zu\n", file->allocated_size);
-    printf("Message Length %zu\n", message_length);
-    buffer[40] = '\0';
+    /*
+    for (size_t i = 0; i < nodes_amount; i++)
+    {
+        if (nodes[i].type == FILE_NODE)
+        {
+            printf("%zu: %s\n", i, nodes[i].node.file->name);
+            continue;
+        }
 
-    printf("%s", buffer);
+        printf("%zu: %s\n", i, nodes[i].node.folder->name);
+    }
+    */
+
+    char OUTPUT_BUFFER[1024];
+    while (1)
+    {
+        printf("VFS:%s# ", workspace.cur_path);
+        fflush(stdout);
+        status = new_line_terminated_read(IH.command_buffer, COMMAND_BUFFER_SIZE);
+
+        if (status != SUCCESS)
+        {
+            printf("%d\n", status);
+            return status;
+        }
+
+        status = cmd_parse(IH.command_buffer, &cmd);
+
+        if (status != SUCCESS)
+        {
+            printf("%d\n", status);
+            continue;
+        }
+
+        status = command_dispatch(&workspace, &cmd, &IH, OUTPUT_BUFFER, 1024);
+
+        if (status != SUCCESS)
+        {
+            printf("%d\n", status);
+            continue;
+        }
+    }
+
+    return 0;
 } 
 
 
