@@ -25,3 +25,14 @@ StatusCode ws_get_sub_entries(
     size_t node_buffer_length,
     size_t *out_nodes_amount
 );
+
+//name must be null terminated
+StatusCode ws_global_search_by_name(
+    Workspace *workspace,
+    char *name,
+
+    VFSNode *out_nodes,
+    size_t nodes_buffer_length,
+
+    size_t *out_nodes_amount
+);

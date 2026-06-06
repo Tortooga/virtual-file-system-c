@@ -207,3 +207,29 @@ StatusCode ws_get_sub_entries(
 
     return SUCCESS;
 }
+
+//name must be null terminated
+StatusCode ws_global_search_by_name(
+    Workspace *workspace,
+    char *name,
+
+    VFSNode *out_nodes,
+    size_t nodes_buffer_length,
+
+    size_t *out_nodes_amount
+)
+{
+    if (!workspace || !name || !out_nodes || !out_nodes_amount)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    return global_search_nodes_by_name(
+        name,
+        strlen(name),
+        workspace->entry_store,
+        out_nodes,
+        nodes_buffer_length,
+        out_nodes_amount
+    );
+}

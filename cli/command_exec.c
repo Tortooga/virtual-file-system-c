@@ -601,3 +601,67 @@ StatusCode cmd_trunc_exec(Workspace *workspace, Command *cmd)
         amount
     );
 }
+
+StatusCode cmd_find_exec(Workspace *workspace, Command *cmd)
+{
+    if (!workspace || !cmd)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 1)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    if (cmd->args_amount < 1)
+    {
+        return CMD_TOO_FEW_ARGS;
+    }
+
+    //VFSNode only stores a pointer to the file/folder struct
+    VFSNode node_buffer[QUERIES_NODE_BUFFER_SIZE];
+    size_t nodes_amount;
+
+    StatusCode status = ws_global_search_by_name(
+        workspace,
+        cmd->args[0],
+        node_buffer,
+        QUERIES_NODE_BUFFER_SIZE,
+        &nodes_amount
+    );
+
+    if (status != SUCCESS)
+    {
+        return status;
+    }
+
+    if (nodes_amount == 0)
+    {
+        return SUCCESS;
+    }
+
+    char path_buffer[MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1];
+    for (size_t i = 0; i < nodes_amount; i++)
+    {
+        status = get_node_path(
+            &node_buffer[i], 
+            path_buffer, 
+            MAX_PATH_NODES_AMOUNT * (MAX_NAME_LENGTH + 1) + 1
+        );
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+
+        printf("%s\n", path_buffer);
+    }
+
+    return SUCCESS;
+}
