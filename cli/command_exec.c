@@ -665,3 +665,54 @@ StatusCode cmd_find_exec(Workspace *workspace, Command *cmd)
 
     return SUCCESS;
 }
+
+#include "folders.h"
+
+StatusCode cmd_tree_exec(Workspace *workspace, Command *cmd)
+{
+    if (!workspace || !cmd)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 1)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    Folder *target_folder;
+
+    if (cmd->args_amount == 0)
+    {
+        target_folder = workspace->cur_folder;
+    }
+    else
+    {
+        VFSNode node;
+        StatusCode status = ws_resolve_path(
+            workspace,
+            cmd->args[0],
+            &node
+        );
+
+        if (status != SUCCESS)
+        {
+            return status;
+        }
+
+        if (node.type != FOLDER_NODE)
+        {
+            return EXPECTED_FOLDER_GOT_FILE;
+        }
+
+        target_folder = node.node.folder;
+    }
+
+    return print_folder(target_folder);
+}
+
