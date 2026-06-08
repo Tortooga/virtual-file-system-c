@@ -36,6 +36,7 @@ static const CMDArgumentBasedFunctionEntry CMD_ARGUMENT_BASED_FUNCTIONS_TABLE[] 
     {cmd_trunc_exec, CMD_TRUNC},
     {cmd_find_exec, CMD_FIND},
     {cmd_tree_exec, CMD_TREE},
+    {cmd_help_exec, CMD_HELP},
 };
 
 static const size_t CMD_ARGUMENT_BASED_FUNCTIONS_TABLE_LENGTH = 

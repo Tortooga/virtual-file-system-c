@@ -1,11 +1,13 @@
 #include "command_exec.h"
 #include "commands.h"
 #include "input_handler.h"
+#include "help.h"
 
 #include "workspace.h"
 #include "navigation.h"
 #include "vfs_ops.h"
 #include "file_io.h"
+#include "folders.h"
 
 #include "path_utils.h"
 
@@ -666,7 +668,6 @@ StatusCode cmd_find_exec(Workspace *workspace, Command *cmd)
     return SUCCESS;
 }
 
-#include "folders.h"
 
 StatusCode cmd_tree_exec(Workspace *workspace, Command *cmd)
 {
@@ -716,3 +717,36 @@ StatusCode cmd_tree_exec(Workspace *workspace, Command *cmd)
     return print_folder(target_folder);
 }
 
+StatusCode cmd_help_exec(Workspace *workspace, Command *cmd)
+{
+    if (!workspace || !cmd)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 1)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    
+    if (cmd->args_amount == 1)
+    {
+        return print_str_command_function_help_hint(
+            cmd->args[0]
+        );
+    }
+
+    printf("Run \"help [COMMAND_FUNCTION]\" to get COMMAND_FUNCTION's details\n\n");
+    
+    for (size_t i = 0; i < HELP_HINTS_TABLE_LENGTH; i++)
+    {
+        printf("%s\n", HELP_HINTS_TABLE[i].synopsis);
+    }
+    return SUCCESS;
+}

@@ -118,4 +118,10 @@ StatusCode cmd_parse(
     Command *out_command
 );
 
+//func_str must be a C string
+StatusCode resolve_cmd_function(
+    const char *func_str,
+    CommandFunction *out_func
+);
+
 #endif
