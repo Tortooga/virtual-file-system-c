@@ -75,5 +75,12 @@ static const size_t DATA_OUTPUTING_FUNCTIONS_LENGTH =
 
 //Calls appropriate command executer 
 //Is responsible for prompting secondary input
-StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *input_handler, char *output_buffer, size_t output_buffer_size);
+StatusCode command_dispatch(
+    Workspace *workspace, 
+    Command *cmd, 
+    InputHandler *input_handler, 
+    char *output_buffer, 
+    size_t output_buffer_size,
+    bool *exit_flag
+);
 #endif

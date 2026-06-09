@@ -1,226 +1,68 @@
 #include "storage.h"
 #include "settings.h"
-#include "files.h"
-#include "file_storage.h"
-#include "file_logic.h"
-#include "folders.h"
-#include "queries.h"
-#include "path_utils.h"
-#include "entry_relocation.h"
+#include "vfs_entry_store.h"
 
 #include "workspace.h"
-#include "navigation.h"
-#include "vfs_ops.h"
-#include "file_io.h"
 
-#include "commands.h"
-#include "input_handler.h"
-#include "command_dispatcher.h"
+#include "cli_runtime.h"
 
-#include <stdio.h>
-#include <string.h>
+#include <stdlib.h>
 
-/*
- DISCLAIMER: This is only a testing play ground  
-*/
-
-void load_test_data(VFSEntryStore *store);
-
-int main(int argc, char *argv)
+int main(void)
 {
-    StorageMan storage_man;
-    char storage[CHUNKS_AMOUNT * CHUNK_SIZE];
-    bool allocation_map[CHUNKS_AMOUNT];
+    StorageMan storage_man = {0};
+    VFSEntryStore entry_store = {0};
+    Workspace workspace = {0};
+    
+    int exit_code = EXIT_SUCCESS;
 
-    storage_man_init
-    (
+    StatusCode status = storage_man_create(&storage_man);
+    
+    if (status != SUCCESS)
+    {
+        exit_code = EXIT_FAILURE;
+        goto cleanup;
+    }
+    
+    
+    status = vfs_entry_store_init(&entry_store);
+    
+    if (status != SUCCESS)
+    {
+        exit_code = EXIT_FAILURE;
+        goto cleanup;
+    }
+    
+    
+    status = workspace_init(
+        &entry_store,
         &storage_man,
-        storage,
-        CHUNKS_AMOUNT * CHUNK_SIZE,
-        allocation_map,
-        CHUNKS_AMOUNT
+        &workspace
     );
     
-    VFSEntryStore store;
-    vfs_entry_store_init(&store);
-
-    load_test_data(&store);
+    if (status != SUCCESS)
+    {
+        exit_code = EXIT_FAILURE;
+        goto cleanup;
+    }
     
-    Folder *folder;
-
-    StatusCode status;
-    status = vfs_sub_folder_init(&folder, &store, "folder", 7, &store.root);
-
-    File *file;
-
-    status = vfs_sub_file_init(
-        &file,
-        &store,
-        "file",
-        5,
-        folder
+    status = cli_run(
+        &storage_man,
+        &entry_store,
+        &workspace
     );
-
-    Workspace workspace;
-    workspace_init(&store, &storage_man, &workspace);
-
-    InputHandler IH;
-    Command cmd;
-
-    VFSNode nodes[MAX_SUB_FILES_AMOUNT + MAX_SUB_FOLDERS_AMOUNT];
-
-    size_t nodes_amount;
-    status = ws_get_sub_entries(
-        &workspace,
-        "home",
-        nodes,
-        MAX_SUB_FILES_AMOUNT + MAX_SUB_FOLDERS_AMOUNT,
-        &nodes_amount
-    );
-
-    printf("%d\n", status);
-
-    /*
-    for (size_t i = 0; i < nodes_amount; i++)
+    
+    if (status != SUCCESS)
     {
-        if (nodes[i].type == FILE_NODE)
-        {
-            printf("%zu: %s\n", i, nodes[i].node.file->name);
-            continue;
-        }
-
-        printf("%zu: %s\n", i, nodes[i].node.folder->name);
-    }
-    */
-
-    char OUTPUT_BUFFER[1024];
-    while (1)
-    {
-        printf("VFS:%s# ", workspace.cur_path);
-        fflush(stdout);
-        status = new_line_terminated_read(IH.command_buffer, COMMAND_BUFFER_SIZE);
-
-        if (status != SUCCESS)
-        {
-            printf("%d\n", status);
-            return status;
-        }
-
-        status = cmd_parse(IH.command_buffer, &cmd);
-
-        if (status != SUCCESS)
-        {
-            printf("%d\n", status);
-            continue;
-        }
-
-        status = command_dispatch(&workspace, &cmd, &IH, OUTPUT_BUFFER, 1024);
-
-        if (status != SUCCESS)
-        {
-            printf("%d\n", status);
-            continue;
-        }
+        exit_code = EXIT_FAILURE;
     }
 
-    return 0;
+    cleanup:
+        workspace_destroy(&workspace);
+        vfs_entry_store_destroy(&entry_store);
+        storage_man_destroy(&storage_man);
+        
+        return exit_code;
 } 
 
 
-void load_test_data(VFSEntryStore *store)
-{
-    #include <time.h>
-    #include <stdio.h>
-
-    clock_t start = clock();
-
-    Folder *folder;
-    File *file;
-
-    /* =========================
-    ROOT LEVEL
-    ========================= */
-
-    vfs_sub_folder_init(&folder, store, "home", 4, &store->root);
-    Folder *f_home = folder;
-
-    vfs_sub_folder_init(&folder, store, "etc", 3, &store->root);
-    Folder *f_etc = folder;
-
-    vfs_sub_folder_init(&folder, store, "var", 3, &store->root);
-    Folder *f_var = folder;
-
-    /* =========================
-    HOME subtree
-    ========================= */
-
-    vfs_sub_folder_init(&folder, store, "user", 4, f_home);
-    Folder *f_user = folder;
-
-    vfs_sub_folder_init(&folder, store, "shared", 6, f_home);
-    Folder *f_shared = folder;
-
-    /* user subfolders */
-    vfs_sub_folder_init(&folder, store, "documents", 9, f_user);
-    Folder *f_documents = folder;
-
-    vfs_sub_folder_init(&folder, store, "downloads", 9, f_user);
-    Folder *f_downloads = folder;
-
-    /* =========================
-    ETC subtree
-    ========================= */
-
-    vfs_sub_folder_init(&folder, store, "nginx", 5, f_etc);
-    Folder *f_nginx = folder;
-
-    vfs_sub_folder_init(&folder, store, "conf", 4, f_nginx);
-    Folder *f_conf = folder;
-
-    /* =========================
-    VAR subtree
-    ========================= */
-
-    vfs_sub_folder_init(&folder, store, "log", 3, f_var);
-    Folder *f_log = folder;
-
-    /* =========================
-    FILES (19 total)
-    ========================= */
-
-    /* ---- home (2 files) ---- */
-    vfs_sub_file_init(&file, store, "README", 6, f_home);
-    vfs_sub_file_init(&file, store, "welcome.txt", 11, f_home);
-
-    /* ---- user/documents (3 files) ---- */
-    vfs_sub_file_init(&file, store, "resume.pdf", 10, f_documents);
-    vfs_sub_file_init(&file, store, "notes.txt", 9, f_documents);
-    vfs_sub_file_init(&file, store, "thesis.draft", 12, f_documents);
-
-    /* ---- user/downloads (2 files) ---- */
-    vfs_sub_file_init(&file, store, "setup.exe", 9, f_downloads);
-    vfs_sub_file_init(&file, store, "movie.mkv", 9, f_downloads);
-
-    /* ---- shared (2 files) ---- */
-    vfs_sub_file_init(&file, store, "shared_info.txt", 15, f_shared);
-    vfs_sub_file_init(&file, store, "rules.md", 8, f_shared);
-
-    /* ---- etc (1 file) ---- */
-    vfs_sub_file_init(&file, store, "hosts", 5, f_etc);
-
-    /* ---- nginx/conf (4 files) ---- */
-    vfs_sub_file_init(&file, store, "nginx.conf", 10, f_conf);
-    vfs_sub_file_init(&file, store, "site1.conf", 10, f_conf);
-    vfs_sub_file_init(&file, store, "default.conf", 12, f_conf);
-    vfs_sub_file_init(&file, store, "mime.types", 10, f_conf);
-
-    /* ---- var/log (3 files) ---- */
-    vfs_sub_file_init(&file, store, "syslog", 6, f_log);
-    vfs_sub_file_init(&file, store, "app.log", 7, f_log);
-    vfs_sub_file_init(&file, store, "error.log", 9, f_log);
-
-    clock_t end = clock();
-    
-    printf("Time: %f seconds\n",
-        (double)(end - start) / CLOCKS_PER_SEC);
-}

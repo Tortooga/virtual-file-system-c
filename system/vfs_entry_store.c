@@ -168,6 +168,11 @@ StatusCode vfs_sub_folder_init(
     return SUCCESS;
 }
 
+void vfs_entry_store_destroy(VFSEntryStore *entry_store)
+{
+    //VFSEntryStore is full on the stack
+}
+
 //Unlinks folder from parent and labels its position as available in the allocation map
 StatusCode delete_vfs_folder(Folder *folder, VFSEntryStore *entry_store, StorageMan *storage_man, bool force)
 {

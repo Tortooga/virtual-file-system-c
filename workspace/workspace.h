@@ -29,7 +29,9 @@ typedef struct
 
 StatusCode workspace_init(
     VFSEntryStore *entry_store,
-    StorageMan *storage_man_init,
+    StorageMan *storage_man,
     Workspace *out_workspace
 );
+
+void workspace_destroy(Workspace *workspace);
 #endif

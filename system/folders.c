@@ -16,7 +16,7 @@ StatusCode find_sub_folder_index(Folder *sub_folder, size_t *out_sub_folder_inde
 StatusCode find_sub_file_index(Folder *parent_folder, File *file, size_t *out_sub_file_index);
 StatusCode print_folder_recursion(Folder *cur_folder, size_t step_count);
 StatusCode sub_entry_name_is_unique(Folder *parent_folder, const char *name, size_t name_length, bool *out_result);
-
+bool name_chars_are_valid(const char *name, size_t name_length);
 
 
 //Initialises folder into root directory
@@ -314,6 +314,11 @@ StatusCode validate_sub_entry_name(
         return INSUFFICIENT_ARRAY_PASSED;
     }
 
+    if (!name_chars_are_valid(entry_name, entry_name_length))
+    {
+        return INVALID_CHARECTER_IN_IDENTIFIER;
+    }
+
     //Making sure it is not using the root directoy name
     if (entry_name_length == root_name_length)
     {
@@ -340,6 +345,22 @@ StatusCode validate_sub_entry_name(
     return SUCCESS;
 }
 
+bool name_chars_are_valid(const char *name, size_t name_length)
+{
+    //Private helper. name guaranteed to not be null
+    
+    for (size_t name_char_index = 0; name_char_index < name_length; name_char_index++)
+    
+        for (size_t invalid_char_index = 0; invalid_char_index < INVALID_CHARS_LENGTH; invalid_char_index++)
+        {
+            if (name[name_char_index] == INVALID_CHARS[invalid_char_index])
+            {
+                return false;
+            }
+        }
+
+        return true;
+}
 
 StatusCode has_sub_entries(Folder *folder, bool *out_result)
 {

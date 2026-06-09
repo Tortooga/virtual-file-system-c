@@ -39,6 +39,10 @@ StatusCode vfs_entry_store_init(VFSEntryStore *out_vfs_entry_store);
     Validates the existance and validity of parent_folder in entry_store
     Partial failure causes out_file to be NULL
 */
+
+void vfs_entry_store_destroy(VFSEntryStore *entry_store);
+
+
 StatusCode vfs_sub_file_init(
     File **out_file,
     VFSEntryStore *entry_store,

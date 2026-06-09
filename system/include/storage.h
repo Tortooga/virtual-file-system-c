@@ -131,6 +131,10 @@ StatusCode chread(
 //Overwrites the last "amount" chunks with '/0'  
 StatusCode chtrunc(size_t chunk_index, size_t amount, StorageMan *storage_man);
 
+StatusCode storage_man_create(StorageMan *out_storage_man);
+
+void storage_man_destroy(StorageMan *storage_man);
+
 /*========================*
  * Debugging helpers      *
  *========================*/

@@ -12,7 +12,14 @@ bool is_multi_line_read_prompting(CommandFunction command_func);
 bool is_data_outputting(CommandFunction command_func);
 
 //Calls appropriate command executer 
-StatusCode command_dispatch(Workspace *workspace, Command *cmd, InputHandler *input_handler, char *output_buffer, size_t output_buffer_size)
+StatusCode command_dispatch(
+    Workspace *workspace, 
+    Command *cmd, 
+    InputHandler *input_handler, 
+    char *output_buffer, 
+    size_t output_buffer_size,
+    bool *exit_flag
+)
 {
     if (!workspace || !cmd || !input_handler || !output_buffer)
     {

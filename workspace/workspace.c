@@ -28,6 +28,11 @@ StatusCode workspace_init(
     return SUCCESS;
 }
 
+void workspace_destroy(Workspace *workspace)
+{
+    // Workspace is entirely on the stack
+}
+
 void root_path_init(char *out_path)
 {
     out_path[0] = PATH_DELIMITER;

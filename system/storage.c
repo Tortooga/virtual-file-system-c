@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "settings.h"
 
+#include <stdlib.h>
+
 void mark_as_allocated(bool *offset, size_t amount);
 void allocation_map_init(StorageMan *storage_man);
 char *get_chunk_addr(StorageMan *storage_man, size_t chunk_pos);
@@ -238,6 +240,60 @@ void mark_as_allocated(bool *offset, size_t amount)
     {
         *offset = true;
     }
+}
+
+StatusCode storage_man_create(StorageMan *out_storage_man)
+{
+    if (!out_storage_man)
+    {
+        return NULL_POINTER_PASSED;
+    }
+
+    char *storage = malloc(STORAGE_SIZE);
+    
+    if (!storage)
+    {
+        return ALLOCATION_FAILED;
+    }
+
+    bool *allocation_map = malloc((STORAGE_SIZE / CHUNK_SIZE) * sizeof(bool));
+
+    if (!allocation_map)
+    {
+        free(storage);
+        return ALLOCATION_FAILED;
+    }
+
+    //Validates attributes before assigning
+    StatusCode status = storage_man_init(
+        out_storage_man,
+        storage,
+        STORAGE_SIZE,
+        allocation_map,
+        STORAGE_SIZE / CHUNK_SIZE
+    );
+
+    if (status != SUCCESS)
+    {
+        free(storage);
+        free(allocation_map);
+    }
+
+    return status;
+}
+
+void storage_man_destroy(StorageMan *storage_man)
+{
+    if (!storage_man)
+    {
+        return;
+    }
+
+    free(storage_man->allocation_map);
+    free(storage_man->storage);
+
+    storage_man->allocation_map = NULL;
+    storage_man->storage = NULL;
 }
 
 // prints storage continuously onto terminal

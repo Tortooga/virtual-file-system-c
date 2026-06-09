@@ -40,6 +40,13 @@ typedef struct
 } VFSNode;
 
 
+static const char INVALID_CHARS[] = 
+{
+    '\0', PATH_DELIMITER
+};
+
+static const size_t INVALID_CHARS_LENGTH = sizeof(INVALID_CHARS) / sizeof(INVALID_CHARS[0]);
+
 
 //Initialises output param folder into a sub folder of parent_folder
 //Name not assumed (but is allowed) to be C-string, NULL termination is enforced within the function.
