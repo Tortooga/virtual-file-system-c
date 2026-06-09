@@ -750,3 +750,25 @@ StatusCode cmd_help_exec(Workspace *workspace, Command *cmd)
     }
     return SUCCESS;
 }
+
+StatusCode cmd_exit_exec(Command *cmd, bool *exit_flag)
+{
+    if (!exit_flag || !cmd)
+    {
+        return NULL_POINTER_PASSED;
+    }
+    
+    if (cmd->opts_amount > 0)
+    {
+        return CMD_TOO_MANY_OPTS;
+    }
+
+    if (cmd->args_amount > 0)
+    {
+        return CMD_TOO_MANY_ARGS;
+    }
+
+    *exit_flag = true;
+
+    return SUCCESS;
+}

@@ -80,8 +80,15 @@ StatusCode cli_run(
             &exit_flag
         );
 
+        if (exit_flag)
+        {
+            break;
+        }
+
         report_status(status);
     }
+
+    return SUCCESS;
 }
 
 void print_prompt_context(Workspace *workspace)

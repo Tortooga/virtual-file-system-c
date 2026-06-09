@@ -34,4 +34,7 @@ StatusCode cmd_append_exec(Workspace *workspace, Command *cmd, char *data_buffer
 StatusCode cmd_cat_exec(Workspace *workspace, Command *cmd, char *data_buffer, size_t data_buffer_length);
 StatusCode cmd_read_exec(Workspace *workspace, Command *cmd, char *data_buffer, size_t data_buffer_length);
 
+
+StatusCode cmd_exit_exec(Command *cmd, bool *exit_flag);
+
 #endif

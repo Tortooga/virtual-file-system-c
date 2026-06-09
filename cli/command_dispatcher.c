@@ -26,6 +26,11 @@ StatusCode command_dispatch(
         return NULL_POINTER_PASSED;
     }
 
+    if (cmd->func == CMD_EXIT)
+    {
+        return cmd_exit_exec(cmd, exit_flag);
+    }
+
     for (
         size_t i = 0;
         i < CMD_ARGUMENT_BASED_FUNCTIONS_TABLE_LENGTH;
