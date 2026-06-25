@@ -17,7 +17,7 @@
 
 void print_prompt_context(Workspace *workspace);
 void report_status(StatusCode status);
-
+void print_starting_instructions();
 
 
 StatusCode cli_run(
@@ -45,6 +45,8 @@ StatusCode cli_run(
     StatusCode status;
 
     Command cur_command;
+
+    print_starting_instructions();
 
     while (!exit_flag)
     {
@@ -89,6 +91,11 @@ StatusCode cli_run(
     }
 
     return SUCCESS;
+}
+
+void print_starting_instructions()
+{
+    printf("When in multiline read mode(such as when you call append), use CTRL + D on empty line to submit.\n\n");
 }
 
 void print_prompt_context(Workspace *workspace)
