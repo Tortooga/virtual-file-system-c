@@ -94,4 +94,4 @@ Command Executors accept command arguments and options, using the workspace inte
 ## Control Flow
 The following is a diagram demonstrating the control flow of the entire system
 
-[Control Flow Diagram](docs/VFS_Architecture_Diagram.svg)
+![Control Flow Diagram](docs/VFS_Architecture_Diagram.svg)
