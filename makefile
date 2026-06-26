@@ -20,9 +20,6 @@ objDir:
 
 #Relocatable object files
 #We hide linking 
-testscore.o: file_storage_tests.o file_logic_tests.o queries_tests.o
-	@gcc -r obj/file_storage_tests.o obj/file_logic_tests.o obj/queries_tests.o -o obj/testscore.o 
-
 systemReloc.o: storage.o files.o file_storage.o file_logic.o folders.o vfs_entry_store.o path_utils.o queries.o entry_relocation.o
 	@gcc -r obj/storage.o obj/files.o obj/file_storage.o obj/file_logic.o obj/folders.o obj/vfs_entry_store.o obj/path_utils.o obj/queries.o obj/entry_relocation.o -o obj/systemReloc.o
 

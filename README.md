@@ -8,6 +8,7 @@
 - [Control Flow](#control-flow)
 - [Tradeoffs](#tradeoffs)
 - [Limitations](#limitations)
+- [Build And Quick Start](#build-and-quick-start)
 
 
 
@@ -38,7 +39,7 @@ The storage manager, commonly refered to as *storage_man*, owns the storage meta
 Respect of allocation -the fact that an occupied chunk can't be allocated and a free chunk can't be accessed- is enforced in this layer.
 
 ### **Files**
-Files are objects that own locations in storage. Files store meta data about their allocated storage locations in *chunk extents*. That is, they are allocated contigous sequences in storage which they then keep track of by storing the start location and amount of bytes in each sequence (see [File Meta Data Overhead](DONT-FORGET-TO-ADD-LINK)). Each file belongs to a parent (see [Folders](#folders)).
+Files are objects that own locations in storage. Files store meta data about their allocated storage locations in *chunk extents*. That is, they are allocated contigous sequences in storage which they then keep track of by storing the start location and amount of bytes in each sequence (see [File Meta Data Overhead](#file-metadata-overhead)). Each file belongs to a parent (see [Folders](#folders)).
 
 The File I/O is split into the following two layers:
 
@@ -69,7 +70,7 @@ Hence, the system heirarchy layer provides a way to store, structure and retreiv
 
 ## **Workspace Overview**
 As we mentioned earlier, the core [system](#system-overview) is stateless. It has no concept of user specific context such as  the current working directory.
-The *workspace* is not a part of the core system, rather it is a user facing stateful wrapper of the [system](#system-overview). It simplifies the [system](#system-overview)'s interface by using information stored in its context. It also encapsulates the internal representation of entries by only allowing entries to be addressed using their names or paths. This layer is intended as a more concise but less versitile interface to the core [system](#system-overview). 
+The *workspace* is not a part of the core system, rather it is a user facing stateful wrapper of the [system](#system-overview). It simplifies the [system](#system-overview)'s interface by using information stored in its context. It also encapsulates the internal representation of entries by only allowing entries to be addressed using their names or paths. This layer is intended as a more concise but less versitile interface to the core [system](#system-overview)(see . 
 
 
 ## **CLI Overview**
@@ -86,12 +87,64 @@ Once the input is submitted the tokeniser tokenises it in place. It places null 
 The command parser parses tokenised input into command objects.
 
 ### **Command Dispatcher**
-The command dispatcher accepts command objects and calls the appropriate [command executor](command-execution) passing in the command arguments and options
+The command dispatcher accepts command objects and calls the appropriate [command executor](#command-execution) passing in the command arguments and options
 
 ### **Command Execution**
 Command Executors accept command arguments and options, using the workspace interface to perform system operations. Each command executor also handles its commands output.
 
-## Control Flow
+## **Control Flow**
 The following is a diagram demonstrating the control flow of the entire system
 
 ![Control Flow Diagram](docs/VFS_Architecture_Diagram.svg)
+
+
+## **Tradeoffs**
+In designing this system, a lot of tradeoffs had to be resolved. The following are some of the tradeoffs:
+
+### **File Metadata Overhead**
+For a file to keep track of the storage regions it owns, it must represent them in memory in some way. The naive solution is for a file to store the position of each chunk it owns. This is problematic since if we make the chunk size small, say 8 bytes, then for each 8 bytes of usable storage we waste 8 bytes(usual long int size for 64 systems) on meta data. That is 50% wasted on metadata. If we try to lower the percentage of space used on metadata by making the chunk size larger, we risk losing space to fragmentation. 
+
+The solution to this problem is to keep fragmentation low by making the chunk size small(8 bytes in this implementation), while not storing the position of each chunk owned by the file but rather representing contiguous sequences of chunks using [chunk extents](#files). For a given storage allocation(as part of a write operation for example), a file is likely to be allocated hundreds if not thousands of bytes, these bytes are guaranteed to be contiguous by the nature of our allocator, and all of these bytes can be represented by a single chunk extent(2 longs and a bool regardless of the size of the allocation). This way we avoid fragmentation by keeping chunk size small, while still avoiding proportionate file meta data growth. 
+
+Note that this implementation is more wastefull than the naive one when allocating less than 3 chunks(24 bytes in this implementation) to a file, but such an allocation is unlikely, so on average our chunk extent implementation is way better. 
+
+### **Stateful Vs Stateless**
+Making the core [system](#system-overview) stateful would make it easier to interface, but would create hidden coupling and make it less deterministic. On the other hand making it stateless would make it harder to interact with, for example, most functions would required the explicit passing of their dependencies, as making them global would create state. This makes for huge parameter lists and a more nuanced interface.
+
+We solve this problem by making the core system stateless by creating a stateful wrapper on it(see [workspace](#workspace-overview)). This way we get the determinism of statelessness(one can even bypass the wrapper and directly interfere with the system api if they want), while getting the ease of use that comes with statefulness by accessing the system through the wrapper. 
+
+
+## **Limitations**
+The following are some of the limitions of the system as currently implemented.
+
+### **Sentinal Value Chunk Termination**
+When performing IO operations on a file, we are not guaranteed to completely fill up all the chunks we use. This creates chunks that are partially filled with important data, and partially filled with uninitialised bytes. In this current implementation of system, the end of the useful data in a chunk is indicated by a sentinal byte. This is very sub optimal as it is not byte safe for arbitrary binary data. 
+
+The correct implementation is to store the logical size of a file(current implementation only stores physical size), and then use it to always find the correct offset in the files last chunk. This does not only guarantees byte safety, but it also enables us to implement the system in a way that enforces compactness and hence uses storage more efficiently.
+
+### **File and Folder Polymorphism**
+In the current implementation of the system, files and folders are not stored in a unified polymorphic representation. This causes occasionaly duplication accross the domains of files and folders where the only thing that changes is the type. To combat this there is a temorary unified type, but since this is not how files and folders are stored, there are scenarios where this representation can not be used.
+
+## **Build And Quick Start**
+
+### **Build Requirements**
+- gcc
+- make
+- POSIX Environment
+
+### **Build  Instructions**
+
+Clone the repository using:
+
+`git clone https://github.com/Tortooga/virtual-file-system-c.git`
+
+build by running the following command in the root directory of the repo:
+
+`make app`
+
+A directory called `bin` will be created and the  systems binary executable will be placed in there. Run the program using:
+
+`./bin/app`
+
+### **Quick Start**
+Once you are in the sysem shell, run the command `help` to get the list of commands along with their synopsis. To get a more detailed explaination for a given command run `help [COMMAND]`.
