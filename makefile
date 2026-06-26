@@ -4,8 +4,7 @@ run: app
 	@echo "=============================================="
 	@./bin/app
 
-
-#Executables 
+#Developement Executables
 app: systemReloc.o workspaceReloc.o CLIReloc.o objDir binDir main.o 
 	gcc obj/systemReloc.o obj/workspaceReloc.o obj/CLIReloc.o obj/main.o -o bin/app
 
@@ -34,78 +33,78 @@ CLIReloc.o: commands.o input_handler.o command_dispatcher.o command_exec.o  help
 	@gcc -r obj/commands.o obj/input_handler.o obj/command_dispatcher.o obj/command_exec.o obj/help.o obj/cli_runtime.o -o obj/CLIReloc.o
 
 #Entry points
-tests_main.o: tests/tests_main.c
+tests_main.o: tests/tests_main.c objDir
 	gcc -c tests/tests_main.c -o obj/tests_main.o 
 
-main.o: main.c
+main.o: main.c objDir
 	gcc -c main.c -I system/include -I . -I workspace -I cli -o obj/main.o
 
 #CLI object files
-commands.o: cli/commands.c
+commands.o: cli/commands.c objDir
 	gcc -c cli/commands.c -I system/include -I . -o obj/commands.o
 
-input_handler.o: cli/input_handler.c
+input_handler.o: cli/input_handler.c objDir
 	gcc -c cli/input_handler.c -I system/include -I . -o obj/input_handler.o
 
-command_dispatcher.o: cli/command_dispatcher.c
+command_dispatcher.o: cli/command_dispatcher.c objDir
 	gcc -c cli/command_dispatcher.c -I system/include -I workspace -I . -o obj/command_dispatcher.o 
 
-command_exec.o: cli/command_exec.c
+command_exec.o: cli/command_exec.c objDir
 	gcc -c cli/command_exec.c -I system/include -I . -I workspace -I cli -o obj/command_exec.o
 
-help.o: cli/help.c
+help.o: cli/help.c objDir
 	gcc -c cli/help.c -I system/include -I . -I workspace -I cli -o obj/help.o
 
-cli_runtime.o: cli/cli_runtime.c 
+cli_runtime.o: cli/cli_runtime.c objDir 
 	gcc -c cli/cli_runtime.c -I system/include -I . -I workspace -I cli -o obj/cli_runtime.o
 #Workspace object files
-workspace.o: workspace/workspace.c
+workspace.o: workspace/workspace.c objDir
 	gcc -c workspace/workspace.c -I system/include -I . -o obj/workspace.o 
 
-navigation.o: workspace/navigation.c
+navigation.o: workspace/navigation.c objDir
 	gcc -c workspace/navigation.c -I system/include -I . -o obj/navigation.o 
 
-vfs_ops.o: workspace/vfs_ops.c
+vfs_ops.o: workspace/vfs_ops.c objDir
 	gcc -c workspace/vfs_ops.c -I system/include -I . -o obj/vfs_ops.o
 
-file_io.o: workspace/file_io.c 
+file_io.o: workspace/file_io.c objDir 
 	gcc -c workspace/file_io.c -I system/include -I . -o obj/file_io.o 
 
 #Test object files
-queries_tests.o: tests/queries_tests.c 
+queries_tests.o: tests/queries_tests.c objDir 
 	gcc -c tests/queries_tests.c -o obj/queries_tests.o
 
-file_storage_tests.o: tests/file_storage_tests.c 
+file_storage_tests.o: tests/file_storage_tests.c objDir
 	gcc -c tests/file_storage_tests.c -o obj/file_storage_tests.o 
 
-file_logic_tests.o: tests/file_logic_tests.c
+file_logic_tests.o: tests/file_logic_tests.c objDir
 	gcc -c tests/file_logic_tests.c -o obj/file_logic_tests.o 
 
 #Core object files
 	
-storage.o: system/storage.c
+storage.o: system/storage.c objDir
 	gcc -c system/storage.c -I system/include -I . -o obj/storage.o
 
-files.o: system/files.c
+files.o: system/files.c objDir
 	gcc -c system/files.c -I system/include -I . -o obj/files.o
 
-file_storage.o: system/file_storage.c
+file_storage.o: system/file_storage.c objDir
 	gcc -c system/file_storage.c -I system/include -I . -o obj/file_storage.o
 
-file_logic.o: system/file_logic.c
+file_logic.o: system/file_logic.c objDir
 	gcc -c system/file_logic.c -I system/include -I . -o obj/file_logic.o
 
-folders.o: system/folders.c
+folders.o: system/folders.c objDir
 	gcc -c system/folders.c -I system/include -I . -o obj/folders.o 
 
-vfs_entry_store.o: system/vfs_entry_store.c
+vfs_entry_store.o: system/vfs_entry_store.c objDir
 	gcc -c system/vfs_entry_store.c -I system/include -I . -o obj/vfs_entry_store.o 
 
-path_utils.o : system/path_utils.c
+path_utils.o : system/path_utils.c objDir
 	gcc -c system/path_utils.c -I system/include -I . -o obj/path_utils.o
 
-queries.o: system/queries.c
+queries.o: system/queries.c objDir
 	gcc -c system/queries.c -I system/include -I . -o obj/queries.o
 
-entry_relocation.o: system/entry_relocation.c
+entry_relocation.o: system/entry_relocation.c objDir
 	gcc -c system/entry_relocation.c -I system/include -I . -o obj/entry_relocation.o
